@@ -7,8 +7,11 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:image/image.dart' as image;
 
 import 'flutter_particle_system_platform_interface.dart';
 
@@ -39,6 +42,7 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
   ColorData? startColorVariance;
   ColorData? finishColor;
   ColorData? finishColorVariance;
+  ui.Image? _particleImage;
   Map _configs = {};
   @override
   void initState() {
@@ -79,6 +83,23 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
       return;
     }
     _devicePixelRatio = 1 / MediaQuery.of(context).devicePixelRatio;
+
+    _particleImage =
+        await _getImage("assets/${_configs["textureFileName"]}", 32, 32);
+
+  Future<ui.Image> _getImage(
+      String imageAssetPath, int height, int width) async {
+    final ByteData assetImageByteData = await rootBundle.load(imageAssetPath);
+    image.Image? baseSizeImage =
+        image.decodeImage(assetImageByteData.buffer.asUint8List());
+    image.Image resizeImage =
+        image.copyResize(baseSizeImage!, height: height, width: width);
+    ui.Codec codec =
+        await ui.instantiateImageCodec(image.encodePng(resizeImage));
+    ui.FrameInfo frameInfo = await codec.getNextFrame();
+    return frameInfo.image;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_particleImage == null) return const SizedBox();
