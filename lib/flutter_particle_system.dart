@@ -51,6 +51,7 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
   Map _configs = {};
   int _particleLifespan = 0;
   int _deltaTime = 0, _lastFrameTime = 0;
+
   @override
   void initState() {
     super.initState();
@@ -133,6 +134,102 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
     _ticker.dispose();
     super.dispose();
   }
+}
+
+enum EmitterType { gravity, radius }
+
+class Particle {
+  final EmitterType emitterType;
+  final int lifespan;
+  final double speed;
+  final double startSize, finishSize;
+  final Color startColor, finishColor;
+
+  double size = 100;
+  Color color = Colors.white;
+
+  double x = 0, y = 0, angle = 0, radius = 0, radiusDelta = 0;
+  double emitterX = 0, emitterY = 0;
+  double velocityX = 0, velocityY = 0;
+
+  int _age = 0;
+  final double minRadius, maxRadius, rotatePerSecond;
+  final double radialAcceleration, tangentialAcceleration, gravityX, gravityY;
+
+  Particle({
+    this.emitterType = EmitterType.gravity,
+    required this.speed,
+    required this.angle,
+    required this.emitterX,
+    required this.emitterY,
+    required this.lifespan,
+    required this.startSize,
+    required this.finishSize,
+    required this.startColor,
+    required this.finishColor,
+    this.minRadius = 0,
+    this.maxRadius = 0,
+    this.rotatePerSecond = 0,
+    this.radialAcceleration = 0,
+    this.tangentialAcceleration = 0,
+    this.gravityX = 0,
+    this.gravityY = 0,
+  }) {
+    x = emitterX;
+    y = emitterY;
+    size = startSize;
+    velocityX = speed * math.cos(angle / 180.0 * math.pi);
+    velocityY = speed * math.sin(angle / 180.0 * math.pi);
+    radius = maxRadius;
+    radiusDelta = (minRadius - maxRadius);
+    color = startColor;
+  }
+
+  void update(int deltaTime) {
+    _age += deltaTime;
+    var ratio = _age / lifespan;
+    var rate = deltaTime / lifespan;
+
+    angle -= rotatePerSecond * rate;
+    if (emitterType == EmitterType.radius) {
+      radius += radiusDelta * rate;
+      x = emitterX - math.cos(angle / 180.0 * math.pi) * radius;
+      y = emitterY - math.sin(angle / 180.0 * math.pi) * radius;
+    } else {
+      var distanceX = x - emitterX;
+      var distanceY = y - emitterY;
+      var distanceScalar =
+          math.sqrt(distanceX * distanceX + distanceY * distanceY);
+      if (distanceScalar < 0.01) distanceScalar = 0.01;
+
+      var radialX = distanceX / distanceScalar;
+      var radialY = distanceY / distanceScalar;
+      var tangentialX = radialX;
+      var tangentialY = radialY;
+
+      radialX *= radialAcceleration;
+      radialY *= radialAcceleration;
+
+      var newY = tangentialX;
+      tangentialX = -tangentialY * tangentialAcceleration;
+      tangentialY = newY * tangentialAcceleration;
+
+      velocityX += rate * (gravityX + radialX + tangentialX);
+      velocityY += rate * (gravityY + radialY + tangentialY);
+      x += velocityX * rate;
+      y += velocityY * rate;
+    }
+
+    color = Color.lerp(startColor, finishColor, ratio)!;
+    size = startSize + (finishSize - startSize) * ratio;
+  }
+
+  bool isDead() {
+    return _age >= lifespan;
+  }
+
+  static double doubleInRange(double min, double max) =>
+      math.Random().nextDouble() * (max - min) + min;
 }
 
 class ColorData {
