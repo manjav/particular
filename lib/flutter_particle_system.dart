@@ -103,7 +103,14 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
 
     var duration = _configs["duration"] * 1000;
     _ticker = createTicker((elapsed) {
+      // Spawn particles
+      if (duration < 0 || elapsed.inMilliseconds < duration) {
+        var particlesPerTick =
+            (_deltaTime * _configs["maxParticles"] / _particleLifespan).round();
+        for (var i = 0; i < particlesPerTick; i++) {
           _particles.add(_spawn());
+        }
+      }
       // Remove dead particles
       for (var particle in _particlesRemoveWaitingLine) {
         _particles.remove(particle);
