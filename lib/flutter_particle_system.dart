@@ -34,6 +34,7 @@ class FlutterParticleSystem extends StatefulWidget {
 }
 
 class _FlutterParticleSystemState extends State<FlutterParticleSystem>
+  double _devicePixelRatio = 1;
   Map _configs = {};
   @override
   void initState() {
@@ -44,6 +45,7 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
   Future<void> _loadConfigs() async {
     var json = await DefaultAssetBundle.of(context).loadString(widget.configs);
     _configs = jsonDecode(json);
+    _devicePixelRatio = 1 / MediaQuery.of(context).devicePixelRatio;
   @override
   Widget build(BuildContext context) {
     if (_particleImage == null) return const SizedBox();
