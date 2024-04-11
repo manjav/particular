@@ -223,6 +223,15 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
       color: widget.color,
       width: widget.width,
       height: widget.height,
+      child: CustomPaint(
+        painter: ParticlePainter(
+          image: _particleImage!,
+          blendMode: _getBlendMode(),
+          particles: _particles,
+          deltaTime: _deltaTime,
+          particlesToRemove: _particlesToRemove,
+        ),
+      ),
     );
   }
 
@@ -231,6 +240,59 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
     _ticker.dispose();
     super.dispose();
   }
+}
+
+class ParticlePainter extends CustomPainter {
+  final int deltaTime;
+  final ui.Image image;
+  final BlendMode blendMode;
+  final List<Particle> particles;
+  final List<Particle> particlesToRemove;
+
+  ParticlePainter({
+    required this.image,
+    required this.blendMode,
+    required this.deltaTime,
+    required this.particles,
+    required this.particlesToRemove,
+  });
+  @override
+  void paint(Canvas canvas, Size size) {
+    for (var particle in particles) {
+      particle.update(deltaTime);
+      if (particle.isDead()) particlesToRemove.add(particle);
+
+      var paint = Paint()..color = particle.color;
+      paint.blendMode = BlendMode.plus;
+      // canvas.saveLayer(
+      //     Rect.fromCircle(center: Offset(size.width, size.height), radius: 100),
+      //     paint);
+
+      canvas.drawAtlas(
+          image,
+          [
+            RSTransform.fromComponents(
+                rotation: particle.angle,
+                scale: particle.size / image.width,
+                anchorX: image.width * 0.5,
+                anchorY: image.height * 0.5,
+                translateX: particle.x,
+                translateY: particle.y)
+          ],
+          [
+            /* The size of gray image is 60 x 60  */
+            const Rect.fromLTWH(0, 0, 36, 36)
+          ],
+          [particle.color],
+          BlendMode.dstATop,
+          null,
+          paint);
+      // canvas.restore();
+    }
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
 
 enum EmitterType { gravity, radius }
