@@ -7,7 +7,9 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math' as math;
 import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -37,13 +39,18 @@ class FlutterParticleSystem extends StatefulWidget {
 }
 
 class _FlutterParticleSystemState extends State<FlutterParticleSystem>
+    with SingleTickerProviderStateMixin {
+  late final Ticker _ticker;
   double _devicePixelRatio = 1;
   ColorData? startColor;
   ColorData? startColorVariance;
   ColorData? finishColor;
   ColorData? finishColorVariance;
   ui.Image? _particleImage;
+
   Map _configs = {};
+  int _particleLifespan = 0;
+  int _deltaTime = 0, _lastFrameTime = 0;
   @override
   void initState() {
     super.initState();
@@ -86,6 +93,17 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
 
     _particleImage =
         await _getImage("assets/${_configs["textureFileName"]}", 32, 32);
+    _particleLifespan = _getDouble("particleLifespan", 1000).round();
+
+
+    var duration = _configs["duration"] * 1000;
+    _ticker = createTicker((elapsed) {
+      setState(() {});
+    });
+
+    _ticker.start();
+  }
+
 
   Future<ui.Image> _getImage(
       String imageAssetPath, int height, int width) async {
@@ -110,6 +128,12 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
     );
   }
 
+  @override
+  void dispose() {
+    _ticker.dispose();
+    super.dispose();
+  }
+}
 
 class ColorData {
   final num a, r, g, b;
