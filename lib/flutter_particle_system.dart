@@ -42,6 +42,7 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
     with SingleTickerProviderStateMixin {
   late final Ticker _ticker;
   double _devicePixelRatio = 1;
+  List<Particle> _particles = [];
   ColorData? startColor;
   ColorData? startColorVariance;
   ColorData? finishColor;
@@ -96,9 +97,11 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
         await _getImage("assets/${_configs["textureFileName"]}", 32, 32);
     _particleLifespan = _getDouble("particleLifespan", 1000).round();
 
+    _particles.add(_spawn());
 
     var duration = _configs["duration"] * 1000;
     _ticker = createTicker((elapsed) {
+          _particles.add(_spawn());
 
       _deltaTime = elapsed.inMilliseconds - _lastFrameTime;
       _lastFrameTime += _deltaTime;
@@ -107,6 +110,34 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
 
     _ticker.start();
   }
+
+  Particle _spawn() => Particle(
+        emitterType: EmitterType.values[_configs["emitterType"]],
+        emitterX: _getValue(
+                450, _configs["sourcePositionVariancex"], _devicePixelRatio)
+            .toDouble(),
+        emitterY: _getValue(
+                650, _configs["sourcePositionVariancey"], _devicePixelRatio)
+            .toDouble(),
+        startSize: _getDouble("startParticleSize", _devicePixelRatio),
+        finishSize: _getDouble("finishParticleSize", _devicePixelRatio),
+        speed: _getDouble("speed", _devicePixelRatio),
+        angle: _getDouble("angle"),
+        lifespan: _particleLifespan,
+        gravityX: _configs["gravityx"].toDouble() * _devicePixelRatio,
+        gravityY: _configs["gravityy"].toDouble() * _devicePixelRatio,
+        minRadius: _getDouble("minRadius", _devicePixelRatio),
+        maxRadius: _getDouble("maxRadius", _devicePixelRatio),
+        rotatePerSecond: _getDouble("rotatePerSecond"),
+        radialAcceleration: _getValue(
+                _configs["radialAcceleration"], _configs["radialAccelVariance"])
+            .toDouble(),
+        tangentialAcceleration: _getValue(_configs["tangentialAcceleration"],
+                _configs["tangentialAccelVariance"])
+            .toDouble(),
+        startColor: _getColor(startColor!, startColorVariance!),
+        finishColor: _getColor(finishColor!, finishColorVariance!),
+      );
 
   Color _getColor(ColorData base, ColorData variance) {
     var alpha = _getValue(base.a, variance.a, 255).clamp(0, 255).round();
