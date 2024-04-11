@@ -35,6 +35,10 @@ class FlutterParticleSystem extends StatefulWidget {
 
 class _FlutterParticleSystemState extends State<FlutterParticleSystem>
   double _devicePixelRatio = 1;
+  ColorData? startColor;
+  ColorData? startColorVariance;
+  ColorData? finishColor;
+  ColorData? finishColorVariance;
   Map _configs = {};
   @override
   void initState() {
@@ -45,6 +49,35 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
   Future<void> _loadConfigs() async {
     var json = await DefaultAssetBundle.of(context).loadString(widget.configs);
     _configs = jsonDecode(json);
+
+    startColor = ColorData(
+      _configs["startColorAlpha"],
+      _configs["startColorRed"],
+      _configs["startColorGreen"],
+      _configs["startColorBlue"],
+    );
+    startColorVariance = ColorData(
+      _configs["startColorVarianceAlpha"],
+      _configs["startColorVarianceRed"],
+      _configs["startColorVarianceGreen"],
+      _configs["startColorVarianceBlue"],
+    );
+
+    finishColor = ColorData(
+      _configs["finishColorAlpha"],
+      _configs["finishColorRed"],
+      _configs["finishColorGreen"],
+      _configs["finishColorBlue"],
+    );
+    finishColorVariance = ColorData(
+      _configs["finishColorVarianceAlpha"],
+      _configs["finishColorVarianceRed"],
+      _configs["finishColorVarianceGreen"],
+      _configs["finishColorVarianceBlue"],
+    );
+    if (!mounted) {
+      return;
+    }
     _devicePixelRatio = 1 / MediaQuery.of(context).devicePixelRatio;
   @override
   Widget build(BuildContext context) {
@@ -56,4 +89,8 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
     );
   }
 
+
+class ColorData {
+  final num a, r, g, b;
+  ColorData(this.a, this.r, this.g, this.b);
 }
