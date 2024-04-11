@@ -42,7 +42,9 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
     with SingleTickerProviderStateMixin {
   late final Ticker _ticker;
   double _devicePixelRatio = 1;
-  List<Particle> _particles = [];
+  final List<Particle> _particles = [];
+  final List<Particle> _particlesRemoveWaitingLine = [];
+
   ColorData? startColor;
   ColorData? startColorVariance;
   ColorData? finishColor;
@@ -102,6 +104,15 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
     var duration = _configs["duration"] * 1000;
     _ticker = createTicker((elapsed) {
           _particles.add(_spawn());
+      // Remove dead particles
+      for (var particle in _particlesRemoveWaitingLine) {
+        _particles.remove(particle);
+      }
+
+      // Stop when all particles are dead
+      if (_particles.isEmpty) {
+        _ticker.stop();
+      }
 
       _deltaTime = elapsed.inMilliseconds - _lastFrameTime;
       _lastFrameTime += _deltaTime;
@@ -229,7 +240,7 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
           blendMode: _getBlendMode(),
           particles: _particles,
           deltaTime: _deltaTime,
-          particlesToRemove: _particlesToRemove,
+          particlesToRemove: _particlesRemoveWaitingLine,
         ),
       ),
     );
