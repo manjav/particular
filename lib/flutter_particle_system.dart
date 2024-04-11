@@ -5,7 +5,13 @@
 // platforms in the `pubspec.yaml` at
 // https://flutter.dev/docs/development/packages-and-plugins/developing-packages#plugin-platforms.
 
+import 'dart:async';
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import 'flutter_particle_system_platform_interface.dart';
+
 class FlutterParticleSystem extends StatefulWidget {
   Future<String?> getPlatformVersion() {
     return FlutterParticleSystemPlatform.instance.getPlatformVersion();
@@ -28,6 +34,16 @@ class FlutterParticleSystem extends StatefulWidget {
 }
 
 class _FlutterParticleSystemState extends State<FlutterParticleSystem>
+  Map _configs = {};
+  @override
+  void initState() {
+    super.initState();
+    _loadConfigs();
+  }
+
+  Future<void> _loadConfigs() async {
+    var json = await DefaultAssetBundle.of(context).loadString(widget.configs);
+    _configs = jsonDecode(json);
   @override
   Widget build(BuildContext context) {
     if (_particleImage == null) return const SizedBox();
