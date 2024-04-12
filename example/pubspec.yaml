@@ -16,7 +16,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  image: 
   flutter_particle_system:
     # When depending on this package from a real application you should use:
     #   flutter_particle_system: ^x.y.z

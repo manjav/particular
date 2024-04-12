@@ -13,7 +13,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_particle_system/flutter_particle.dart';
-import 'package:image/image.dart' as image;
+import 'package:flutter_particle_system/flutter_particle_cotroller.dart';
 
 import 'flutter_particle_system_platform_interface.dart';
 
@@ -23,18 +23,15 @@ class FlutterParticleSystem extends StatefulWidget {
   }
 
   final Color? color;
-  final String configs;
   final double width, height;
-  double emitterX = 0, emitterY = 0;
+  final FlutterParticleController? controller;
 
-  FlutterParticleSystem({
+  const FlutterParticleSystem({
     super.key,
     this.color,
     this.width = 300,
     this.height = 300,
-    this.emitterX = 150,
-    this.emitterY = 150,
-    required this.configs,
+    this.controller,
   });
 
   @override

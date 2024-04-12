@@ -21,7 +21,7 @@ void main() {
 
   test('getPlatformVersion', () async {
     FlutterParticleSystem flutterParticleSystemPlugin =
-        const FlutterParticleSystem(configs: "");
+        const FlutterParticleSystem();
     MockFlutterParticleSystemPlatform fakePlatform =
         MockFlutterParticleSystemPlatform();
     FlutterParticleSystemPlatform.instance = fakePlatform;
