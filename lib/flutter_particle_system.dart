@@ -6,8 +6,6 @@
 // https://flutter.dev/docs/development/packages-and-plugins/developing-packages#plugin-platforms.
 
 import 'dart:async';
-import 'dart:convert';
-import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -18,9 +16,8 @@ import 'package:flutter_particle_system/flutter_particle_cotroller.dart';
 import 'flutter_particle_system_platform_interface.dart';
 
 class FlutterParticleSystem extends StatefulWidget {
-  Future<String?> getPlatformVersion() {
-    return FlutterParticleSystemPlatform.instance.getPlatformVersion();
-  }
+  Future<String?> getPlatformVersion() =>
+      FlutterParticleSystemPlatform.instance.getPlatformVersion();
 
   final Color? color;
   final double width, height;
@@ -61,47 +58,6 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
   }
 
   Future<void> _loadConfigs() async {
-    var json = await DefaultAssetBundle.of(context).loadString(widget.configs);
-    _configs = jsonDecode(json);
-
-    startColor = ColorData(
-      _configs["startColorAlpha"],
-      _configs["startColorRed"],
-      _configs["startColorGreen"],
-      _configs["startColorBlue"],
-    );
-    startColorVariance = ColorData(
-      _configs["startColorVarianceAlpha"],
-      _configs["startColorVarianceRed"],
-      _configs["startColorVarianceGreen"],
-      _configs["startColorVarianceBlue"],
-    );
-
-    finishColor = ColorData(
-      _configs["finishColorAlpha"],
-      _configs["finishColorRed"],
-      _configs["finishColorGreen"],
-      _configs["finishColorBlue"],
-    );
-    finishColorVariance = ColorData(
-      _configs["finishColorVarianceAlpha"],
-      _configs["finishColorVarianceRed"],
-      _configs["finishColorVarianceGreen"],
-      _configs["finishColorVarianceBlue"],
-    );
-    if (!mounted) {
-      return;
-    }
-
-    _devicePixelRatio = 1 / MediaQuery.of(context).devicePixelRatio;
-
-    _particleImage =
-        await _getImage("assets/${_configs["textureFileName"]}", 32, 32);
-    _particleLifespan = _getDouble("particleLifespan", 1000).round();
-
-    _spawn();
-
-    var duration = _configs["duration"] * 1000;
     _ticker = createTicker((elapsed) {
       // Spawn particles
       if (duration < 0 || elapsed.inMilliseconds < duration) {
