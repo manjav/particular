@@ -43,6 +43,7 @@ class _MyAppState extends State<MyApp> {
         await ui.instantiateImageCodec(image.encodePng(resizeImage));
     ui.FrameInfo frameInfo = await codec.getNextFrame();
 
+    _particleController.initialize(configsMap, frameInfo.image);
   }
 
   @override
