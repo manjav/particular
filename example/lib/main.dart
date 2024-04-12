@@ -54,8 +54,14 @@ class _MyAppState extends State<MyApp> {
           alignment: Alignment.topCenter,
           child: GestureDetector(
             onPanUpdate: (details) {
-              emitter = details.localPosition;
-              setState(() {});
+              _particleController.update(
+                  emitterX: details.localPosition.dx,
+                  emitterY: details.localPosition.dy);
+            },
+            onTapDown: (details) {
+              _particleController.update(
+                  emitterX: details.localPosition.dx,
+                  emitterY: details.localPosition.dy);
             },
             child: FlutterParticleSystem(
               width: 600,
