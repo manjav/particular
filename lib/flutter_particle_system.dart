@@ -37,32 +37,31 @@ class FlutterParticleSystem extends StatefulWidget {
 
 class _FlutterParticleSystemState extends State<FlutterParticleSystem>
     with SingleTickerProviderStateMixin {
-  late final Ticker _ticker;
+  Ticker? _ticker;
   double _devicePixelRatio = 1;
   final List<Particle> _pool = [];
-
-  ColorData? startColor;
-  ColorData? startColorVariance;
-  ColorData? finishColor;
-  ColorData? finishColorVariance;
-  ui.Image? _particleImage;
-
-  Map _configs = {};
-  int _particleLifespan = 0;
   int _deltaTime = 0, _lastFrameTime = 0;
 
   @override
   void initState() {
     super.initState();
-    _loadConfigs();
+    widget.controller!.addListener(() {
+      if (widget.controller!.image == null) return;
+      _devicePixelRatio = 1 / MediaQuery.of(context).devicePixelRatio;
+      _spawn(0);
+      _iterate();
+    });
   }
 
-  Future<void> _loadConfigs() async {
+  Future<void> _iterate() async {
+    if (_ticker != null) return;
     _ticker = createTicker((elapsed) {
+      var config = widget.controller!;
+
       // Spawn particles
-      if (duration < 0 || elapsed.inMilliseconds < duration) {
+      if (config.duration < 0 || elapsed.inMilliseconds < config.duration) {
         var particlesPerTick =
-            (_deltaTime * _configs["maxParticles"] / _particleLifespan).round();
+            (_deltaTime * config.maxParticles / config.lifespan).round();
         for (var i = 0; i < particlesPerTick; i++) {
           _spawn((i * _deltaTime / particlesPerTick).round());
         }
@@ -73,7 +72,7 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
       setState(() {});
     });
 
-    _ticker.start();
+    _ticker!.start();
   }
 
   void _spawn([int age = 0]) {
@@ -87,7 +86,7 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
     );
     var c = widget.controller!;
     particle.initialize(
-        age: age,
+      age: age,
       emitterType: c.emitterType,
       emitterX: c.getEmitterX(_devicePixelRatio),
       emitterY: c.getEmitterY(_devicePixelRatio),
@@ -110,7 +109,9 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
 
   @override
   Widget build(BuildContext context) {
-    if (_particleImage == null) return const SizedBox();
+    if (widget.controller!.image == null) {
+      return const SizedBox();
+    }
     return Container(
       color: widget.color,
       width: widget.width,
@@ -119,9 +120,9 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
         painter: ParticlePainter(
           particles: _pool,
           deltaTime: _deltaTime,
-          image: _particleImage!,
-          blendMode: _getBlendMode(),
-          onFinished: () => _ticker.stop(),
+          image: widget.controller!.image!,
+          blendMode: widget.controller!.getBlendMode(),
+          onFinished: () => _ticker?.stop(),
         ),
       ),
     );
@@ -129,7 +130,7 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
 
   @override
   void dispose() {
-    _ticker.dispose();
+    _ticker?.dispose();
     super.dispose();
   }
 }
@@ -152,6 +153,7 @@ class ParticlePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var skipped = true;
+    // print("$deltaTime, ${particles.length}");
     for (var particle in particles) {
       particle.update(deltaTime);
       if (particle.isDead()) {
