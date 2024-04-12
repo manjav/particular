@@ -5,6 +5,92 @@ import 'package:flutter/material.dart';
 import 'package:flutter_particle_system/flutter_particle.dart';
 
 class FlutterParticleController extends ChangeNotifier {
+  Color getStartColor() => _getColor(startColor!, startColorVariance!);
+  Color getFinishColor() => _getColor(finishColor!, finishColorVariance!);
+  int getLifespan() => _getValue(lifespan, lifespanVariance).round();
+
+  double getEmitterX(double d) =>
+      _getDouble(emitterX, sourcePositionVarianceX * d);
+  double getEmitterY(double d) =>
+      _getDouble(emitterY, sourcePositionVarianceY * d);
+  double getStartSize(double d) => _getDouble(startSize, startSizeVariance, d);
+  double getFinishSize(double d) =>
+      _getDouble(finishSize, finishSizeVariance, d);
+  double getSpeed(double d) => _getDouble(speed, speedVariance, d);
+  double getAngle() => _getDouble(angle, angleVariance);
+  double getMinRadius(double d) => _getDouble(minRadius, minRadiusVariance, d);
+  double getMaxRadius(double d) => _getDouble(maxRadius, maxRadiusVariance, d);
+  double getRotatePerSecond() =>
+      _getDouble(rotatePerSecond, rotatePerSecondVariance);
+  double getradialAcceleration() =>
+      _getDouble(radialAcceleration, radialAccelerationVariance);
+  double getTangentialAcceleration() =>
+      _getDouble(tangentialAcceleration, tangentialAccelerationVariance);
+
+  num _getValue(num base, num variance, [num coef = 1]) {
+    if (variance == 0) {
+      return (base * coef);
+    }
+    return (base + variance * (math.Random().nextDouble() * 2.0 - 1.0)) * coef;
+  }
+
+  double _getDouble(num base, num variance, [num coef = 1]) =>
+      _getValue(base, variance, coef).toDouble();
+
+  Color _getColor(ColorData base, ColorData variance) {
+    var alpha = _getValue(base.a, variance.a, 255).clamp(0, 255).round();
+    var red = _getValue(base.r, variance.r, 255).clamp(0, 255).round();
+    var green = _getValue(base.g, variance.g, 255).clamp(0, 255).round();
+    var blue = _getValue(base.b, variance.b, 255).clamp(0, 255).round();
+    return Color.fromARGB(alpha, red, green, blue);
+  }
+
+  BlendMode getBlendMode() {
+    int s = blendFunctionSource;
+    int d = blendFunctionDestination;
+    if (d == 0) return BlendMode.clear;
+    if (s == 0) {
+      return switch (d) {
+        0x301 => BlendMode.screen, //erase
+        0x302 => BlendMode.srcIn, //mask
+        _ => BlendMode.srcOver,
+      };
+    }
+    if (s == 1) {
+      return switch (d) {
+        1 => BlendMode.plus,
+        0x301 => BlendMode.screen,
+        _ => BlendMode.srcOver,
+      };
+    }
+    if (s == 0x306 && d == 0x303) {
+      return ui.BlendMode.multiply;
+    }
+    if (s == 0x305 && d == 0x304) {
+      return BlendMode.dst;
+    }
+    // 0=>      BlendMode.zero,
+    // 1=>      BlendMode.color,
+    // 0x300=>  BlendMode.SOURCE_COLOR,
+    // 0x301=>  BlendMode.ONE_MINUS_SOURCE_COLOR,
+    // 0x302=>  BlendMode.SOURCE_ALPHA,
+    // 0x303=>  BlendMode.ONE_MINUS_SOURCE_ALPHA,
+    // 0x304=>  BlendMode.DESTINATION_ALPHA,
+    // 0x305=>  BlendMode.ONE_MINUS_DESTINATION_ALPHA,
+    // 0x306=>  BlendMode.DESTINATION_COLOR,
+    // 0x307=>  BlendMode.ONE_MINUS_DESTINATION_COLOR,
+
+    // "none":,ONE, ZERO
+    // "normal": ONE, ONE_MINUS_SOURCE_ALPHA
+    // "add": ONE, ONE
+    // "screen": ONE, ONE_MINUS_SOURCE_COLOR
+    // "erase": ZERO, ONE_MINUS_SOURCE_ALPHA
+    // "mask": ZERO, SOURCE_ALPHA
+    // "multiply": DESTINATION_COLOR, ONE_MINUS_SOURCE_ALPHA
+    // "below": ONE_MINUS_DESTINATION_ALPHA, DESTINATION_ALPHA
+    return BlendMode.srcOver;
+  }
+
   int duration = 0;
   int lifespan = 0;
   int lifespanVariance = 0;
