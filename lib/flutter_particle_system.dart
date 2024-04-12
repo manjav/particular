@@ -25,12 +25,15 @@ class FlutterParticleSystem extends StatefulWidget {
   final Color? color;
   final String configs;
   final double width, height;
+  double emitterX = 0, emitterY = 0;
 
-  const FlutterParticleSystem({
+  FlutterParticleSystem({
     super.key,
     this.color,
     this.width = 300,
     this.height = 300,
+    this.emitterX = 150,
+    this.emitterY = 150,
     required this.configs,
   });
 
@@ -131,11 +134,11 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
 
   Particle _spawn() => Particle(
         emitterType: EmitterType.values[_configs["emitterType"]],
-        emitterX: _getValue(
-                450, _configs["sourcePositionVariancex"], _devicePixelRatio)
+        emitterX: _getValue(widget.emitterX,
+                _configs["sourcePositionVariancex"] * _devicePixelRatio)
             .toDouble(),
-        emitterY: _getValue(
-                650, _configs["sourcePositionVariancey"], _devicePixelRatio)
+        emitterY: _getValue(widget.emitterY,
+                _configs["sourcePositionVariancey"] * _devicePixelRatio)
             .toDouble(),
         startSize: _getDouble("startParticleSize", _devicePixelRatio),
         finishSize: _getDouble("finishParticleSize", _devicePixelRatio),

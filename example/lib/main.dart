@@ -5,18 +5,35 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  var emitter = Offset.zero;
+
+  @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       home: Scaffold(
         body: Align(
           alignment: Alignment.topCenter,
-          child: FlutterParticleSystem(
-            color: Colors.black,
-            configs: "assets/fire.json",
+          child: GestureDetector(
+            onPanUpdate: (details) {
+              emitter = details.localPosition;
+              setState(() {});
+            },
+            child: FlutterParticleSystem(
+              color: Colors.black,
+              configs: "assets/fire.json",
+              width: 600,
+              height: 600,
+              emitterX: emitter.dx,
+              emitterY: emitter.dy,
+            ),
           ),
         ),
       ),
