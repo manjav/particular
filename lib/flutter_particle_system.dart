@@ -273,6 +273,7 @@ class ParticlePainter extends CustomPainter {
   final BlendMode blendMode;
   final Function() onFinished;
   final List<Particle> particles;
+  final Paint _paint = Paint()..blendMode = BlendMode.plus;
 
   ParticlePainter({
     required this.image,
@@ -291,8 +292,6 @@ class ParticlePainter extends CustomPainter {
       }
       skipped = false;
 
-      var paint = Paint()..color = particle.color;
-      paint.blendMode = BlendMode.plus;
       // canvas.saveLayer(
       //     Rect.fromCircle(center: Offset(size.width, size.height), radius: 100),
       //     paint);
@@ -315,7 +314,7 @@ class ParticlePainter extends CustomPainter {
           [particle.color],
           BlendMode.dstATop,
           null,
-          paint);
+          _paint);
       // canvas.restore();
     }
     if (skipped) onFinished();
@@ -345,8 +344,9 @@ class Particle {
   Color startColor = Colors.white, finishColor = Colors.white;
 
   void update(int deltaTime) {
-    _age += deltaTime;
-    var ratio = _age / lifespan;
+    if (isDead()) return;
+    age += deltaTime;
+    var ratio = age / lifespan;
     var rate = deltaTime / lifespan;
 
     angle -= rotatePerSecond * rate;
