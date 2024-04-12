@@ -45,8 +45,7 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
     with SingleTickerProviderStateMixin {
   late final Ticker _ticker;
   double _devicePixelRatio = 1;
-  final List<Particle> _particles = [];
-  final List<Particle> _particlesRemoveWaitingLine = [];
+  final List<Particle> _pool = [];
 
   ColorData? startColor;
   ColorData? startColorVariance;
@@ -96,13 +95,14 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
     if (!mounted) {
       return;
     }
+
     _devicePixelRatio = 1 / MediaQuery.of(context).devicePixelRatio;
 
     _particleImage =
         await _getImage("assets/${_configs["textureFileName"]}", 32, 32);
     _particleLifespan = _getDouble("particleLifespan", 1000).round();
 
-    _particles.add(_spawn());
+    _spawn();
 
     var duration = _configs["duration"] * 1000;
     _ticker = createTicker((elapsed) {
@@ -111,12 +111,8 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
         var particlesPerTick =
             (_deltaTime * _configs["maxParticles"] / _particleLifespan).round();
         for (var i = 0; i < particlesPerTick; i++) {
-          _particles.add(_spawn());
+          _spawn((i * _deltaTime / particlesPerTick).round());
         }
-      }
-      // Remove dead particles
-      for (var particle in _particlesRemoveWaitingLine) {
-        _particles.remove(particle);
       }
 
       // Stop when all particles are dead
@@ -132,7 +128,19 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
     _ticker.start();
   }
 
-  Particle _spawn() => Particle(
+  Particle _spawn([int age = 0]) {
+    var particle = _pool.firstWhere(
+      (p) => p.isDead(),
+      orElse: () {
+        var p = Particle();
+        _pool.add(p);
+        return p;
+      },
+    );
+
+    return particle
+      ..initialize(
+        age: age,
         emitterType: EmitterType.values[_configs["emitterType"]],
         emitterX: _getValue(widget.emitterX,
                 _configs["sourcePositionVariancex"] * _devicePixelRatio)
@@ -159,6 +167,7 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
         startColor: _getColor(startColor!, startColorVariance!),
         finishColor: _getColor(finishColor!, finishColorVariance!),
       );
+  }
 
   Color _getColor(ColorData base, ColorData variance) {
     var alpha = _getValue(base.a, variance.a, 255).clamp(0, 255).round();
@@ -248,10 +257,8 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
         painter: ParticlePainter(
           image: _particleImage!,
           blendMode: _getBlendMode(),
-          particles: _particles,
           deltaTime: _deltaTime,
-          particlesToRemove: _particlesRemoveWaitingLine,
-        ),
+            particles: _pool),
       ),
     );
   }
@@ -326,44 +333,16 @@ class Particle {
   final Color startColor, finishColor;
 
   double size = 100;
+  double x = 0, y = 0, angle = 0;
   Color color = Colors.white;
-
-  double x = 0, y = 0, angle = 0, radius = 0, radiusDelta = 0;
+  double radius = 0, radiusDelta = 0;
   double emitterX = 0, emitterY = 0;
   double velocityX = 0, velocityY = 0;
-
-  int _age = 0;
-  final double minRadius, maxRadius, rotatePerSecond;
-  final double radialAcceleration, tangentialAcceleration, gravityX, gravityY;
-
-  Particle({
-    this.emitterType = EmitterType.gravity,
-    required this.speed,
-    required this.angle,
-    required this.emitterX,
-    required this.emitterY,
-    required this.lifespan,
-    required this.startSize,
-    required this.finishSize,
-    required this.startColor,
-    required this.finishColor,
-    this.minRadius = 0,
-    this.maxRadius = 0,
-    this.rotatePerSecond = 0,
-    this.radialAcceleration = 0,
-    this.tangentialAcceleration = 0,
-    this.gravityX = 0,
-    this.gravityY = 0,
-  }) {
-    x = emitterX;
-    y = emitterY;
-    size = startSize;
-    velocityX = speed * math.cos(angle / 180.0 * math.pi);
-    velocityY = speed * math.sin(angle / 180.0 * math.pi);
-    radius = maxRadius;
-    radiusDelta = (minRadius - maxRadius);
-    color = startColor;
-  }
+  double gravityX = 0, gravityY = 0;
+  double startSize = 0, finishSize = 0;
+  double minRadius = 0, maxRadius = 0, rotatePerSecond = 0;
+  double radialAcceleration = 0, tangentialAcceleration = 0;
+  Color startColor = Colors.white, finishColor = Colors.white;
 
   void update(int deltaTime) {
     _age += deltaTime;
@@ -405,11 +384,58 @@ class Particle {
   }
 
   bool isDead() {
-    return _age >= lifespan;
+    return age >= lifespan;
   }
 
-  static double doubleInRange(double min, double max) =>
-      math.Random().nextDouble() * (max - min) + min;
+  void initialize({
+    EmitterType emitterType = EmitterType.gravity,
+    int age = 0,
+    required int lifespan,
+    required double speed,
+    required double angle,
+    required double emitterX,
+    required double emitterY,
+    required double startSize,
+    required double finishSize,
+    required Color startColor,
+    required Color finishColor,
+    double rotatePerSecond = 0,
+    double radialAcceleration = 0,
+    double tangentialAcceleration = 0,
+    double minRadius = 0,
+    double maxRadius = 0,
+    double gravityX = 0,
+    double gravityY = 0,
+  }) {
+    this.emitterType = emitterType;
+    this.age = age;
+    this.lifespan = lifespan;
+    this.speed = speed;
+    this.angle = angle;
+    this.emitterX = emitterX;
+    this.emitterY = emitterY;
+    this.startSize = startSize;
+    this.finishSize = finishSize;
+    this.startColor = startColor;
+    this.finishColor = finishColor;
+    this.rotatePerSecond = rotatePerSecond;
+    this.radialAcceleration = radialAcceleration;
+    this.tangentialAcceleration = tangentialAcceleration;
+    this.minRadius = minRadius;
+    this.maxRadius = maxRadius;
+    this.gravityX = gravityX;
+    this.gravityY = gravityY;
+
+    age = 0;
+    x = emitterX;
+    y = emitterY;
+    size = startSize;
+    color = startColor;
+    radius = maxRadius;
+    radiusDelta = (minRadius - maxRadius);
+    velocityX = speed * math.cos(angle / 180.0 * math.pi);
+    velocityY = speed * math.sin(angle / 180.0 * math.pi);
+  }
 }
 
 class ColorData {
