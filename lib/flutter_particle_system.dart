@@ -115,11 +115,6 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
         }
       }
 
-      // Stop when all particles are dead
-      if (_particles.isEmpty) {
-        _ticker.stop();
-      }
-
       _deltaTime = elapsed.inMilliseconds - _lastFrameTime;
       _lastFrameTime += _deltaTime;
       setState(() {});
@@ -255,10 +250,12 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
       height: widget.height,
       child: CustomPaint(
         painter: ParticlePainter(
+          particles: _pool,
+          deltaTime: _deltaTime,
           image: _particleImage!,
           blendMode: _getBlendMode(),
-          deltaTime: _deltaTime,
-            particles: _pool),
+          onFinished: () => _ticker.stop(),
+        ),
       ),
     );
   }
@@ -274,21 +271,25 @@ class ParticlePainter extends CustomPainter {
   final int deltaTime;
   final ui.Image image;
   final BlendMode blendMode;
+  final Function() onFinished;
   final List<Particle> particles;
-  final List<Particle> particlesToRemove;
 
   ParticlePainter({
     required this.image,
     required this.blendMode,
     required this.deltaTime,
     required this.particles,
-    required this.particlesToRemove,
+    required this.onFinished,
   });
   @override
   void paint(Canvas canvas, Size size) {
+    var skipped = true;
     for (var particle in particles) {
       particle.update(deltaTime);
-      if (particle.isDead()) particlesToRemove.add(particle);
+      if (particle.isDead()) {
+        continue;
+      }
+      skipped = false;
 
       var paint = Paint()..color = particle.color;
       paint.blendMode = BlendMode.plus;
@@ -317,6 +318,7 @@ class ParticlePainter extends CustomPainter {
           paint);
       // canvas.restore();
     }
+    if (skipped) onFinished();
   }
 
   @override
@@ -326,12 +328,10 @@ class ParticlePainter extends CustomPainter {
 enum EmitterType { gravity, radius }
 
 class Particle {
-  final EmitterType emitterType;
-  final int lifespan;
-  final double speed;
-  final double startSize, finishSize;
-  final Color startColor, finishColor;
-
+  EmitterType emitterType = EmitterType.gravity;
+  int age = 0;
+  double speed = 0;
+  int lifespan = 0;
   double size = 100;
   double x = 0, y = 0, angle = 0;
   Color color = Colors.white;

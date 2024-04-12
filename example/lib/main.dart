@@ -13,7 +13,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  var emitter = Offset.zero;
+  var emitter = const Offset(300, 300);
 
   @override
   Widget build(BuildContext context) {
