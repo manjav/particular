@@ -50,9 +50,8 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: Align(
-          alignment: Alignment.topCenter,
-          child: GestureDetector(
+        body: Column(children: [
+          GestureDetector(
             onPanUpdate: (details) {
               _particleController.update(
                   emitterX: details.localPosition.dx,
@@ -70,7 +69,14 @@ class _MyAppState extends State<MyApp> {
               controller: _particleController,
             ),
           ),
-        ),
+          TextButton(
+              onPressed: () {
+                _particleController.update(
+                    maxParticles:
+                        _particleController.maxParticles > 500 ? 300 : 13000);
+              },
+              child: const Text("Update"))
+        ]),
       ),
     );
   }
