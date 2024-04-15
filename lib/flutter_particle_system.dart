@@ -39,7 +39,11 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
     with SingleTickerProviderStateMixin {
   Ticker? _ticker;
   double _devicePixelRatio = 1;
-  final List<Particle> _pool = [];
+  final List<Rect> _rects = [];
+  final List<int> _indices = [];
+  final List<Particle> _particles = [];
+  final List<ParticleColor> _colors = [];
+  final List<ParticleTransform> _transforms = [];
   int _deltaTime = 0, _lastFrameTime = 0;
 
   @override
@@ -76,14 +80,16 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
   }
 
   void _spawn([int age = 0]) {
-    var particle = _pool.firstWhere(
-      (p) => p.isDead(),
-      orElse: () {
-        var p = Particle();
-        _pool.add(p);
-        return p;
-      },
-    );
+    Particle particle;
+    if (_indices.isEmpty) {
+      particle = Particle();
+      _colors.add(particle.color);
+      _transforms.add(particle.transform);
+      _rects.add(const Rect.fromLTWH(0, 0, 36, 36));
+      _particles.add(particle);
+    } else {
+      particle = _particles[_indices.removeLast()];
+    }
     var c = widget.controller!;
     particle.initialize(
       age: age,
@@ -118,7 +124,11 @@ class _FlutterParticleSystemState extends State<FlutterParticleSystem>
       height: widget.height,
       child: CustomPaint(
         painter: ParticlePainter(
-          particles: _pool,
+          rects: _rects,
+          colors: _colors,
+          indices: _indices,
+          particles: _particles,
+          transforms: _transforms,
           deltaTime: _deltaTime,
           image: widget.controller!.image!,
           blendMode: widget.controller!.getBlendMode(),
@@ -140,52 +150,54 @@ class ParticlePainter extends CustomPainter {
   final ui.Image image;
   final BlendMode blendMode;
   final Function() onFinished;
+  final List<Rect> rects;
+  final List<int> indices;
   final List<Particle> particles;
+  final List<ParticleColor> colors;
+  final List<ParticleTransform> transforms;
   final Paint _paint = Paint()..blendMode = BlendMode.plus;
 
   ParticlePainter({
     required this.image,
     required this.blendMode,
     required this.deltaTime,
+    required this.rects,
+    required this.colors,
+    required this.indices,
     required this.particles,
+    required this.transforms,
     required this.onFinished,
   });
+
   @override
   void paint(Canvas canvas, Size size) {
     var skipped = true;
-    // print("$deltaTime, ${particles.length}");
-    for (var particle in particles) {
+    for (var i = 0; i < particles.length; i++) {
+      var particle = particles[i];
       particle.update(deltaTime);
-      if (particle.isDead()) {
-        continue;
-      }
-      skipped = false;
+      particle.transform.update(
+        rotation: 0,
+        scale: particle.size / image.width,
+        anchorX: image.width * 0.5,
+        anchorY: image.height * 0.5,
+        translateX: particle.x,
+        translateY: particle.y,
+      );
 
+      if (particle.isDead()) {
+        indices.add(i);
+      } else {
+        skipped = false;
+      }
       // canvas.saveLayer(
       //     Rect.fromCircle(center: Offset(size.width, size.height), radius: 100),
       //     paint);
 
-      canvas.drawAtlas(
-          image,
-          [
-            RSTransform.fromComponents(
-                rotation: particle.angle,
-                scale: particle.size / image.width,
-                anchorX: image.width * 0.5,
-                anchorY: image.height * 0.5,
-                translateX: particle.x,
-                translateY: particle.y)
-          ],
-          [
-            /* The size of gray image is 60 x 60  */
-            const Rect.fromLTWH(0, 0, 36, 36)
-          ],
-          [particle.color],
-          BlendMode.dstATop,
-          null,
-          _paint);
       // canvas.restore();
     }
+    canvas.drawAtlas(
+        image, transforms, rects, colors, BlendMode.dstATop, null, _paint);
+
     if (skipped) onFinished();
   }
 
