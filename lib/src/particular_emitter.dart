@@ -50,7 +50,6 @@ class _ParticularState extends State<Particular>
       if (widget.controller!.texture == null) return;
       _devicePixelRatio =
           MediaQuery.of(context).devicePixelRatio; //2.65, 411.4, 867.4
-      var m = MediaQuery.of(context).size;
       _spawn(0);
       _iterate();
     });
