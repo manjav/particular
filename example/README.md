@@ -1,4 +1,4 @@
-# particular_example
+![Particular Logo](https://github.com/manjav/particular/raw/main/repo_files/images/logo.png)
 
 Demonstrates how to use the particular plugin.
 

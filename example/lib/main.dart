@@ -73,11 +73,11 @@ class _MyAppState extends State<MyApp> {
               ),
             ),
             TextButton(
-                onPressed: () {
-                  _particleController.update(
-                      maxParticles:
-                          _particleController.maxParticles > 500 ? 300 : 13000);
-                },
+              onPressed: () {
+                _particleController.update(
+                    maxParticles:
+                        _particleController.maxParticles > 500 ? 300 : 13000);
+              },
               child: ListenableBuilder(
                 listenable: _particleController,
                 builder: (c, w) =>
