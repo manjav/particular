@@ -22,50 +22,6 @@ class Particle {
   ParticleTransform transform = ParticleTransform(0, 0, 0, 0);
   Color startColor = Colors.white, finishColor = Colors.white;
 
-  void update(int deltaTime) {
-    if (isDead()) return;
-    age += deltaTime;
-    var ratio = age / lifespan;
-    var rate = deltaTime / lifespan;
-
-    angle -= rotatePerSecond * rate;
-    if (emitterType == EmitterType.radius) {
-      radius += radiusDelta * rate;
-      x = emitterX - math.cos(angle / 180.0 * math.pi) * radius;
-      y = emitterY - math.sin(angle / 180.0 * math.pi) * radius;
-    } else {
-      var distanceX = x - emitterX;
-      var distanceY = y - emitterY;
-      var distanceScalar =
-          math.sqrt(distanceX * distanceX + distanceY * distanceY);
-      if (distanceScalar < 0.01) distanceScalar = 0.01;
-
-      var radialX = distanceX / distanceScalar;
-      var radialY = distanceY / distanceScalar;
-      var tangentialX = radialX;
-      var tangentialY = radialY;
-
-      radialX *= radialAcceleration;
-      radialY *= radialAcceleration;
-
-      var newY = tangentialX;
-      tangentialX = -tangentialY * tangentialAcceleration;
-      tangentialY = newY * tangentialAcceleration;
-
-      velocityX += rate * (gravityX + radialX + tangentialX);
-      velocityY += rate * (gravityY + radialY + tangentialY);
-      x += velocityX * rate;
-      y += velocityY * rate;
-    }
-
-    color.lerp(startColor, finishColor, ratio);
-    size = startSize + (finishSize - startSize) * ratio;
-  }
-
-  bool isDead() {
-    return age > lifespan;
-  }
-
   void initialize({
     EmitterType emitterType = EmitterType.gravity,
     required int age,
@@ -115,6 +71,50 @@ class Particle {
     radiusDelta = (minRadius - maxRadius);
     velocityX = speed * math.cos(angle / 180.0 * math.pi);
     velocityY = speed * math.sin(angle / 180.0 * math.pi);
+  }
+
+  void update(int deltaTime) {
+    if (isDead()) return;
+    age += deltaTime;
+    var ratio = age / lifespan;
+    var rate = deltaTime / lifespan;
+
+    angle -= rotatePerSecond * rate;
+    if (emitterType == EmitterType.radius) {
+      radius += radiusDelta * rate;
+      x = emitterX - math.cos(angle / 180.0 * math.pi) * radius;
+      y = emitterY - math.sin(angle / 180.0 * math.pi) * radius;
+    } else {
+      var distanceX = x - emitterX;
+      var distanceY = y - emitterY;
+      var distanceScalar =
+          math.sqrt(distanceX * distanceX + distanceY * distanceY);
+      if (distanceScalar < 0.01) distanceScalar = 0.01;
+
+      var radialX = distanceX / distanceScalar;
+      var radialY = distanceY / distanceScalar;
+      var tangentialX = radialX;
+      var tangentialY = radialY;
+
+      radialX *= radialAcceleration;
+      radialY *= radialAcceleration;
+
+      var newY = tangentialX;
+      tangentialX = -tangentialY * tangentialAcceleration;
+      tangentialY = newY * tangentialAcceleration;
+
+      velocityX += rate * (gravityX + radialX + tangentialX);
+      velocityY += rate * (gravityY + radialY + tangentialY);
+      x += velocityX * rate;
+      y += velocityY * rate;
+    }
+
+    color.lerp(startColor, finishColor, ratio);
+    size = startSize + (finishSize - startSize) * ratio;
+  }
+
+  bool isDead() {
+    return age > lifespan;
   }
 }
 

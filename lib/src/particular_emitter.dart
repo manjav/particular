@@ -48,7 +48,9 @@ class _ParticularState extends State<Particular>
     super.initState();
     widget.controller!.addListener(() {
       if (widget.controller!.texture == null) return;
-      _devicePixelRatio = 1 / MediaQuery.of(context).devicePixelRatio;
+      _devicePixelRatio =
+          MediaQuery.of(context).devicePixelRatio; //2.65, 411.4, 867.4
+      var m = MediaQuery.of(context).size;
       _spawn(0);
       _iterate();
     });
@@ -91,22 +93,22 @@ class _ParticularState extends State<Particular>
     particle.initialize(
       age: age,
       emitterType: c.emitterType,
-      emitterX: c.getEmitterX(_devicePixelRatio),
-      emitterY: c.getEmitterY(_devicePixelRatio),
-      startSize: c.getStartSize(_devicePixelRatio),
-      finishSize: c.getFinishSize(_devicePixelRatio),
-      speed: c.getSpeed(_devicePixelRatio),
+      emitterX: c.getEmitterX(1),
+      emitterY: c.getEmitterY(1),
+      startSize: c.getStartSize(1),
+      finishSize: c.getFinishSize(1),
+      startColor: c.getStartColor(),
+      finishColor: c.getFinishColor(),
       angle: c.getAngle(),
       lifespan: c.getLifespan(),
+      speed: c.getSpeed(_devicePixelRatio),
       gravityX: c.gravityX * _devicePixelRatio,
       gravityY: c.gravityY * _devicePixelRatio,
-      minRadius: c.getMinRadius(_devicePixelRatio),
-      maxRadius: c.getMaxRadius(_devicePixelRatio),
+      minRadius: c.getMinRadius(1),
+      maxRadius: c.getMaxRadius(1),
       rotatePerSecond: c.getRotatePerSecond(),
       radialAcceleration: c.getradialAcceleration(),
       tangentialAcceleration: c.getTangentialAcceleration(),
-      startColor: c.getStartColor(),
-      finishColor: c.getFinishColor(),
     );
   }
 
