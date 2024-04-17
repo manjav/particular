@@ -1,4 +1,4 @@
-# flutter_particle_system
+# particular
 
 A new Flutter plugin project.
 

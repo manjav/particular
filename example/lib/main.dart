@@ -3,9 +3,8 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_particle_system/flutter_particle_cotroller.dart';
-import 'package:flutter_particle_system/flutter_particle_system.dart';
 import 'package:image/image.dart' as image;
+import 'package:particular/particular.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +18,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final _particleController = FlutterParticleController();
+  final _particleController = ParticularController();
 
   @override
   void initState() {
@@ -50,33 +49,35 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: Column(children: [
-          GestureDetector(
-            onPanUpdate: (details) {
-              _particleController.update(
-                  emitterX: details.localPosition.dx,
-                  emitterY: details.localPosition.dy);
-            },
-            onTapDown: (details) {
-              _particleController.update(
-                  emitterX: details.localPosition.dx,
-                  emitterY: details.localPosition.dy);
-            },
-            child: FlutterParticleSystem(
-              width: 600,
-              height: 600,
-              color: Colors.black,
-              controller: _particleController,
-            ),
-          ),
-          TextButton(
-              onPressed: () {
+        body: Column(
+          children: [
+            GestureDetector(
+              onPanUpdate: (details) {
                 _particleController.update(
-                    maxParticles:
-                        _particleController.maxParticles > 500 ? 300 : 13000);
+                    emitterX: details.localPosition.dx,
+                    emitterY: details.localPosition.dy);
               },
-              child: const Text("Update"))
-        ]),
+              onTapDown: (details) {
+                _particleController.update(
+                    emitterX: details.localPosition.dx,
+                    emitterY: details.localPosition.dy);
+              },
+              child: Particular(
+                width: 600,
+                height: 600,
+                color: Colors.black,
+                controller: _particleController,
+              ),
+            ),
+            TextButton(
+                onPressed: () {
+                  _particleController.update(
+                      maxParticles:
+                          _particleController.maxParticles > 500 ? 300 : 13000);
+                },
+                child: const Text("Update"))
+          ],
+        ),
       ),
     );
   }

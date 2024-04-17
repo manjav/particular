@@ -2,9 +2,9 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_particle_system/flutter_particle.dart';
+import 'package:particular/particular.dart';
 
-class FlutterParticleController extends ChangeNotifier {
+class ParticularController extends ChangeNotifier {
   Color getStartColor() => _getColor(startColor!, startColorVariance!);
   Color getFinishColor() => _getColor(finishColor!, finishColorVariance!);
   int getLifespan() => _getValue(lifespan, lifespanVariance).round();

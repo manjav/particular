@@ -1,6 +1,6 @@
-# flutter_particle_system_example
+# particular_example
 
-Demonstrates how to use the flutter_particle_system plugin.
+Demonstrates how to use the particular plugin.
 
 ## Getting Started
 
