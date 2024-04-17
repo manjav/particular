@@ -185,6 +185,8 @@ class ParticlePainter extends CustomPainter {
 
       if (particle.isDead()) {
         indices.add(i);
+        particle.color.update(
+            0, particle.color.red, particle.color.green, particle.color.blue);
       } else {
         skipped = false;
       }
@@ -195,7 +197,7 @@ class ParticlePainter extends CustomPainter {
       // canvas.restore();
     }
     canvas.drawAtlas(
-        image, transforms, rects, colors, BlendMode.dstATop, null, _paint);
+        image, transforms, rects, colors, BlendMode.dstIn, null, _paint);
 
     if (skipped) onFinished();
   }
