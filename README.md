@@ -3,7 +3,7 @@
 </p>
 
 ### Overview
-The <b>Particular</b> is a high performance particle effects flutter widget that can configure  bot with `config.json` and programatically. 
+The <b>Particular</b> is a high performance particle effects flutter widget that can configure  bot with `config.json` and programmatically. 
 
 ### Samples:
 |Meteor|Galaxy|Snow|Firework|

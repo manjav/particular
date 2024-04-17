@@ -325,16 +325,16 @@ class ParticularController extends ChangeNotifier {
 
 /// The wrapper class for colors
 class ARGB {
-  /// Represets Alpha channel
+  /// Represents Alpha channel
   num a;
 
-  /// Represets Red channel
+  /// Represents Red channel
   num r;
 
-  /// Represets Green channel
+  /// Represents Green channel
   num g;
 
-  /// Represets Blue channel
+  /// Represents Blue channel
   num b;
   ARGB(this.a, this.r, this.g, this.b);
 

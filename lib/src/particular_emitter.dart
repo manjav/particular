@@ -13,7 +13,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:particular/particular.dart';
 
 class Particular extends StatefulWidget {
-
   final Color? color;
   final double width, height;
   final ParticularController? controller;
@@ -34,8 +33,8 @@ class _ParticularState extends State<Particular>
     with SingleTickerProviderStateMixin {
   Ticker? _ticker;
   double _devicePixelRatio = 1;
-  final List<Rect> _rects = [];
   final List<int> _indices = [];
+  final List<Rect> _rectangles = [];
   final List<Particle> _particles = [];
   final List<ParticleColor> _colors = [];
   final List<ParticleTransform> _transforms = [];
@@ -81,7 +80,7 @@ class _ParticularState extends State<Particular>
       particle = Particle();
       _colors.add(particle.color);
       _transforms.add(particle.transform);
-      _rects.add(const Rect.fromLTWH(0, 0, 36, 36));
+      _rectangles.add(const Rect.fromLTWH(0, 0, 36, 36));
       _particles.add(particle);
     } else {
       particle = _particles[_indices.removeLast()];
@@ -120,7 +119,7 @@ class _ParticularState extends State<Particular>
       height: widget.height,
       child: CustomPaint(
         painter: ParticlePainter(
-          rects: _rects,
+          rectangles: _rectangles,
           colors: _colors,
           indices: _indices,
           particles: _particles,
@@ -146,7 +145,7 @@ class ParticlePainter extends CustomPainter {
   final ui.Image image;
   final BlendMode blendMode;
   final Function() onFinished;
-  final List<Rect> rects;
+  final List<Rect> rectangles;
   final List<int> indices;
   final List<Particle> particles;
   final List<ParticleColor> colors;
@@ -157,11 +156,11 @@ class ParticlePainter extends CustomPainter {
     required this.image,
     required this.blendMode,
     required this.deltaTime,
-    required this.rects,
     required this.colors,
     required this.indices,
     required this.particles,
     required this.transforms,
+    required this.rectangles,
     required this.onFinished,
   });
 
@@ -194,7 +193,7 @@ class ParticlePainter extends CustomPainter {
       // canvas.restore();
     }
     canvas.drawAtlas(
-        image, transforms, rects, colors, BlendMode.dstIn, null, _paint);
+        image, transforms, rectangles, colors, BlendMode.dstIn, null, _paint);
 
     if (skipped) onFinished();
   }

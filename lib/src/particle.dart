@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-/// Two type of emitters (linnier of radial)
+/// Two type of emitters (liner of radial)
 enum EmitterType { gravity, radius }
 
 /// Reserve particle specification in model class and impelement update method for rendering  

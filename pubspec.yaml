@@ -26,7 +26,7 @@ dev_dependencies:
 
 topics:
   - particle
-  - particlesystem
+  - particles
   - visualization
   - game
   - effects
