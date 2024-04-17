@@ -10,20 +10,19 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_particle_system/flutter_particle.dart';
-import 'package:flutter_particle_system/flutter_particle_cotroller.dart';
+import 'package:particular/particle.dart';
+import 'package:particular/particular_controller.dart';
+import 'package:particular/particular_platform_interface.dart';
 
-import 'flutter_particle_system_platform_interface.dart';
-
-class FlutterParticleSystem extends StatefulWidget {
+class Particular extends StatefulWidget {
   Future<String?> getPlatformVersion() =>
-      FlutterParticleSystemPlatform.instance.getPlatformVersion();
+      ParticularPlatform.instance.getPlatformVersion();
 
   final Color? color;
   final double width, height;
-  final FlutterParticleController? controller;
+  final ParticularController? controller;
 
-  const FlutterParticleSystem({
+  const Particular({
     super.key,
     this.color,
     this.width = 300,
@@ -32,10 +31,10 @@ class FlutterParticleSystem extends StatefulWidget {
   });
 
   @override
-  State<FlutterParticleSystem> createState() => _FlutterParticleSystemState();
+  State<Particular> createState() => _ParticularState();
 }
 
-class _FlutterParticleSystemState extends State<FlutterParticleSystem>
+class _ParticularState extends State<Particular>
     with SingleTickerProviderStateMixin {
   Ticker? _ticker;
   double _devicePixelRatio = 1;

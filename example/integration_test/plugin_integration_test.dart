@@ -8,14 +8,13 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-
-import 'package:flutter_particle_system/flutter_particle_system.dart';
+import 'package:particular/particular.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('getPlatformVersion test', (WidgetTester tester) async {
-    const FlutterParticleSystem plugin = FlutterParticleSystem();
+    const Particular plugin = Particular();
     final String? version = await plugin.getPlatformVersion();
     // The version string depends on the host platform running the test, so
     // just assert that some non-empty string is returned.
