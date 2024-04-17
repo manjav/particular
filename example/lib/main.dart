@@ -3,9 +3,8 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:particular/particular.dart';
-import 'package:particular/particular_controller.dart';
 import 'package:image/image.dart' as image;
+import 'package:particular/particular.dart';
 
 void main() {
   runApp(const MyApp());

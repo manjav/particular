@@ -1,7 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:particular/particular.dart';
-import 'package:particular/particular_method_channel.dart';
-import 'package:particular/particular_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 class MockParticularPlatform
