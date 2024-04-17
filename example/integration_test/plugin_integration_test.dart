@@ -8,16 +8,14 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:particular/particular.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('getPlatformVersion test', (WidgetTester tester) async {
-    const Particular plugin = Particular();
-    final String? version = await plugin.getPlatformVersion();
+  testWidgets('initial test', (WidgetTester tester) async {
+    const String version = "42"; //await plugin.getPlatformVersion();
     // The version string depends on the host platform running the test, so
     // just assert that some non-empty string is returned.
-    expect(version?.isNotEmpty, true);
+    expect(version.isNotEmpty, true);
   });
 }

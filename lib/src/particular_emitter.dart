@@ -13,8 +13,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:particular/particular.dart';
 
 class Particular extends StatefulWidget {
-  Future<String?> getPlatformVersion() =>
-      ParticularPlatform.instance.getPlatformVersion();
 
   final Color? color;
   final double width, height;
