@@ -20,7 +20,6 @@
 	"startParticleSizeVariance": 10,
 	"finishParticleSize": 40,
 	"finishParticleSizeVariance": 0,
-	"yCoordFlipped": -1,
 	"sourcePositionVariancex": 15,
 	"sourcePositionVariancey": -20,
 	"particleLifespan": 1.1,
@@ -49,7 +48,8 @@
 	"tangentialAccelVariance": 0,
 	"blendFuncSource": 770,
 	"blendFuncDestination": 1,
+	"yCoordFlipped": -1,
 	"textureImageData": "",
-	"configName": "fire",
+	"configName": "meteor",
 	"textureFileName": "texture.png"
 }

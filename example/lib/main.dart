@@ -28,7 +28,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _loadParticleAssets() async {
     // Load json config
-    var json = await rootBundle.loadString("assets/fire.json");
+    var json = await rootBundle.loadString("assets/meteor.json");
     var configsMap = jsonDecode(json);
 
     // Load particle texture
@@ -44,7 +44,7 @@ class _MyAppState extends State<MyApp> {
 
     _particleController.initialize(
       texture: frameInfo.image,
-      configs: configsMap
+      configs: configsMap,
     );
   }
 
@@ -78,7 +78,12 @@ class _MyAppState extends State<MyApp> {
                       maxParticles:
                           _particleController.maxParticles > 500 ? 300 : 13000);
                 },
-                child: const Text("Update"))
+              child: ListenableBuilder(
+                listenable: _particleController,
+                builder: (c, w) =>
+                    Text("${_particleController.maxParticles} particles."),
+              ),
+            )
           ],
         ),
       ),
