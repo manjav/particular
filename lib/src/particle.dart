@@ -5,26 +5,90 @@ import 'package:flutter/material.dart';
 /// Two type of emitters (liner of radial)
 enum EmitterType { gravity, radius }
 
-/// Reserve particle specification in model class and impelement update method for rendering  
+/// Represents a particle in the particle system.
 class Particle {
+  /// Type of emitter (linear or radial).
   EmitterType emitterType = EmitterType.gravity;
-  int age = 0;
-  double speed = 0;
-  int lifespan = 0;
-  double size = 100;
-  double x = 0, y = 0, angle = 0;
-  double radius = 0, radiusDelta = 0;
-  double emitterX = 0, emitterY = 0;
-  double velocityX = 0, velocityY = 0;
-  double gravityX = 0, gravityY = 0;
-  double startSize = 0, finishSize = 0;
-  double minRadius = 0, maxRadius = 0, rotatePerSecond = 0;
-  double radialAcceleration = 0, tangentialAcceleration = 0;
-  ParticleColor color = ParticleColor(0);
-  ParticleTransform transform = ParticleTransform(0, 0, 0, 0);
-  Color startColor = Colors.white, finishColor = Colors.white;
 
-  /// Initialize particle members after instantiate or reusage in pooling system
+  /// Time since particle instantiation.
+  int age = 0;
+
+  /// Initial speed of the particle.
+  double speed = 0;
+
+  /// Lifespan of the particle.
+  int lifespan = 0;
+
+  /// Size of the particle.
+  double size = 100;
+
+  /// Dynamic X position of the particle.
+  double x = 0;
+
+  /// Dynamic Y position of the particle.
+  double y = 0;
+
+  /// Dynamic rotation angle of the particle.
+  double angle = 0;
+
+  /// Dynamic radius of the particle.
+  double radius = 0;
+
+  /// Dynamic change in radius of the particle.
+  double radiusDelta = 0;
+
+  /// Dynamic X position of the emitter.
+  double emitterX = 0;
+
+  /// Dynamic Y position of the emitter.
+  double emitterY = 0;
+
+  /// Dynamic X velocity of the particle.
+  double velocityX = 0;
+
+  /// Dynamic Y velocity of the particle.
+  double velocityY = 0;
+
+  /// Dynamic X gravity of the particle.
+  double gravityX = 0;
+
+  /// Dynamic Y gravity of the particle.
+  double gravityY = 0;
+
+  /// Initial size of the particle.
+  double startSize = 0;
+
+  /// Final size of the particle.
+  double finishSize = 0;
+
+  /// Minimum radius of the particle.
+  double minRadius = 0;
+
+  /// Maximum radius of the particle.
+  double maxRadius = 0;
+
+  /// Rotation per second of the particle.
+  double rotatePerSecond = 0;
+
+  /// Radial acceleration of the particle.
+  double radialAcceleration = 0;
+
+  /// Tangential acceleration of the particle.
+  double tangentialAcceleration = 0;
+
+  /// Color of the particle.
+  ParticleColor color = ParticleColor(0);
+
+  /// Transform of the particle.
+  ParticleTransform transform = ParticleTransform(0, 0, 0, 0);
+
+  /// Initial color of the particle.
+  Color startColor = Colors.white;
+
+  /// Final color of the particle.
+  Color finishColor = Colors.white;
+
+  /// Initializes particle properties.
   void initialize({
     EmitterType emitterType = EmitterType.gravity,
     required int age,
@@ -125,7 +189,19 @@ class Particle {
 /// Dedicated transform class for pooling system
 /// Help to reuse transforms after rendering
 class ParticleTransform extends RSTransform {
-  double _scos = 0, _ssin = 0, _tx = 0, _ty = 0;
+  /// Scaled cosine of transform.
+  double _scaledCos = 0;
+
+  /// Scaled sine of transform.
+  double _scaledSin = 0;
+
+  /// Translate value in x
+  double _tx = 0;
+
+  /// Translate value in y
+  double _ty = 0;
+
+  /// Constructor initializer
   ParticleTransform(super.scos, super.ssin, super.tx, super.ty);
 
   /// Update all transform specs
@@ -137,19 +213,19 @@ class ParticleTransform extends RSTransform {
     required double translateX,
     required double translateY,
   }) {
-    _scos = math.cos(rotation) * scale;
-    _ssin = math.sin(rotation) * scale;
+    _scaledCos = math.cos(rotation) * scale;
+    _scaledSin = math.sin(rotation) * scale;
     _tx = translateX + -scos * anchorX + ssin * anchorY;
     _ty = translateY + -ssin * anchorX - scos * anchorY;
   }
 
   /// The cosine of the rotation multiplied by the scale factor.
   @override
-  double get scos => _scos;
+  double get scos => _scaledCos;
 
   /// The sine of the rotation multiplied by that same scale factor.
   @override
-  double get ssin => _ssin;
+  double get ssin => _scaledSin;
 
   /// The x coordinate of the translation, minus [scos] multiplied by the
   /// x-coordinate of the rotation point, plus [ssin] multiplied by the
@@ -182,7 +258,7 @@ class ParticleColor extends Color {
         0xFFFFFFFF;
   }
 
-  /// Lerp between a and b based on t coef.
+  /// Lerp between a and b based on t coefficient.
   void lerp(Color a, Color b, double t) {
     update(
       _clampInt(_lerpInt(a.alpha, b.alpha, t).toInt(), 0, 255),

@@ -1,10 +1,3 @@
-// You have generated a new plugin project without specifying the `--platforms`
-// flag. A plugin project with no platform support was generated. To add a
-// platform, run `flutter create -t plugin --platforms <platforms> .` under the
-// same directory. You can also find a detailed instruction on how to add
-// platforms in the `pubspec.yaml` at
-// https://flutter.dev/docs/development/packages-and-plugins/developing-packages#plugin-platforms.
-
 import 'dart:async';
 import 'dart:ui' as ui;
 
@@ -12,11 +5,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:particular/particular.dart';
 
+/// A widget that represents a particle system.
 class Particular extends StatefulWidget {
+  /// The color of the widget.
   final Color? color;
-  final double width, height;
+
+  /// The width of the widget.
+  final double width;
+
+  /// The height of the widget.
+  final double height;
+
+  /// The controller for the particle system.
   final ParticularController? controller;
 
+  /// Creates a [Particular] widget.
   const Particular({
     super.key,
     this.color,
@@ -29,16 +32,35 @@ class Particular extends StatefulWidget {
   State<Particular> createState() => _ParticularState();
 }
 
+/// The state for the [Particular] widget.
 class _ParticularState extends State<Particular>
     with SingleTickerProviderStateMixin {
+  /// The ticker for animation.
   Ticker? _ticker;
+
+  /// The device pixel ratio.
   double _devicePixelRatio = 1;
+
+  /// The indices of particles.
   final List<int> _indices = [];
+
+  /// The rectangles representing particles.
   final List<Rect> _rectangles = [];
+
+  /// The particles in the system.
   final List<Particle> _particles = [];
+
+  /// The colors of particles.
   final List<ParticleColor> _colors = [];
+
+  /// The transforms of particles.
   final List<ParticleTransform> _transforms = [];
-  int _deltaTime = 0, _lastFrameTime = 0;
+
+  /// The time difference between frames.
+  int _deltaTime = 0;
+
+  /// The time reserved of the last frame.
+  int _lastFrameTime = 0;
 
   @override
   void initState() {
@@ -52,6 +74,7 @@ class _ParticularState extends State<Particular>
     });
   }
 
+  /// Iterates over frames.
   Future<void> _iterate() async {
     if (_ticker != null) return;
     _ticker = createTicker((elapsed) {
@@ -74,6 +97,7 @@ class _ParticularState extends State<Particular>
     _ticker!.start();
   }
 
+  /// Spawns a particle.
   void _spawn([int age = 0]) {
     Particle particle;
     if (_indices.isEmpty) {
@@ -103,7 +127,7 @@ class _ParticularState extends State<Particular>
       minRadius: c.getMinRadius(1),
       maxRadius: c.getMaxRadius(1),
       rotatePerSecond: c.getRotatePerSecond(),
-      radialAcceleration: c.getradialAcceleration(),
+      radialAcceleration: c.getRadialAcceleration(),
       tangentialAcceleration: c.getTangentialAcceleration(),
     );
   }
@@ -139,19 +163,39 @@ class _ParticularState extends State<Particular>
     super.dispose();
   }
 }
-
+/// A custom painter for rendering particles.
 class ParticlePainter extends CustomPainter {
+  /// The time difference between frames.
   final int deltaTime;
+
+  /// The image to be used for particles.
   final ui.Image image;
+
+  /// The blend mode for rendering particles.
   final BlendMode blendMode;
+
+  /// A callback function called when particle rendering is finished.
   final Function() onFinished;
+
+  /// The rectangles representing particles.
   final List<Rect> rectangles;
+
+  /// The indices of particles.
   final List<int> indices;
+
+  /// The particles to be rendered.
   final List<Particle> particles;
+
+  /// The colors of particles.
   final List<ParticleColor> colors;
+
+  /// The transforms of particles.
   final List<ParticleTransform> transforms;
+
+  /// The paint object for rendering particles.
   final Paint _paint = Paint()..blendMode = BlendMode.plus;
 
+  /// Creates a [ParticlePainter] with the specified parameters.
   ParticlePainter({
     required this.image,
     required this.blendMode,
@@ -186,11 +230,6 @@ class ParticlePainter extends CustomPainter {
       } else {
         skipped = false;
       }
-      // canvas.saveLayer(
-      //     Rect.fromCircle(center: Offset(size.width, size.height), radius: 100),
-      //     paint);
-
-      // canvas.restore();
     }
     canvas.drawAtlas(
         image, transforms, rectangles, colors, BlendMode.dstIn, null, _paint);

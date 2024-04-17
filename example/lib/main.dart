@@ -18,6 +18,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  // Add controller to change particle
   final _particleController = ParticularController();
 
   @override
@@ -26,6 +27,7 @@ class _MyAppState extends State<MyApp> {
     _loadParticleAssets();
   }
 
+  // Load configs and texture of particle
   Future<void> _loadParticleAssets() async {
     // Load json config
     var json = await rootBundle.loadString("assets/meteor.json");

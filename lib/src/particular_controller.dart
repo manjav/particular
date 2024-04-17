@@ -4,29 +4,57 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:particular/particular.dart';
 
+/// A controller for managing parameters and behavior of a particle system.
 class ParticularController extends ChangeNotifier {
+  /// Gets the start color of particles.
   Color getStartColor() => _getColor(startColor, startColorVariance);
+
+  /// Gets the finish color of particles.
   Color getFinishColor() => _getColor(finishColor, finishColorVariance);
+
+  /// Gets the lifespan of particles.
   int getLifespan() => _getValue(lifespan, lifespanVariance).round();
 
+  /// Gets the x-coordinate of the emitter position.
   double getEmitterX(double d) =>
       _getDouble(emitterX, sourcePositionVarianceX * d);
+
+  /// Gets the y-coordinate of the emitter position.
   double getEmitterY(double d) =>
       _getDouble(emitterY, sourcePositionVarianceY * d);
+
+  /// Gets the start size of particles.
   double getStartSize(double d) => _getDouble(startSize, startSizeVariance, d);
+
+  /// Gets the finish size of particles.
   double getFinishSize(double d) =>
       _getDouble(finishSize, finishSizeVariance, d);
+
+  /// Gets the speed of particles.
   double getSpeed(double d) => _getDouble(speed, speedVariance, d);
+
+  /// Gets the emission angle of particles.
   double getAngle() => _getDouble(angle, angleVariance);
+
+  /// Gets the minimum radius of particles.
   double getMinRadius(double d) => _getDouble(minRadius, minRadiusVariance, d);
+
+  /// Gets the maximum radius of particles.
   double getMaxRadius(double d) => _getDouble(maxRadius, maxRadiusVariance, d);
+
+  /// Gets the rotation rate of particles per second.
   double getRotatePerSecond() =>
       _getDouble(rotatePerSecond, rotatePerSecondVariance);
-  double getradialAcceleration() =>
+
+  /// Gets the radial acceleration of particles.
+  double getRadialAcceleration() =>
       _getDouble(radialAcceleration, radialAccelerationVariance);
+
+  /// Gets the tangential acceleration of particles.
   double getTangentialAcceleration() =>
       _getDouble(tangentialAcceleration, tangentialAccelerationVariance);
 
+  /// Gets the value with variance.
   num _getValue(num base, num variance, [num coef = 1]) {
     if (variance == 0) {
       return (base * coef);
@@ -34,9 +62,11 @@ class ParticularController extends ChangeNotifier {
     return (base + variance * (math.Random().nextDouble() * 2.0 - 1.0)) * coef;
   }
 
+  /// Gets the double value with variance.
   double _getDouble(num base, num variance, [num coef = 1]) =>
       _getValue(base, variance, coef).toDouble();
 
+  /// Gets the color with variance.
   Color _getColor(ARGB base, ARGB variance) {
     var alpha = _getValue(base.a, variance.a, 255).clamp(0, 255).round();
     var red = _getValue(base.r, variance.r, 255).clamp(0, 255).round();
@@ -45,6 +75,7 @@ class ParticularController extends ChangeNotifier {
     return Color.fromARGB(alpha, red, green, blue);
   }
 
+  /// Gets the blend mode for particle rendering.
   BlendMode getBlendMode() {
     int s = blendFunctionSource;
     int d = blendFunctionDestination;
@@ -91,41 +122,112 @@ class ParticularController extends ChangeNotifier {
     return BlendMode.srcOver;
   }
 
+  /// The duration of the particle system.
   int duration = -1;
+
+  /// The lifespan of particles.
   int lifespan = 1000;
+
+  /// The lifespan variance of particles.
   int lifespanVariance = 0;
+
+  /// The maximum number of particles.
   int maxParticles = 100;
+
+  /// The source blend mode function.
   int blendFunctionSource = 0;
+
+  /// The destination blend mode function.
   int blendFunctionDestination = 0;
+
+  /// The texture used for particles.
   ui.Image? texture;
+
+  /// The start color of particles.
   ARGB startColor = ARGB(1, 1, 1, 1);
+
+  /// The start color variance of particles.
   ARGB startColorVariance = ARGB(0, 0, 0, 0);
+
+  /// The finish color of particles.
   ARGB finishColor = ARGB(0, 1, 1, 1);
+
+  /// The finish color variance of particles.
   ARGB finishColorVariance = ARGB(0, 0, 0, 0);
+
+  /// The x-coordinate of the emitter position.
   num emitterX = 200;
+
+  /// The y-coordinate of the emitter position.
   num emitterY = 200;
+
+  /// The variance of the source position along the x-axis.
   num sourcePositionVarianceX = 0;
+
+  /// The variance of the source position along the y-axis.
   num sourcePositionVarianceY = 0;
+
+  /// The start size of particles.
   num startSize = 30;
+
+  /// The start size variance of particles.
   num startSizeVariance = 0;
+
+  /// The finish size of particles.
   num finishSize = 0;
+
+  /// The finish size variance of particles.
   num finishSizeVariance = 0;
+
+  /// The speed of particles.
   num speed = 200;
+
+  /// The variance of the speed of particles.
   num speedVariance = 0;
+
+  /// The gravity along the x-axis.
   num gravityX = 0;
+
+  /// The gravity along the y-axis.
   num gravityY = 0;
+
+  /// The initial angle of particle emission.
   num angle = 0;
+
+  /// The variance of the initial angle of particle emission.
   num angleVariance = 360;
+
+  /// The minimum radius of particle emission.
   num minRadius = 0;
+
+  /// The variance of the minimum radius of particle emission.
   num minRadiusVariance = 0;
+
+  /// The maximum radius of particle emission.
   num maxRadius = 0;
+
+  /// The variance of the maximum radius of particle emission.
   num maxRadiusVariance = 0;
+
+  /// The rotation rate of particles per second.
   num rotatePerSecond = 0;
+
+  /// The variance of the rotation rate of particles per second.
   num rotatePerSecondVariance = 0;
+
+  /// The radial acceleration of particles.
   num radialAcceleration = 0;
+
+  /// The variance of the radial acceleration of particles.
   num radialAccelerationVariance = 0;
+
+  /// The tangential acceleration of particles.
   num tangentialAcceleration = 0;
+
+  /// The variance of the tangential acceleration of particles.
   num tangentialAccelerationVariance = 0;
+
+  /// The type of emitter (gravity or radius).
   EmitterType emitterType = EmitterType.gravity;
 
   /// First time initialize controller
@@ -172,7 +274,7 @@ class ParticularController extends ChangeNotifier {
     );
   }
 
-  /// particle controller updater method
+  /// particle system updater method
   void update({
     EmitterType? emitterType,
     int? duration,
