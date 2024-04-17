@@ -128,6 +128,7 @@ class ParticularController extends ChangeNotifier {
   num tangentialAccelerationVariance = 0;
   EmitterType emitterType = EmitterType.gravity;
 
+  /// First time initialize controller
   void initialize({
     required ui.Image texture,
     Map? configs,
@@ -171,6 +172,7 @@ class ParticularController extends ChangeNotifier {
     );
   }
 
+  /// particle controller updater method
   void update({
     EmitterType? emitterType,
     int? duration,
@@ -321,9 +323,22 @@ class ParticularController extends ChangeNotifier {
   }
 }
 
+/// The wrapper class for colors
 class ARGB {
-  num a, r, g, b;
+  /// Represets Alpha channel
+  num a;
+
+  /// Represets Red channel
+  num r;
+
+  /// Represets Green channel
+  num g;
+
+  /// Represets Blue channel
+  num b;
   ARGB(this.a, this.r, this.g, this.b);
+
+  /// Create ARGB class and assign members with data
   static ARGB fromMap(Map map, String name) {
     var color = ARGB(1, 1, 1, 1);
     color.a = map["${name}Alpha"];

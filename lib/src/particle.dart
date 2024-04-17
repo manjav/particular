@@ -2,8 +2,10 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+/// Two type of emitters (linnier of radial)
 enum EmitterType { gravity, radius }
 
+/// Reserve particle specification in model class and impelement update method for rendering  
 class Particle {
   EmitterType emitterType = EmitterType.gravity;
   int age = 0;
@@ -22,6 +24,7 @@ class Particle {
   ParticleTransform transform = ParticleTransform(0, 0, 0, 0);
   Color startColor = Colors.white, finishColor = Colors.white;
 
+  /// Initialize particle members after instantiate or reusage in pooling system
   void initialize({
     EmitterType emitterType = EmitterType.gravity,
     required int age,
@@ -73,6 +76,7 @@ class Particle {
     velocityY = speed * math.sin(angle / 180.0 * math.pi);
   }
 
+  /// Update transform spaces for each particle before adding to atlas paint
   void update(int deltaTime) {
     if (isDead()) return;
     age += deltaTime;
@@ -118,10 +122,13 @@ class Particle {
   }
 }
 
+/// Dedicated transform class for pooling system
+/// Help to reuse transforms after rendering
 class ParticleTransform extends RSTransform {
   double _scos = 0, _ssin = 0, _tx = 0, _ty = 0;
   ParticleTransform(super.scos, super.ssin, super.tx, super.ty);
 
+  /// Update all transform specs
   void update({
     required double rotation,
     required double scale,
@@ -157,6 +164,8 @@ class ParticleTransform extends RSTransform {
   double get ty => _ty;
 }
 
+/// Dedicated color class for pooling system
+/// Help to reuse colors after rendering
 class ParticleColor extends Color {
   @override
   // ignore: overridden_fields
@@ -164,6 +173,7 @@ class ParticleColor extends Color {
 
   ParticleColor(super.value);
 
+  /// Update color channels separately
   void update(int a, int r, int g, int b) {
     value = (((a & 0xff) << 24) |
             ((r & 0xff) << 16) |
@@ -172,6 +182,7 @@ class ParticleColor extends Color {
         0xFFFFFFFF;
   }
 
+  /// Lerp between a and b based on t coef.
   void lerp(Color a, Color b, double t) {
     update(
       _clampInt(_lerpInt(a.alpha, b.alpha, t).toInt(), 0, 255),
