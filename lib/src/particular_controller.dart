@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:particular/particular.dart';
 
 class ParticularController extends ChangeNotifier {
-  Color getStartColor() => _getColor(startColor!, startColorVariance!);
-  Color getFinishColor() => _getColor(finishColor!, finishColorVariance!);
+  Color getStartColor() => _getColor(startColor, startColorVariance);
+  Color getFinishColor() => _getColor(finishColor, finishColorVariance);
   int getLifespan() => _getValue(lifespan, lifespanVariance).round();
 
   double getEmitterX(double d) =>
@@ -37,7 +37,7 @@ class ParticularController extends ChangeNotifier {
   double _getDouble(num base, num variance, [num coef = 1]) =>
       _getValue(base, variance, coef).toDouble();
 
-  Color _getColor(ColorData base, ColorData variance) {
+  Color _getColor(ARGB base, ARGB variance) {
     var alpha = _getValue(base.a, variance.a, 255).clamp(0, 255).round();
     var red = _getValue(base.r, variance.r, 255).clamp(0, 255).round();
     var green = _getValue(base.g, variance.g, 255).clamp(0, 255).round();
@@ -91,31 +91,31 @@ class ParticularController extends ChangeNotifier {
     return BlendMode.srcOver;
   }
 
-  int duration = 0;
-  int lifespan = 0;
+  int duration = -1;
+  int lifespan = 1000;
   int lifespanVariance = 0;
-  int maxParticles = 0;
+  int maxParticles = 100;
   int blendFunctionSource = 0;
   int blendFunctionDestination = 0;
-  ui.Image? image;
-  ColorData? startColor;
-  ColorData? startColorVariance;
-  ColorData? finishColor;
-  ColorData? finishColorVariance;
+  ui.Image? texture;
+  ARGB startColor = ARGB(1, 1, 1, 1);
+  ARGB startColorVariance = ARGB(0, 0, 0, 0);
+  ARGB finishColor = ARGB(0, 1, 1, 1);
+  ARGB finishColorVariance = ARGB(0, 0, 0, 0);
   num emitterX = 200;
   num emitterY = 200;
   num sourcePositionVarianceX = 0;
   num sourcePositionVarianceY = 0;
-  num startSize = 0;
+  num startSize = 30;
   num startSizeVariance = 0;
   num finishSize = 0;
   num finishSizeVariance = 0;
-  num speed = 0;
+  num speed = 200;
   num speedVariance = 0;
   num gravityX = 0;
   num gravityY = 0;
   num angle = 0;
-  num angleVariance = 0;
+  num angleVariance = 360;
   num minRadius = 0;
   num minRadiusVariance = 0;
   num maxRadius = 0;
@@ -128,12 +128,17 @@ class ParticularController extends ChangeNotifier {
   num tangentialAccelerationVariance = 0;
   EmitterType emitterType = EmitterType.gravity;
 
-  void initialize(Map configs, ui.Image image) async {
+  void initialize({
+    required ui.Image texture,
+    Map? configs,
+  }) async {
+    update(texture: texture);
+    if (configs == null) return;
     update(
-      startColor: ColorData(configs, "startColor"),
-      startColorVariance: ColorData(configs, "startColorVariance"),
-      finishColor: ColorData(configs, "finishColor"),
-      finishColorVariance: ColorData(configs, "finishColorVariance"),
+      startColor: ARGB.fromMap(configs, "startColor"),
+      startColorVariance: ARGB.fromMap(configs, "startColorVariance"),
+      finishColor: ARGB.fromMap(configs, "finishColor"),
+      finishColorVariance: ARGB.fromMap(configs, "finishColorVariance"),
       emitterType: EmitterType.values[configs["emitterType"]],
       lifespan: (configs["particleLifespan"] * 1000).round(),
       lifespanVariance: (configs["particleLifespanVariance"] * 1000).round(),
@@ -163,7 +168,6 @@ class ParticularController extends ChangeNotifier {
       radialAccelerationVariance: configs["radialAccelVariance"],
       tangentialAcceleration: configs["tangentialAcceleration"],
       tangentialAccelerationVariance: configs["tangentialAccelVariance"],
-      image: image,
     );
   }
 
@@ -175,10 +179,10 @@ class ParticularController extends ChangeNotifier {
     int? maxParticles,
     int? blendFunctionSource,
     int? blendFunctionDestination,
-    ColorData? startColor,
-    ColorData? startColorVariance,
-    ColorData? finishColor,
-    ColorData? finishColorVariance,
+    ARGB? startColor,
+    ARGB? startColorVariance,
+    ARGB? finishColor,
+    ARGB? finishColorVariance,
     num? sourcePositionVarianceX,
     num? sourcePositionVarianceY,
     num? startSize,
@@ -203,7 +207,7 @@ class ParticularController extends ChangeNotifier {
     num? radialAccelerationVariance,
     num? tangentialAcceleration,
     num? tangentialAccelerationVariance,
-    ui.Image? image,
+    ui.Image? texture,
   }) {
     if (emitterType != null) {
       this.emitterType = emitterType;
@@ -310,19 +314,22 @@ class ParticularController extends ChangeNotifier {
     if (tangentialAccelerationVariance != null) {
       this.tangentialAccelerationVariance = tangentialAccelerationVariance;
     }
-    if (image != null) {
-      this.image = image;
+    if (texture != null) {
+      this.texture = texture;
     }
     notifyListeners();
   }
 }
 
-class ColorData {
-  late num a, r, g, b;
-  ColorData(Map map, String name) {
-    a = map["${name}Alpha"];
-    r = map["${name}Red"];
-    g = map["${name}Green"];
-    b = map["${name}Blue"];
+class ARGB {
+  num a, r, g, b;
+  ARGB(this.a, this.r, this.g, this.b);
+  static ARGB fromMap(Map map, String name) {
+    var color = ARGB(1, 1, 1, 1);
+    color.a = map["${name}Alpha"];
+    color.r = map["${name}Red"];
+    color.g = map["${name}Green"];
+    color.b = map["${name}Blue"];
+    return color;
   }
 }

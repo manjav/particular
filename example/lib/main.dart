@@ -27,7 +27,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _loadParticleAssets() async {
-    // load json config
+    // Load json config
     var json = await rootBundle.loadString("assets/fire.json");
     var configsMap = jsonDecode(json);
 
@@ -42,7 +42,10 @@ class _MyAppState extends State<MyApp> {
         await ui.instantiateImageCodec(image.encodePng(resizeImage));
     ui.FrameInfo frameInfo = await codec.getNextFrame();
 
-    _particleController.initialize(configsMap, frameInfo.image);
+    _particleController.initialize(
+      texture: frameInfo.image,
+      configs: configsMap
+    );
   }
 
   @override

@@ -47,7 +47,7 @@ class _ParticularState extends State<Particular>
   void initState() {
     super.initState();
     widget.controller!.addListener(() {
-      if (widget.controller!.image == null) return;
+      if (widget.controller!.texture == null) return;
       _devicePixelRatio = 1 / MediaQuery.of(context).devicePixelRatio;
       _spawn(0);
       _iterate();
@@ -112,7 +112,7 @@ class _ParticularState extends State<Particular>
 
   @override
   Widget build(BuildContext context) {
-    if (widget.controller!.image == null) {
+    if (widget.controller!.texture == null) {
       return const SizedBox();
     }
     return Container(
@@ -127,7 +127,7 @@ class _ParticularState extends State<Particular>
           particles: _particles,
           transforms: _transforms,
           deltaTime: _deltaTime,
-          image: widget.controller!.image!,
+          image: widget.controller!.texture!,
           blendMode: widget.controller!.getBlendMode(),
           onFinished: () => _ticker?.stop(),
         ),
