@@ -1,3 +1,1 @@
-## 0.0.1
-
-* TODO: Describe initial release.
+## 0.0.1 - Released on (2024 Apr 17)
