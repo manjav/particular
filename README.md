@@ -1,18 +1,17 @@
-# particular
+<p align="center">
+  <img src="https://github.com/manjav/particular/raw/main/repo_files/logo.png" alt="Particular Logo"/>
+</p>
 
-A new Flutter plugin project.
+### Overview
+The <b>Particular</b> is a high performance particle effects flutter widget that can configure  bot with `config.json` and programatically. 
 
-## Getting Started
+### Samples:
+|Meteor|Galaxy|Snow|Firework|
+|:-:|:-:|:-:|:-:|
+[![](https://github.com/manjav/particular/raw/main/repo_files/example_meteor.gif)](https://github.com/imaNNeo/fl_chart/blob/main/repo_files/documentations/line_chart.md#sample-1-source-code)|[![](https://github.com/manjav/particular/raw/main/repo_files/example_galaxy.gif)](https://github.com/imaNNeo/fl_chart/blob/main/repo_files/documentations/line_chart.md#sample-1-source-code)|[![](https://github.com/manjav/particular/raw/main/repo_files/example_snow.gif)](https://github.com/imaNNeo/fl_chart/blob/main/repo_files/documentations/line_chart.md#sample-1-source-code)|[![](https://github.com/manjav/particular/raw/main/repo_files/example_firework.gif)](https://github.com/imaNNeo/fl_chart/blob/main/repo_files/documentations/line_chart.md#sample-1-source-code)
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
 
-For help getting started with Flutter development, view the
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Let's get started
+First of all, you need to add the `particular` in your project. In order to do that, follow [this guide](https://pub.dev/packages/particular/install).
 
-The plugin project was generated without specifying the `--platforms` flag, no platforms are currently supported.
-To add platforms, run `flutter create -t plugin --platforms <platforms> .` in this directory.
-You can also find a detailed instruction on how to add platforms in the `pubspec.yaml` at https://flutter.dev/docs/development/packages-and-plugins/developing-packages#plugin-platforms.
+Then you need to read the docs. Start from [here](https://github.com/manjav/particular/blob/main/repo_files/documentations/index.md).
