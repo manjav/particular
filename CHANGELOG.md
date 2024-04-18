@@ -1,11 +1,18 @@
-# 0.0.1 - Released on (2024 Apr 17)
+### 0.0.1 (04/17/2024)
+* initial version
 
-# 0.0.2 - Released on (2024 Apr 17)
-* add pub-ignores
+### 0.0.2 (04/17/2024)
 * add some method and class documentations
 * remove platforms section in pubs-pecs
 * remove platform classes and tests
+* add pub-ignores
 
-# 0.0.3 - Released on (2024 Apr 18)
+### 0.0.3 (04/18/2024)
 * add some method and class documentations
 * follow format suggestions
+
+
+### 0.0.4 (04/18/2024)
+* fix example image flicking
+* follow format suggestions
+* rich instruction
