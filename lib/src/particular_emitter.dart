@@ -132,6 +132,8 @@ class _ParticularState extends State<Particular>
     );
   }
 
+  /// This method can potentially be called in every frame and should not have
+  /// any side effects beyond building a widget.
   @override
   Widget build(BuildContext context) {
     if (widget.controller!.texture == null) {
@@ -157,12 +159,14 @@ class _ParticularState extends State<Particular>
     );
   }
 
+  /// Was called on the mixin, that Ticker was still active. The Ticker must be disposed.
   @override
   void dispose() {
     _ticker?.dispose();
     super.dispose();
   }
 }
+
 /// A custom painter for rendering particles.
 class ParticlePainter extends CustomPainter {
   /// The time difference between frames.
@@ -208,6 +212,7 @@ class ParticlePainter extends CustomPainter {
     required this.onFinished,
   });
 
+  /// Draws many parts of an image - the [atlas] - onto the canvas.
   @override
   void paint(Canvas canvas, Size size) {
     var skipped = true;
@@ -237,6 +242,8 @@ class ParticlePainter extends CustomPainter {
     if (skipped) onFinished();
   }
 
+  /// If the method returns false, then the [paint] call might be optimized
+  /// away.
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => true;
 }

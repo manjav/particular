@@ -23,8 +23,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    super.initState();
     _loadParticleAssets();
+    super.initState();
   }
 
   // Load configs and texture of particle
