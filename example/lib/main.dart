@@ -54,6 +54,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        backgroundColor: Colors.black,
         body: Column(
           children: [
             GestureDetector(
@@ -67,11 +68,12 @@ class _MyAppState extends State<MyApp> {
                     emitterX: details.localPosition.dx,
                     emitterY: details.localPosition.dy);
               },
-              child: Particular(
+              child: SizedBox(
                 width: 600,
                 height: 600,
-                color: Colors.black,
-                controller: _particleController,
+                child: Particular(
+                  controller: _particleController,
+                ),
               ),
             ),
             TextButton(

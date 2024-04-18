@@ -7,14 +7,7 @@ import 'package:particular/particular.dart';
 
 /// A widget that represents a particle system.
 class Particular extends StatefulWidget {
-  /// The color of the widget.
-  final Color? color;
 
-  /// The width of the widget.
-  final double width;
-
-  /// The height of the widget.
-  final double height;
 
   /// The controller for the particle system.
   final ParticularController? controller;
@@ -22,9 +15,6 @@ class Particular extends StatefulWidget {
   /// Creates a [Particular] widget.
   const Particular({
     super.key,
-    this.color,
-    this.width = 300,
-    this.height = 300,
     this.controller,
   });
 
@@ -139,10 +129,7 @@ class _ParticularState extends State<Particular>
     if (widget.controller!.texture == null) {
       return const SizedBox();
     }
-    return Container(
-      color: widget.color,
-      width: widget.width,
-      height: widget.height,
+    return SizedBox(
       child: CustomPaint(
         painter: ParticlePainter(
           rectangles: _rectangles,
