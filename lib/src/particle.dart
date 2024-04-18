@@ -181,6 +181,7 @@ class Particle {
     size = startSize + (finishSize - startSize) * ratio;
   }
 
+  /// Return true if finished its life and reserved in pooling system
   bool isDead() {
     return age > lifespan;
   }
