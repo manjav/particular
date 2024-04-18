@@ -1,4 +1,10 @@
 # Particular: Flutter Particle System
+<style>
+td, th {
+   border: none!important;
+}
+</style>
+
 <table>
 <tr>
 <td width = 160><img src="https://github.com/manjav/particular/raw/main/repo_files/logo.png" alt="Particular Logo"></td>
