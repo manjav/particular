@@ -7,8 +7,6 @@ import 'package:particular/particular.dart';
 
 /// A widget that represents a particle system.
 class Particular extends StatefulWidget {
-
-
   /// The controller for the particle system.
   final ParticularController? controller;
 
@@ -31,9 +29,6 @@ class _ParticularState extends State<Particular>
   /// The device pixel ratio.
   double _devicePixelRatio = 1;
 
-  /// The indices of particles.
-  final List<int> _indices = [];
-
   /// The rectangles representing particles.
   final List<Rect> _rectangles = [];
 
@@ -42,6 +37,9 @@ class _ParticularState extends State<Particular>
 
   /// The colors of particles.
   final List<ParticleColor> _colors = [];
+
+  /// The indices of the dead particles.
+  final List<int> _deadParticleIndices = [];
 
   /// The transforms of particles.
   final List<ParticleTransform> _transforms = [];
@@ -90,35 +88,35 @@ class _ParticularState extends State<Particular>
   /// Spawns a particle.
   void _spawn([int age = 0]) {
     Particle particle;
-    if (_indices.isEmpty) {
+    if (_deadParticleIndices.isEmpty) {
       particle = Particle();
       _colors.add(particle.color);
       _transforms.add(particle.transform);
       _rectangles.add(const Rect.fromLTWH(0, 0, 36, 36));
       _particles.add(particle);
     } else {
-      particle = _particles[_indices.removeLast()];
+      particle = _particles[_deadParticleIndices.removeLast()];
     }
-    var c = widget.controller!;
+    final ParticularController controller = widget.controller!;
     particle.initialize(
       age: age,
-      emitterType: c.emitterType,
-      emitterX: c.getEmitterX(1),
-      emitterY: c.getEmitterY(1),
-      startSize: c.getStartSize(1),
-      finishSize: c.getFinishSize(1),
-      startColor: c.getStartColor(),
-      finishColor: c.getFinishColor(),
-      angle: c.getAngle(),
-      lifespan: c.getLifespan(),
-      speed: c.getSpeed(_devicePixelRatio),
-      gravityX: c.gravityX * _devicePixelRatio,
-      gravityY: c.gravityY * _devicePixelRatio,
-      minRadius: c.getMinRadius(1),
-      maxRadius: c.getMaxRadius(1),
-      rotatePerSecond: c.getRotatePerSecond(),
-      radialAcceleration: c.getRadialAcceleration(),
-      tangentialAcceleration: c.getTangentialAcceleration(),
+      emitterType: controller.emitterType,
+      emitterX: controller.getEmitterX(1),
+      emitterY: controller.getEmitterY(1),
+      startSize: controller.getStartSize(1),
+      finishSize: controller.getFinishSize(1),
+      startColor: controller.getStartColor(),
+      finishColor: controller.getFinishColor(),
+      angle: controller.getAngle(),
+      lifespan: controller.getLifespan(),
+      speed: controller.getSpeed(_devicePixelRatio),
+      gravityX: controller.gravityX * _devicePixelRatio,
+      gravityY: controller.gravityY * _devicePixelRatio,
+      minRadius: controller.getMinRadius(1),
+      maxRadius: controller.getMaxRadius(1),
+      rotatePerSecond: controller.getRotatePerSecond(),
+      radialAcceleration: controller.getRadialAcceleration(),
+      tangentialAcceleration: controller.getTangentialAcceleration(),
     );
   }
 
@@ -132,14 +130,14 @@ class _ParticularState extends State<Particular>
     return SizedBox(
       child: CustomPaint(
         painter: ParticlePainter(
-          rectangles: _rectangles,
           colors: _colors,
-          indices: _indices,
-          particles: _particles,
-          transforms: _transforms,
           deltaTime: _deltaTime,
+          particles: _particles,
+          rectangles: _rectangles,
+          transforms: _transforms,
+          deadParticleIndices: _deadParticleIndices,
           image: widget.controller!.texture!,
-          blendMode: widget.controller!.getBlendMode(),
+          blendMode: widget.controller!.computeBlendMode(),
           onFinished: () => _ticker?.stop(),
         ),
       ),
@@ -172,7 +170,7 @@ class ParticlePainter extends CustomPainter {
   final List<Rect> rectangles;
 
   /// The indices of particles.
-  final List<int> indices;
+  final List<int> deadParticleIndices;
 
   /// The particles to be rendered.
   final List<Particle> particles;
@@ -189,44 +187,46 @@ class ParticlePainter extends CustomPainter {
   /// Creates a [ParticlePainter] with the specified parameters.
   ParticlePainter({
     required this.image,
+    required this.colors,
     required this.blendMode,
     required this.deltaTime,
-    required this.colors,
-    required this.indices,
     required this.particles,
     required this.transforms,
     required this.rectangles,
     required this.onFinished,
+    required this.deadParticleIndices,
   });
 
   /// Draws many parts of an image - the [atlas] - onto the canvas.
   @override
   void paint(Canvas canvas, Size size) {
-    var skipped = true;
+    var allParticlesDead = true;
     for (var i = 0; i < particles.length; i++) {
       var particle = particles[i];
       particle.update(deltaTime);
       particle.transform.update(
         rotation: 0,
-        scale: particle.size / image.width,
-        anchorX: image.width * 0.5,
-        anchorY: image.height * 0.5,
         translateX: particle.x,
         translateY: particle.y,
+        anchorX: image.width * 0.5,
+        anchorY: image.height * 0.5,
+        scale: particle.size / image.width,
       );
 
       if (particle.isDead()) {
-        indices.add(i);
+        deadParticleIndices.add(i);
         particle.color.update(
             0, particle.color.red, particle.color.green, particle.color.blue);
       } else {
-        skipped = false;
+        allParticlesDead = false;
       }
     }
     canvas.drawAtlas(
         image, transforms, rectangles, colors, BlendMode.dstIn, null, _paint);
 
-    if (skipped) onFinished();
+    if (allParticlesDead) {
+      onFinished();
+    }
   }
 
   /// If the method returns false, then the [paint] call might be optimized

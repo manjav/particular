@@ -7,76 +7,81 @@ import 'package:particular/particular.dart';
 /// A controller for managing parameters and behavior of a particle system.
 class ParticularController extends ChangeNotifier {
   /// Gets the start color of particles.
-  Color getStartColor() => _getColor(startColor, startColorVariance);
+  Color getStartColor() => _getVariantColor(startColor, startColorVariance);
 
   /// Gets the finish color of particles.
-  Color getFinishColor() => _getColor(finishColor, finishColorVariance);
+  Color getFinishColor() => _getVariantColor(finishColor, finishColorVariance);
 
   /// Gets the lifespan of particles.
-  int getLifespan() => _getValue(lifespan, lifespanVariance).round();
+  int getLifespan() => _computeVariance(lifespan, lifespanVariance).round();
 
   /// Gets the x-coordinate of the emitter position.
-  double getEmitterX(double d) =>
-      _getDouble(emitterX, sourcePositionVarianceX * d);
+  double getEmitterX(double scaleFactor) =>
+      _getVariantDouble(emitterX, sourcePositionVarianceX * scaleFactor);
 
   /// Gets the y-coordinate of the emitter position.
-  double getEmitterY(double d) =>
-      _getDouble(emitterY, sourcePositionVarianceY * d);
+  double getEmitterY(double scaleFactor) =>
+      _getVariantDouble(emitterY, sourcePositionVarianceY * scaleFactor);
 
   /// Gets the start size of particles.
-  double getStartSize(double d) => _getDouble(startSize, startSizeVariance, d);
+  double getStartSize(double scaleFactor) =>
+      _getVariantDouble(startSize, startSizeVariance, scaleFactor);
 
   /// Gets the finish size of particles.
-  double getFinishSize(double d) =>
-      _getDouble(finishSize, finishSizeVariance, d);
+  double getFinishSize(double scaleFactor) =>
+      _getVariantDouble(finishSize, finishSizeVariance, scaleFactor);
 
   /// Gets the speed of particles.
-  double getSpeed(double d) => _getDouble(speed, speedVariance, d);
+  double getSpeed(double scaleFactor) =>
+      _getVariantDouble(speed, speedVariance, scaleFactor);
 
   /// Gets the emission angle of particles.
-  double getAngle() => _getDouble(angle, angleVariance);
+  double getAngle() => _getVariantDouble(angle, angleVariance);
 
   /// Gets the minimum radius of particles.
-  double getMinRadius(double d) => _getDouble(minRadius, minRadiusVariance, d);
+  double getMinRadius(double scaleFactor) =>
+      _getVariantDouble(minRadius, minRadiusVariance, scaleFactor);
 
   /// Gets the maximum radius of particles.
-  double getMaxRadius(double d) => _getDouble(maxRadius, maxRadiusVariance, d);
+  double getMaxRadius(double scaleFactor) =>
+      _getVariantDouble(maxRadius, maxRadiusVariance, scaleFactor);
 
   /// Gets the rotation rate of particles per second.
   double getRotatePerSecond() =>
-      _getDouble(rotatePerSecond, rotatePerSecondVariance);
+      _getVariantDouble(rotatePerSecond, rotatePerSecondVariance);
 
   /// Gets the radial acceleration of particles.
   double getRadialAcceleration() =>
-      _getDouble(radialAcceleration, radialAccelerationVariance);
+      _getVariantDouble(radialAcceleration, radialAccelerationVariance);
 
   /// Gets the tangential acceleration of particles.
   double getTangentialAcceleration() =>
-      _getDouble(tangentialAcceleration, tangentialAccelerationVariance);
+      _getVariantDouble(tangentialAcceleration, tangentialAccelerationVariance);
 
-  /// Gets the value with variance.
-  num _getValue(num base, num variance, [num coef = 1]) {
+  /// Computes a value with a random variance.
+  num _computeVariance(num base, num variance, [num coef = 1]) {
     if (variance == 0) {
-      return (base * coef);
+      return base * coef;
     }
-    return (base + variance * (math.Random().nextDouble() * 2.0 - 1.0)) * coef;
+    final randomFactor = math.Random().nextDouble() * 2.0 - 1.0;
+    return (base + variance * randomFactor) * coef;
   }
 
-  /// Gets the double value with variance.
-  double _getDouble(num base, num variance, [num coef = 1]) =>
-      _getValue(base, variance, coef).toDouble();
+  /// Compounnd base double with a random variance double.
+  double _getVariantDouble(num base, num variance, [num coef = 1]) =>
+      _computeVariance(base, variance, coef).toDouble();
 
-  /// Gets the color with variance.
-  Color _getColor(ARGB base, ARGB variance) {
-    var alpha = _getValue(base.a, variance.a, 255).clamp(0, 255).round();
-    var red = _getValue(base.r, variance.r, 255).clamp(0, 255).round();
-    var green = _getValue(base.g, variance.g, 255).clamp(0, 255).round();
-    var blue = _getValue(base.b, variance.b, 255).clamp(0, 255).round();
+  /// Compounnd base color with a random variance color.
+  Color _getVariantColor(ARGB base, ARGB variance) {
+    var alpha = _computeVariance(base.a, variance.a, 255).clamp(0, 255).round();
+    var red = _computeVariance(base.r, variance.r, 255).clamp(0, 255).round();
+    var green = _computeVariance(base.g, variance.g, 255).clamp(0, 255).round();
+    var blue = _computeVariance(base.b, variance.b, 255).clamp(0, 255).round();
     return Color.fromARGB(alpha, red, green, blue);
   }
 
   /// Gets the blend mode for particle rendering.
-  BlendMode getBlendMode() {
+  BlendMode computeBlendMode() {
     int s = blendFunctionSource;
     int d = blendFunctionDestination;
     if (d == 0) return BlendMode.clear;
@@ -122,13 +127,13 @@ class ParticularController extends ChangeNotifier {
     return BlendMode.srcOver;
   }
 
-  /// The duration of the particle system.
+  /// The duration of the particle system in milliseconds, -1 for infinite.
   int duration = -1;
 
-  /// The lifespan of particles.
+  /// The lifespan of particles in milliseconds.
   int lifespan = 1000;
 
-  /// The lifespan variance of particles.
+  /// The variance of the lifespan of particles in milliseconds.
   int lifespanVariance = 0;
 
   /// The maximum number of particles.
@@ -155,10 +160,10 @@ class ParticularController extends ChangeNotifier {
   /// The finish color variance of particles.
   ARGB finishColorVariance = ARGB(0, 0, 0, 0);
 
-  /// The x-coordinate of the emitter position.
+  /// The emitter position along the x-axis.
   num emitterX = 200;
 
-  /// The y-coordinate of the emitter position.
+  /// The emitter position along the y-axis.
   num emitterY = 200;
 
   /// The variance of the source position along the x-axis.
@@ -191,10 +196,10 @@ class ParticularController extends ChangeNotifier {
   /// The gravity along the y-axis.
   num gravityY = 0;
 
-  /// The initial angle of particle emission.
+  /// The initial angle of particle emission in degrees.
   num angle = 0;
 
-  /// The variance of the initial angle of particle emission.
+  /// The variance of the initial angle of particle emission in degrees.
   num angleVariance = 360;
 
   /// The minimum radius of particle emission.

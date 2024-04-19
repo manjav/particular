@@ -140,39 +140,43 @@ class Particle {
     velocityY = speed * math.sin(angle / 180.0 * math.pi);
   }
 
-  /// Update transform spaces for each particle before adding to atlas paint
+  /// Updates the particle's transform before adding to atlas.
   void update(int deltaTime) {
     if (isDead()) return;
     age += deltaTime;
-    var ratio = age / lifespan;
-    var rate = deltaTime / lifespan;
+    final ratio = age / lifespan;
+    final rate = deltaTime / lifespan;
 
     angle -= rotatePerSecond * rate;
+
     if (emitterType == EmitterType.radius) {
       radius += radiusDelta * rate;
-      x = emitterX - math.cos(angle / 180.0 * math.pi) * radius;
-      y = emitterY - math.sin(angle / 180.0 * math.pi) * radius;
+      final radiusCos = math.cos(angle / 180.0 * math.pi);
+      final radiusSin = math.sin(angle / 180.0 * math.pi);
+      x = emitterX - radiusCos * radius;
+      y = emitterY - radiusSin * radius;
     } else {
-      var distanceX = x - emitterX;
-      var distanceY = y - emitterY;
-      var distanceScalar =
+      final distanceX = x - emitterX;
+      final distanceY = y - emitterY;
+      final distanceScalar =
           math.sqrt(distanceX * distanceX + distanceY * distanceY);
-      if (distanceScalar < 0.01) distanceScalar = 0.01;
+      final distanceScalarClamp = distanceScalar < 0.01 ? 0.01 : distanceScalar;
 
-      var radialX = distanceX / distanceScalar;
-      var radialY = distanceY / distanceScalar;
-      var tangentialX = radialX;
-      var tangentialY = radialY;
+      final radialX = distanceX / distanceScalarClamp;
+      final radialY = distanceY / distanceScalarClamp;
 
-      radialX *= radialAcceleration;
-      radialY *= radialAcceleration;
+      final radialXModified = radialX * radialAcceleration;
+      final radialYModified = radialY * radialAcceleration;
 
-      var newY = tangentialX;
-      tangentialX = -tangentialY * tangentialAcceleration;
-      tangentialY = newY * tangentialAcceleration;
+      final tangentialX = radialX;
+      final tangentialY = radialY;
 
-      velocityX += rate * (gravityX + radialX + tangentialX);
-      velocityY += rate * (gravityY + radialY + tangentialY);
+      final tangentialXModified = -tangentialY * tangentialAcceleration;
+      final tangentialYModified = tangentialX * tangentialAcceleration;
+
+      velocityX += rate * (gravityX + radialXModified + tangentialXModified);
+      velocityY += rate * (gravityY + radialYModified + tangentialYModified);
+
       x += velocityX * rate;
       y += velocityY * rate;
     }
@@ -189,6 +193,7 @@ class Particle {
 
 /// Dedicated transform class for pooling system
 /// Help to reuse transforms after rendering
+/// A transform class for particles in pooling system.
 class ParticleTransform extends RSTransform {
   /// Scaled cosine of transform.
   double _scaledCos = 0;
@@ -202,7 +207,7 @@ class ParticleTransform extends RSTransform {
   /// Translate value in y
   double _ty = 0;
 
-  /// Constructor initializer
+  /// Creates a new particle transform.
   ParticleTransform(super.scos, super.ssin, super.tx, super.ty);
 
   /// Update all transform specs
@@ -216,8 +221,8 @@ class ParticleTransform extends RSTransform {
   }) {
     _scaledCos = math.cos(rotation) * scale;
     _scaledSin = math.sin(rotation) * scale;
-    _tx = translateX + -scos * anchorX + ssin * anchorY;
-    _ty = translateY + -ssin * anchorX - scos * anchorY;
+    _tx = translateX - _scaledCos * anchorX + _scaledSin * anchorY;
+    _ty = translateY - _scaledSin * anchorX - _scaledCos * anchorY;
   }
 
   /// The cosine of the rotation multiplied by the scale factor.
@@ -250,31 +255,78 @@ class ParticleColor extends Color {
 
   ParticleColor(super.value);
 
-  /// Update color channels separately
+  /// Updates the color channels separately.
+  ///
+  /// The parameters [a], [r], [g], and [b] represent the alpha, red, green,
+  /// and blue color channels respectively. Each channel is expected to be a
+  /// value between 0 and 255.
+  ///
+  /// The color value of this [ParticleColor] object is updated with the
+  /// provided color channels.
   void update(int a, int r, int g, int b) {
-    value = (((a & 0xff) << 24) |
-            ((r & 0xff) << 16) |
-            ((g & 0xff) << 8) |
-            ((b & 0xff) << 0)) &
-        0xFFFFFFFF;
+    // Combine the color channels into a single integer value.
+    value = (((a & 0xff) <<
+                24) | // Shift alpha channel and bitwise AND with 0xff
+            ((r & 0xff) << 16) | // Shift red channel and bitwise AND with 0xff
+            ((g & 0xff) << 8) | // Shift green channel and bitwise AND with 0xff
+            ((b & 0xff) << 0)) & // Shift blue channel and bitwise AND with 0xff
+        0xFFFFFFFF; // Mask the result to 32 bits
   }
 
-  /// Lerp between a and b based on t coefficient.
-  void lerp(Color a, Color b, double t) {
+  /// Linearly interpolates the color channels of this [ParticleColor]
+  /// instance between the provided [from] and [to] colors using the
+  /// given interpolation [delta].
+  ///
+  /// The color channels are interpolated separately using the [_lerpInt]
+  /// function. The resulting interpolated color channels are then used to
+  /// update the color of this [ParticleColor] instance using the [update]
+  /// method.
+  ///
+  /// Parameters:
+  ///   - from: The starting color.
+  ///   - to: The ending color.
+  ///   - delta: The interpolation factor.
+  void lerp(Color from, Color to, double delta) {
     update(
-      _clampInt(_lerpInt(a.alpha, b.alpha, t).toInt(), 0, 255),
-      _clampInt(_lerpInt(a.red, b.red, t).toInt(), 0, 255),
-      _clampInt(_lerpInt(a.green, b.green, t).toInt(), 0, 255),
-      _clampInt(_lerpInt(a.blue, b.blue, t).toInt(), 0, 255),
+      _clampInt(_lerpInt(from.alpha, to.alpha, delta).toInt(), 0, 255),
+      _clampInt(_lerpInt(from.red, to.red, delta).toInt(), 0, 255),
+      _clampInt(_lerpInt(from.green, to.green, delta).toInt(), 0, 255),
+      _clampInt(_lerpInt(from.blue, to.blue, delta).toInt(), 0, 255),
     );
   }
 
-  /// Linearly interpolate between two integers.
-  double _lerpInt(int a, int b, double t) {
-    return a + (b - a) * t;
-  }
+  /// Linearly interpolates between two integers.
+  ///
+  /// The function takes in the starting integer [from], the ending integer
+  /// [to], and the interpolation factor [delta]. It returns the interpolated
+  /// value as a [double].
+  ///
+  /// Parameters:
+  ///   - from: The starting integer.
+  ///   - to: The ending integer.
+  ///   - delta: The interpolation factor.
+  ///
+  /// Returns:
+  ///   The interpolated value as a [double].
+  double _lerpInt(int from, int to, double delta) => from + (to - from) * delta;
 
-  /// Same as [num.clamp] but specialized for non-null [int].
+  /// Clamps the given [value] between the specified [min] and [max]
+  /// boundaries.
+  ///
+  /// If [value] is less than [min], this function returns [min]. If [value] is
+  /// greater than [max], this function returns [max]. Otherwise, it returns
+  /// [value] itself.
+  ///
+  /// This method is a specialized version of [num.clamp] that is optimized for
+  /// use with non-nullable [int] values.
+  ///
+  /// Parameters:
+  ///   - [value]: The value to be clamped.
+  ///   - [min]: The lower boundary of the range.
+  ///   - [max]: The upper boundary of the range.
+  ///
+  /// Returns:
+  ///   - The clamped value.
   int _clampInt(int value, int min, int max) {
     if (value < min) {
       return min;
