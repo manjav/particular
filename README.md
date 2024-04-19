@@ -27,7 +27,7 @@ Whether you're a designer or developer, Particular empowers you to bring your cr
 ---
 
 ### - Installation
-Add `Particular` to your pubspec.yaml file:  
+Add `particular` to your pubspec.yaml file:  
 For detailed installation instructions, refer to the [installation guide](https://pub.dev/packages/particular/install) on pub.dev.
 <br>
 

@@ -1,5 +1,5 @@
 name: particular_example
-description: "Demonstrates how to use the particular plugin."
+description: "Demonstrates how to use the particular package."
 publish_to: 'none'
 
 environment:
