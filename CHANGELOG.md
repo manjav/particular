@@ -16,3 +16,8 @@
 * fix example image flicking
 * follow format suggestions
 * rich instruction
+
+
+### 0.0.5 (04/19/2024)
+* fix instruction problem
+* Add more symbol comments
