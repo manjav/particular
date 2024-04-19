@@ -5,18 +5,38 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "flutter-particle2dx-support",
+            "name": "particular",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "flutter-particle2dx-support (profile mode)",
+            "name": "particular (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "flutter-particle2dx-support (release mode)",
+            "name": "particular (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "editor",
+            "cwd": "editor",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "editor (profile mode)",
+            "cwd": "editor",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "editor (release mode)",
+            "cwd": "editor",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
