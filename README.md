@@ -17,10 +17,10 @@ Whether you're a designer or developer, Particular empowers you to bring your cr
 
 <a href="https://github.com/manjav/particular/raw/main/example/assets">
 <p float="left" align="center">
-   <img width="200" src="https://github.com/manjav/particular/raw/main/repo_files/example_meteor.gif" alt="Meteor">
-   <img width="200" src="https://github.com/manjav/particular/raw/main/repo_files/example_galaxy.gif" alt="Galaxy">
-   <img width="200" src="https://github.com/manjav/particular/raw/main/repo_files/example_snow.gif" alt="Snow">
-   <img width="200" src="https://github.com/manjav/particular/raw/main/repo_files/example_firework.gif" alt="Meteor">
+   <img width="180" src="https://github.com/manjav/particular/raw/main/repo_files/example_meteor.gif" alt="Meteor">
+   <img width="180" src="https://github.com/manjav/particular/raw/main/repo_files/example_galaxy.gif" alt="Galaxy">
+   <img width="180" src="https://github.com/manjav/particular/raw/main/repo_files/example_snow.gif" alt="Snow">
+   <img width="180" src="https://github.com/manjav/particular/raw/main/repo_files/example_firework.gif" alt="Meteor">
   </table>
 </a>
 
@@ -43,8 +43,8 @@ Manually configure your particle controller in code. Refer to the following step
 ---
 
 ### - Getting Started with Coding
-Follow these steps to integrate the particle system into your Flutter app:
-
+To use this library, import `package:intry_numeric/intry_numeric.dart`.<br>
+Follow these steps to integrate the particle system into your Flutter app:<br>
 <b>I. Initialize the Particle Controller in `initState`:</b>
 ``` dart
 final controller = ParticularController();
