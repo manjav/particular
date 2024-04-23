@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ui' as ui;
 
+import 'package:editor/data/inspector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as image;
@@ -20,15 +21,36 @@ class EdittorApp extends StatefulWidget {
 
 class _EdittorAppState extends State<EdittorApp> {
   // Add controller to change particle
-  final _particleController = ParticularController();
+  final _selectedInspactorColumn = ValueNotifier([]);
 
   @override
   void initState() {
+    _loadInspectorsData();
     _loadParticleAssets();
     super.initState();
   }
 
-  // Load configs and texture of particle
+  // Load configs from json
+  void _loadInspectorsData() async {
+    var json = await rootBundle.loadString("assets/inspector.json");
+    _inspactorData = List.castFrom(jsonDecode(json));
+    setState(() => _selectTab(0));
+  }
+
+  void _selectTab(int index) {
+    _selectedColumsIndex = index;
+    var list = <Inspector>[];
+    for (var line in _inspactorData[index]) {
+      list.add(Inspector(
+        line["ui"] ?? "input",
+        line["type"],
+        line["title"] ?? "",
+        line["inputs"],
+      ));
+    }
+    _selectedInspactorColumn.value = list;
+  }
+
   Future<void> _loadParticleAssets() async {
     // Load json config
     var json = await rootBundle.loadString("assets/meteor.json");
@@ -53,6 +75,9 @@ class _EdittorAppState extends State<EdittorApp> {
 
   @override
   Widget build(BuildContext context) {
+    if (_inspactorData.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return MaterialApp(
       theme: ThemeData.dark(),
       home: Scaffold(
