@@ -6,8 +6,8 @@ import 'package:editor/data/particular_editor_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as image;
-import 'package:particular/particular.dart';
 import 'package:intry/intry.dart';
+import 'package:particular/particular.dart';
 
 void main() {
   runApp(const EdittorApp());
@@ -24,6 +24,7 @@ class _EdittorAppState extends State<EdittorApp> {
   // Add controller to change particle
   final _particleController = ParticularEditorController();
   final _selectedInspactorColumn = ValueNotifier([]);
+  List _inspactorData = [];
 
   @override
   void initState() {
@@ -89,6 +90,13 @@ class _EdittorAppState extends State<EdittorApp> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _canvasBuilder(),
+            _inspactorBuilder(),
+          ],
+        ),
+      ),
+    );
+  }
+
   AppBar _appBarBuilder() {
     return AppBar(
       toolbarHeight: 48,
@@ -126,27 +134,97 @@ class _EdittorAppState extends State<EdittorApp> {
     );
   }
 
+  Widget _inspactorBuilder() {
+    var themeData = Theme.of(context);
+    return Container(
+      width: 320,
+      padding: const EdgeInsets.all(12),
+      color: themeData.colorScheme.inverseSurface,
+      child: Column(
+        children: [
+          _inspactorListBuilder(themeData),
+        ],
+      ),
+    );
+  }
+
+
+  Widget _inspactorListBuilder(ThemeData themeData) {
+    return Expanded(
+      child: ValueListenableBuilder(
+        valueListenable: _selectedInspactorColumn,
+        builder: (context, value, child) => Column(
+          children: [
+            const SizedBox(height: 16),
+            Text(
+              ["Emitter Settings", "Particle Settings"][_selectedColumsIndex],
             ),
-            _inspactorBuilder()
+            const SizedBox(height: 16),
+            for (Inspector inspector in value)
+              _inspectorItemBuilder(themeData, inspector),
           ],
         ),
       ),
     );
   }
 
-  Widget _inspactorBuilder() {
-    return ListenableBuilder(
-      listenable: _particleController,
-      builder: (c, w) => Column(
+  Widget _inspectorItemBuilder(ThemeData themeData, Inspector inspector) {
+    if (inspector.type == null ||
+        inspector.type == ["gravity", "radial"][_selectedTypeIndex]) {
+      var items = <Widget>[];
+      _addInputs(inspector, items, themeData);
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          NumericIntry(
-            value: _particleController.maxParticles,
-            onChanged: (int value) {
-              _particleController.update(maxParticles: value);
-            },
-          ),
+          inspector.title.isEmpty
+              ? const SizedBox()
+              : _getText(inspector.title, themeData),
+          const SizedBox(height: 4),
+          Row(children: items),
+          const SizedBox(height: 12),
         ],
-      ),
-    );
+      );
+    }
+    return const SizedBox();
+  }
+
+  void _addInputs(
+      Inspector inspector, List<Widget> children, ThemeData themeData) {
+    if (inspector.ui == "input") {
+      for (var entry in inspector.inputs.entries) {
+        children.add(_getText(entry.key, themeData));
+        children.add(const SizedBox(width: 4));
+        children.add(
+          Expanded(
+            child: ListenableBuilder(
+              listenable: _particleController,
+              builder: (c, w) {
+                return NumericIntry(
+                  fractionDigits: 1,
+                  changeSpeed: 1,
+                  value: _particleController.getParam(entry.value).toDouble(),
+                  decoration: NumericIntryDecoration.outline(context),
+                  onChanged: (double value) =>
+                      _updateParticleParam(entry.value, value),
+                );
+              },
+            ),
+          ),
+        );
+        children.add(const SizedBox(width: 12));
+      }
+    } else if (inspector.ui == "dropdown") {
+    } else {
+      
+    }
+  }
+
+  Text _getText(String text, ThemeData themeData) =>
+      Text(text, style: themeData.primaryTextTheme.labelSmall);
+
+  void _updateParticleParam(String key, num value) {
+    var param = _particleController.getParam(key);
+    _particleController
+        .updateFromMap({key: param is int ? value.toInt() : value});
   }
 }
