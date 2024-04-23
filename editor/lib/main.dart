@@ -86,6 +86,7 @@ class _EdittorAppState extends State<EdittorApp> {
         body: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            _canvasBuilder(),
   AppBar _appBarBuilder() {
     return AppBar(
       toolbarHeight: 48,
@@ -95,6 +96,11 @@ class _EdittorAppState extends State<EdittorApp> {
       ),
       backgroundColor: Theme.of(context).tabBarTheme.indicatorColor,
     );
+  }
+
+  Widget _canvasBuilder() {
+    return Expanded(
+      child: GestureDetector(
                   onPanUpdate: (details) {
                     _particleController.update(
                         emitterX: details.localPosition.dx,
@@ -105,15 +111,19 @@ class _EdittorAppState extends State<EdittorApp> {
                         emitterX: details.localPosition.dx,
                         emitterY: details.localPosition.dy);
                   },
-                  child: SizedBox(
-                    width: 600,
-                    height: 600,
+        child: Container(
+          color: Colors.black,
+          // alignment: Alignment.center,
+          // width: 600,
+          // height: 310,
                     child: Particular(
                       controller: _particleController,
                     ),
                   ),
                 ),
-              ],
+    );
+  }
+
             ),
             _inspactorBuilder()
           ],
