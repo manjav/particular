@@ -1,4 +1,4 @@
-name: particular_example
+name: editor
 description: "Demonstrates how to use the particular package."
 publish_to: 'none'
 
@@ -9,7 +9,9 @@ dependencies:
     sdk: flutter
   image: 
   particular:
+    path: ../
   intry:
+    path: ../../../intry
 
 dev_dependencies:
   integration_test:

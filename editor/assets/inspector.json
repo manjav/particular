@@ -115,7 +115,6 @@
         },
         {
             "ui": "color",
-            "type":"color",
             "inputs": {
                 "Start Color": "startColor",
                 "Variance": "startColorVariance"
