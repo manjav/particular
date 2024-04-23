@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui' as ui;
 
 import 'package:editor/data/inspector.dart';
+import 'package:editor/data/particular_editor_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as image;
@@ -21,6 +22,7 @@ class EdittorApp extends StatefulWidget {
 
 class _EdittorAppState extends State<EdittorApp> {
   // Add controller to change particle
+  final _particleController = ParticularEditorController();
   final _selectedInspactorColumn = ValueNotifier([]);
 
   @override
