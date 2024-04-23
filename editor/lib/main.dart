@@ -79,14 +79,22 @@ class _EdittorAppState extends State<EdittorApp> {
       return const Center(child: CircularProgressIndicator());
     }
     return MaterialApp(
-      theme: ThemeData.dark(),
+      title: "Particular Editor",
+      theme: ThemeData.dark(useMaterial3: true),
       home: Scaffold(
-        backgroundColor: Colors.black,
+        appBar: _appBarBuilder(),
         body: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Column(
-              children: [
-                GestureDetector(
+  AppBar _appBarBuilder() {
+    return AppBar(
+      toolbarHeight: 48,
+      title: Text(
+        "Particular Editor",
+        style: Theme.of(context).primaryTextTheme.headlineSmall,
+      ),
+      backgroundColor: Theme.of(context).tabBarTheme.indicatorColor,
+    );
                   onPanUpdate: (details) {
                     _particleController.update(
                         emitterX: details.localPosition.dx,
