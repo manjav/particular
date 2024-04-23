@@ -24,6 +24,7 @@ class _EdittorAppState extends State<EdittorApp> {
   // Add controller to change particle
   final _particleController = ParticularEditorController();
   final _selectedInspactorColumn = ValueNotifier([]);
+  int _selectedTypeIndex = 0;
   List _inspactorData = [];
 
   @override
@@ -214,6 +215,37 @@ class _EdittorAppState extends State<EdittorApp> {
         children.add(const SizedBox(width: 12));
       }
     } else if (inspector.ui == "dropdown") {
+      List<String> values = inspector.inputs.values.first.split(',');
+      children.add(_getText(inspector.inputs.keys.first, themeData));
+      children.add(const Expanded(child: SizedBox()));
+      var items = values
+          .map(
+            (name) => DropdownMenuItem<String>(
+                value: name,
+                child: _getText(
+                    "${name[0].toUpperCase()}${name.substring(1)}", themeData)),
+          )
+          .toList();
+      children.add(
+        SizedBox(
+          width: 200,
+          height: 46,
+          child: InputDecorator(
+            decoration: const InputDecoration(border: OutlineInputBorder()),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                items: items,
+                value: values[_selectedTypeIndex],
+                onChanged: (String? selected) {
+                  _selectedTypeIndex = values.indexOf(selected!);
+                  _updateParticleParam("emitterType", _selectedTypeIndex);
+                  setState(() {});
+                },
+              ),
+            ),
+          ),
+        ),
+      );
     } else {
       
     }
