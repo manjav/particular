@@ -5,6 +5,7 @@ import 'package:editor/data/inspector.dart';
 import 'package:editor/data/particular_editor_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:image/image.dart' as image;
 import 'package:intry/intry.dart';
 import 'package:particular/particular.dart';
@@ -24,6 +25,7 @@ class _EditorAppState extends State<EditorApp> {
   // Add controller to change particle
   final _particleController = ParticularEditorController();
   final _selectedInspactorColumn = ValueNotifier([]);
+  final _selectedColor = ValueNotifier<String?>(null);
   int _selectedTypeIndex = 0;
   int _selectedTabIndex = 1;
   List _inspactorData = [];
@@ -113,23 +115,23 @@ class _EditorAppState extends State<EditorApp> {
   Widget _canvasBuilder() {
     return Expanded(
       child: GestureDetector(
-                  onPanUpdate: (details) {
-                    _particleController.update(
-                        emitterX: details.localPosition.dx,
-                        emitterY: details.localPosition.dy);
-                  },
-                  onTapDown: (details) {
-                    _particleController.update(
-                        emitterX: details.localPosition.dx,
-                        emitterY: details.localPosition.dy);
-                  },
+        onPanUpdate: (details) {
+          _particleController.update(
+              emitterX: details.localPosition.dx,
+              emitterY: details.localPosition.dy);
+        },
+        onTapDown: (details) {
+          _particleController.update(
+              emitterX: details.localPosition.dx,
+              emitterY: details.localPosition.dy);
+        },
         child: Container(
           color: Colors.black,
-                    child: Particular(
-                      controller: _particleController,
-                    ),
-                  ),
-                ),
+          child: Particular(
+            controller: _particleController,
+          ),
+        ),
+      ),
     );
   }
 
@@ -144,6 +146,7 @@ class _EditorAppState extends State<EditorApp> {
           _tabBarBuilder(),
           _inspactorListBuilder(themeData),
           const Expanded(child: SizedBox()),
+          _colorPickerBuilder(),
         ],
       ),
     );
@@ -174,18 +177,18 @@ class _EditorAppState extends State<EditorApp> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Expanded(
-      child: ValueListenableBuilder(
-        valueListenable: _selectedInspactorColumn,
-        builder: (context, value, child) => Column(
-          children: [
-            const SizedBox(height: 16),
-            Text(
+        child: ValueListenableBuilder(
+          valueListenable: _selectedInspactorColumn,
+          builder: (context, value, child) => Column(
+            children: [
+              const SizedBox(height: 16),
+              Text(
                 ["Emitter Settings", "Particle Settings"][_selectedTabIndex],
-            ),
-            const SizedBox(height: 16),
-            for (Inspector inspector in value)
-              _inspectorItemBuilder(themeData, inspector),
-          ],
+              ),
+              const SizedBox(height: 16),
+              for (Inspector inspector in value)
+                _inspectorItemBuilder(themeData, inspector),
+            ],
           ),
         ),
       ),
@@ -220,15 +223,15 @@ class _EditorAppState extends State<EditorApp> {
         children,
         themeData,
         (entry) {
-                return NumericIntry(
-                  changeSpeed: 1,
+          return NumericIntry(
+            changeSpeed: 1,
             decoration: NumericIntryDecoration.outline(context),
-                  value: _particleController.getParam(entry.value).toDouble(),
-                  onChanged: (double value) =>
-                      _updateParticleParam(entry.value, value),
-                );
-              },
-        );
+            value: _particleController.getParam(entry.value).toDouble(),
+            onChanged: (double value) =>
+                _updateParticleParam(entry.value, value),
+          );
+        },
+      );
     } else if (inspector.ui == "dropdown") {
       List<String> values = inspector.inputs.values.first.split(',');
       children.add(_getText(inspector.inputs.keys.first, themeData));
@@ -267,7 +270,13 @@ class _EditorAppState extends State<EditorApp> {
         children,
         themeData,
         (entry) {
-          return SizedBox();
+          return IconButton(
+            icon: Icon(
+              Icons.circle,
+              color: _particleController.getParam(entry.value).getColor(),
+            ),
+            onPressed: () => _selectedColor.value = entry.value,
+          );
         },
       );
     }
@@ -300,5 +309,37 @@ class _EditorAppState extends State<EditorApp> {
     var param = _particleController.getParam(key);
     _particleController
         .updateFromMap({key: param is int ? value.toInt() : value});
+  }
+
+  Widget _colorPickerBuilder() {
+    return ValueListenableBuilder<String?>(
+      valueListenable: _selectedColor,
+      builder: (context, value, child) {
+        if (value == null) {
+          return const SizedBox();
+        }
+        var c = _particleController.getParam(value).getColor();
+        print(c);
+        return TapRegion(
+          onTapOutside: (event) => _selectedColor.value = null,
+          child: Container(
+            color: Colors.black12,
+            padding: const EdgeInsets.all(16),
+            // height: 200,
+            child: SlidePicker(
+              showIndicator: false,
+              showSliderText: false,
+              pickerColor: _particleController.getParam(value).getColor(),
+              onColorChanged: (color) {
+                _particleController.updateFromMap({
+                  value: ARGB(color.alpha / 255, color.red / 255,
+                      color.green / 255, color.blue / 255)
+                });
+              },
+            ),
+          ),
+        );
+      },
+    );
   }
 }

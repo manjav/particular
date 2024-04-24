@@ -12,6 +12,7 @@ dependencies:
     path: ../
   intry:
     path: ../../../intry
+  flutter_colorpicker:
 
 dev_dependencies:
   integration_test:

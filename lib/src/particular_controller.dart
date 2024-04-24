@@ -454,4 +454,8 @@ class ARGB {
     color.b = map["${name}Blue"];
     return color;
   }
+
+  // Returns a Color object with ARGB values calculated from the current ARGB instance.
+  Color getColor() => Color.fromARGB((a * 255).toInt(), (r * 255).toInt(),
+      (g * 255).toInt(), (b * 255).toInt());
 }
