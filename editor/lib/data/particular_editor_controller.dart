@@ -3,9 +3,7 @@ import 'package:particular/particular.dart';
 class ParticularEditorController extends ParticularController {
   void updateFromMap(Map<String, dynamic> args) {
     update(
-      emitterType: args.containsKey("emitterType")
-          ? EmitterType.values[args["emitterType"]]
-          : null,
+      emitterType: args["emitterType"] ?? EmitterType.gravity,
       duration: args["duration"],
       lifespan: args["lifespan"],
       lifespanVariance: args["lifespanVariance"],

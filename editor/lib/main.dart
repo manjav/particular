@@ -196,7 +196,11 @@ class _EditorAppState extends State<EditorApp> {
 
   Widget _inspectorItemBuilder(ThemeData themeData, Inspector inspector) {
     if (inspector.type == null ||
-        inspector.type == ["gravity", "radial"][_selectedTypeIndex]) {
+        inspector.type ==
+            [
+              "gravity",
+              "radial"
+            ][_particleController.getParam("emitterType").index]) {
       var items = <Widget>[];
       _addInputs(inspector, items, themeData);
       return Column(
