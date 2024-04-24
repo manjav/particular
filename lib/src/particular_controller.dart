@@ -83,6 +83,9 @@ class ParticularController extends ChangeNotifier {
   /// The duration of the particle system in milliseconds, -1 for infinite.
   int duration = -1;
 
+  /// The start time of the particle system in milliseconds.
+  int startTime = 0;
+
   /// The lifespan of particles in milliseconds.
   int lifespan = 1000;
 
@@ -288,6 +291,9 @@ class ParticularController extends ChangeNotifier {
     }
     if (duration != null) {
       this.duration = duration;
+    }
+    if (startTime != null) {
+      this.startTime = startTime;
     }
     if (maxParticles != null) {
       this.maxParticles = maxParticles;

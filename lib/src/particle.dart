@@ -108,18 +108,18 @@ class Particle {
     required double finishSize,
     required Color startColor,
     required Color finishColor,
-    double rotatePerSecond = 0,
-    double radialAcceleration = 0,
-    double tangentialAcceleration = 0,
-    double minRadius = 0,
-    double maxRadius = 0,
-    double gravityX = 0,
-    double gravityY = 0,
+    required double rotatePerSecond,
+    required double radialAcceleration,
+    required double tangentialAcceleration,
+    required double minRadius,
+    required double maxRadius,
+    required double gravityX,
+    required double gravityY,
   }) {
     this.emitterType = emitterType;
     this.age = age;
-    this.lifespan = lifespan;
     this.speed = speed;
+    this.lifespan = lifespan;
     this.angle = angle;
     this.emitterX = emitterX;
     this.emitterY = emitterY;
@@ -154,9 +154,8 @@ class Particle {
     final ratio = age / lifespan;
     final rate = deltaTime / lifespan;
 
-    angle -= rotatePerSecond * rate;
-
     if (emitterType == EmitterType.radius) {
+      angle -= rotatePerSecond * rate;
       radius += radiusDelta * rate;
       final radiusCos = math.cos(angle / 180.0 * math.pi);
       final radiusSin = math.sin(angle / 180.0 * math.pi);

@@ -116,13 +116,16 @@ class _EditorAppState extends State<EditorApp> {
       child: GestureDetector(
         onPanUpdate: (details) {
           _particleController.update(
-              emitterX: details.localPosition.dx,
-              emitterY: details.localPosition.dy);
+            emitterX: details.localPosition.dx,
+            emitterY: details.localPosition.dy,
+          );
         },
         onTapDown: (details) {
           _particleController.update(
-              emitterX: details.localPosition.dx,
-              emitterY: details.localPosition.dy);
+            emitterX: details.localPosition.dx,
+            emitterY: details.localPosition.dy,
+            startTime: -1,
+          );
         },
         child: Container(
           color: Colors.black,
@@ -155,14 +158,14 @@ class _EditorAppState extends State<EditorApp> {
     return ValueListenableBuilder(
       valueListenable: _selectedInspactorColumn,
       builder: (context, value, child) {
-    return Container(
-      color: Colors.black12,
-      child: Row(
-        children: [
+        return Container(
+          color: Colors.black12,
+          child: Row(
+            children: [
               _tabItemBuilder(0, Icons.snowing),
               _tabItemBuilder(1, Icons.color_lens),
-        ],
-      ),
+            ],
+          ),
         );
       },
     );
@@ -183,8 +186,8 @@ class _EditorAppState extends State<EditorApp> {
     return ValueListenableBuilder(
       valueListenable: _selectedInspactorColumn,
       builder: (context, value, child) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Column(
             children: [
               const SizedBox(height: 16),
@@ -255,11 +258,11 @@ class _EditorAppState extends State<EditorApp> {
             "blendMode" => BlendMode.values,
             _ => EmitterType.values,
           };
-      var items = values
+          var items = values
               .map((item) => DropdownMenuItem(
                   value: item,
                   child: _getText(item.toString().toTitleCase(), themeData)))
-          .toList();
+              .toList();
           return InputDecorator(
             decoration: const InputDecoration(border: OutlineInputBorder()),
             child: DropdownButtonHideUnderline(

@@ -65,11 +65,20 @@ class _ParticularState extends State<Particular>
   /// Iterates over frames.
   Future<void> _iterate() async {
     if (_ticker != null) return;
-    _ticker = createTicker((elapsed) {
+    _ticker = createTicker(_onTick);
+    _ticker!.start();
+  }
+
+  void _onTick(Duration elapsed) {
       var config = widget.controller!;
+    if (config.startTime < 0) {
+      config.startTime = elapsed.inMilliseconds - _deltaTime;
+      _lastFrameTime = 0;
+    }
+    final now = elapsed.inMilliseconds - config.startTime;
 
       // Spawn particles
-      if (config.duration < 0 || elapsed.inMilliseconds < config.duration) {
+    if (config.duration < 0 || now < config.duration) {
         var particlesPerTick =
             (_deltaTime * config.maxParticles / config.lifespan).round();
         for (var i = 0; i < particlesPerTick; i++) {
@@ -77,12 +86,9 @@ class _ParticularState extends State<Particular>
         }
       }
 
-      _deltaTime = elapsed.inMilliseconds - _lastFrameTime;
+    _deltaTime = now - _lastFrameTime;
       _lastFrameTime += _deltaTime;
       setState(() {});
-    });
-
-    _ticker!.start();
   }
 
   /// Spawns a particle.
@@ -138,7 +144,7 @@ class _ParticularState extends State<Particular>
           deadParticleIndices: _deadParticleIndices,
           image: widget.controller!.texture!,
           blendMode: widget.controller!.blendMode,
-          onFinished: () => _ticker?.stop(),
+          onFinished: () {},
         ),
       ),
     );
