@@ -25,6 +25,7 @@ class _EditorAppState extends State<EditorApp> {
   final _particleController = ParticularEditorController();
   final _selectedInspactorColumn = ValueNotifier([]);
   int _selectedTypeIndex = 0;
+  int _selectedTabIndex = 1;
   List _inspactorData = [];
 
   @override
@@ -38,11 +39,11 @@ class _EditorAppState extends State<EditorApp> {
   void _loadInspectorsData() async {
     var json = await rootBundle.loadString("assets/inspector.json");
     _inspactorData = List.castFrom(jsonDecode(json));
-    setState(() => _selectTab(0));
+    setState(() => _selectTab(_selectedTabIndex));
   }
 
   void _selectTab(int index) {
-    _selectedColumsIndex = index;
+    _selectedTabIndex = index;
     var list = <Inspector>[];
     for (var line in _inspactorData[index]) {
       list.add(Inspector(
@@ -124,9 +125,6 @@ class _EditorAppState extends State<EditorApp> {
                   },
         child: Container(
           color: Colors.black,
-          // alignment: Alignment.center,
-          // width: 600,
-          // height: 310,
                     child: Particular(
                       controller: _particleController,
                     ),
@@ -139,31 +137,56 @@ class _EditorAppState extends State<EditorApp> {
     var themeData = Theme.of(context);
     return Container(
       width: 320,
-      padding: const EdgeInsets.all(12),
       color: themeData.colorScheme.inverseSurface,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          _tabBarBuilder(),
           _inspactorListBuilder(themeData),
+          const Expanded(child: SizedBox()),
         ],
       ),
     );
   }
 
+  Widget _tabBarBuilder() {
+    return Container(
+      color: Colors.black12,
+      child: Row(
+        children: [
+          _tabItemBuilder(0, Icons.animation),
+          _tabItemBuilder(1, Icons.circle),
+        ],
+      ),
+    );
+  }
+
+  Widget _tabItemBuilder(int index, IconData icon) {
+    return Expanded(
+      child: IconButton(
+        icon: Icon(icon),
+        onPressed: () => _selectTab(index),
+      ),
+    );
+  }
 
   Widget _inspactorListBuilder(ThemeData themeData) {
-    return Expanded(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Expanded(
       child: ValueListenableBuilder(
         valueListenable: _selectedInspactorColumn,
         builder: (context, value, child) => Column(
           children: [
             const SizedBox(height: 16),
             Text(
-              ["Emitter Settings", "Particle Settings"][_selectedColumsIndex],
+                ["Emitter Settings", "Particle Settings"][_selectedTabIndex],
             ),
             const SizedBox(height: 16),
             for (Inspector inspector in value)
               _inspectorItemBuilder(themeData, inspector),
           ],
+          ),
         ),
       ),
     );
