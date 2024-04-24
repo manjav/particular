@@ -318,8 +318,6 @@ class _EditorAppState extends State<EditorApp> {
         if (value == null) {
           return const SizedBox();
         }
-        var c = _particleController.getParam(value).getColor();
-        print(c);
         return TapRegion(
           onTapOutside: (event) => _selectedColor.value = null,
           child: Container(
