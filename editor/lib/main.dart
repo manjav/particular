@@ -241,9 +241,13 @@ class _EditorAppState extends State<EditorApp> {
         children,
         themeData,
         (entry) {
-          List values = entry.value == "emitterType"
-              ? EmitterType.values
-              : BlendFunction.values;
+          List values = switch (entry.value) {
+            "blendFunctionSource" ||
+            "blendFunctionDestination" =>
+              BlendFunction.values,
+            "blendMode" => BlendMode.values,
+            _ => EmitterType.values,
+          };
       var items = values
               .map((item) => DropdownMenuItem(
                   value: item,

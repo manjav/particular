@@ -3,7 +3,14 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 /// Two type of emitters (liner of radial)
-enum EmitterType { gravity, radius }
+enum EmitterType {
+  gravity,
+  radius;
+
+  // Returns a string representation of the object. In this case, it returns the value of the 'name' property.
+  @override
+  String toString() => name;
+}
 
 /// Represents a particle in the particle system.
 class Particle {
