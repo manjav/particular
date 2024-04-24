@@ -10,17 +10,17 @@ import 'package:intry/intry.dart';
 import 'package:particular/particular.dart';
 
 void main() {
-  runApp(const EdittorApp());
+  runApp(const EditorApp());
 }
 
-class EdittorApp extends StatefulWidget {
-  const EdittorApp({super.key});
+class EditorApp extends StatefulWidget {
+  const EditorApp({super.key});
 
   @override
-  State<EdittorApp> createState() => _EdittorAppState();
+  State<EditorApp> createState() => _EditorAppState();
 }
 
-class _EdittorAppState extends State<EdittorApp> {
+class _EditorAppState extends State<EditorApp> {
   // Add controller to change particle
   final _particleController = ParticularEditorController();
   final _selectedInspactorColumn = ValueNotifier([]);
