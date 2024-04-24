@@ -137,7 +137,7 @@ class _ParticularState extends State<Particular>
           transforms: _transforms,
           deadParticleIndices: _deadParticleIndices,
           image: widget.controller!.texture!,
-          blendMode: widget.controller!.computeBlendMode(),
+          blendMode: widget.controller!.blendMode,
           onFinished: () => _ticker?.stop(),
         ),
       ),
@@ -182,7 +182,7 @@ class ParticlePainter extends CustomPainter {
   final List<ParticleTransform> transforms;
 
   /// The paint object for rendering particles.
-  final Paint _paint = Paint()..blendMode = BlendMode.plus;
+  final Paint _paint = Paint();
 
   /// Creates a [ParticlePainter] with the specified parameters.
   ParticlePainter({
@@ -195,7 +195,9 @@ class ParticlePainter extends CustomPainter {
     required this.rectangles,
     required this.onFinished,
     required this.deadParticleIndices,
-  });
+  }) {
+    _paint.blendMode = blendMode;
+  }
 
   /// Draws many parts of an image - the [atlas] - onto the canvas.
   @override

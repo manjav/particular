@@ -80,53 +80,6 @@ class ParticularController extends ChangeNotifier {
     return Color.fromARGB(alpha, red, green, blue);
   }
 
-  /// Gets the blend mode for particle rendering.
-  BlendMode computeBlendMode() {
-    int s = blendFunctionSource;
-    int d = blendFunctionDestination;
-    if (d == 0) return BlendMode.clear;
-    if (s == 0) {
-      return switch (d) {
-        0x301 => BlendMode.screen, //erase
-        0x302 => BlendMode.srcIn, //mask
-        _ => BlendMode.srcOver,
-      };
-    }
-    if (s == 1) {
-      return switch (d) {
-        1 => BlendMode.plus,
-        0x301 => BlendMode.screen,
-        _ => BlendMode.srcOver,
-      };
-    }
-    if (s == 0x306 && d == 0x303) {
-      return ui.BlendMode.multiply;
-    }
-    if (s == 0x305 && d == 0x304) {
-      return BlendMode.dst;
-    }
-    // 0=>      BlendMode.zero,
-    // 1=>      BlendMode.color,
-    // 0x300=>  BlendMode.SOURCE_COLOR,
-    // 0x301=>  BlendMode.ONE_MINUS_SOURCE_COLOR,
-    // 0x302=>  BlendMode.SOURCE_ALPHA,
-    // 0x303=>  BlendMode.ONE_MINUS_SOURCE_ALPHA,
-    // 0x304=>  BlendMode.DESTINATION_ALPHA,
-    // 0x305=>  BlendMode.ONE_MINUS_DESTINATION_ALPHA,
-    // 0x306=>  BlendMode.DESTINATION_COLOR,
-    // 0x307=>  BlendMode.ONE_MINUS_DESTINATION_COLOR,
-
-    // "none":,ONE, ZERO
-    // "normal": ONE, ONE_MINUS_SOURCE_ALPHA
-    // "add": ONE, ONE
-    // "screen": ONE, ONE_MINUS_SOURCE_COLOR
-    // "erase": ZERO, ONE_MINUS_SOURCE_ALPHA
-    // "mask": ZERO, SOURCE_ALPHA
-    // "multiply": DESTINATION_COLOR, ONE_MINUS_SOURCE_ALPHA
-    // "below": ONE_MINUS_DESTINATION_ALPHA, DESTINATION_ALPHA
-    return BlendMode.srcOver;
-  }
-
   /// The duration of the particle system in milliseconds, -1 for infinite.
   int duration = -1;
 
@@ -139,11 +92,14 @@ class ParticularController extends ChangeNotifier {
   /// The maximum number of particles.
   int maxParticles = 100;
 
+  /// The blend mode value.
+  BlendMode blendMode = BlendMode.srcOver;
+
   /// The source blend mode function.
-  int blendFunctionSource = 0;
+  BlendFunction blendFunctionSource = BlendFunction.one;
 
   /// The destination blend mode function.
-  int blendFunctionDestination = 0;
+  BlendFunction blendFunctionDestination = BlendFunction.oneMinusSourceAlpha;
 
   /// The texture used for particles.
   ui.Image? texture;
@@ -243,17 +199,18 @@ class ParticularController extends ChangeNotifier {
     update(texture: texture);
     if (configs == null) return;
     update(
+      emitterType: EmitterType.values[configs["emitterType"]],
+      blendFunctionSource: BlendFunction.fromValue(configs["blendFuncSource"]),
+      blendFunctionDestination:
+          BlendFunction.fromValue(configs["blendFuncDestination"]),
       startColor: ARGB.fromMap(configs, "startColor"),
       startColorVariance: ARGB.fromMap(configs, "startColorVariance"),
       finishColor: ARGB.fromMap(configs, "finishColor"),
       finishColorVariance: ARGB.fromMap(configs, "finishColorVariance"),
-      emitterType: EmitterType.values[configs["emitterType"]],
       lifespan: (configs["particleLifespan"] * 1000).round(),
       lifespanVariance: (configs["particleLifespanVariance"] * 1000).round(),
       duration: (configs["duration"] * 1000).round(),
       maxParticles: configs["maxParticles"],
-      blendFunctionSource: configs["blendFuncSource"],
-      blendFunctionDestination: configs["blendFuncDestination"],
       sourcePositionVarianceX: configs["sourcePositionVariancex"],
       sourcePositionVarianceY: configs["sourcePositionVariancey"],
       startSize: configs["startParticleSize"],
@@ -282,12 +239,14 @@ class ParticularController extends ChangeNotifier {
   /// particle system updater method
   void update({
     EmitterType? emitterType,
+    BlendMode? blendMode,
+    BlendFunction? blendFunctionSource,
+    BlendFunction? blendFunctionDestination,
     int? duration,
+    int? startTime,
     int? lifespan,
     int? lifespanVariance,
     int? maxParticles,
-    int? blendFunctionSource,
-    int? blendFunctionDestination,
     ARGB? startColor,
     ARGB? startColorVariance,
     ARGB? finishColor,
@@ -333,11 +292,18 @@ class ParticularController extends ChangeNotifier {
     if (maxParticles != null) {
       this.maxParticles = maxParticles;
     }
+    if (blendMode != null) {
+      this.blendMode = blendMode;
+    }
     if (blendFunctionSource != null) {
       this.blendFunctionSource = blendFunctionSource;
+      this.blendMode = BlendModeItem.computeBlendMode2(
+          this.blendFunctionSource, this.blendFunctionDestination);
     }
     if (blendFunctionDestination != null) {
       this.blendFunctionDestination = blendFunctionDestination;
+      this.blendMode = BlendModeItem.computeBlendMode2(
+          this.blendFunctionSource, this.blendFunctionDestination);
     }
     if (startColor != null) {
       this.startColor = startColor;

@@ -4,12 +4,13 @@ class ParticularEditorController extends ParticularController {
   void updateFromMap(Map<String, dynamic> args) {
     update(
       emitterType: args["emitterType"] ?? EmitterType.gravity,
+      blendMode: args["blendMode"],
+      blendFunctionSource: args["blendFunctionSource"],
+      blendFunctionDestination: args["blendFunctionDestination"],
       duration: args["duration"],
       lifespan: args["lifespan"],
       lifespanVariance: args["lifespanVariance"],
       maxParticles: args["maxParticles"],
-      blendFunctionSource: args["blendFunctionSource"],
-      blendFunctionDestination: args["blendFunctionDestination"],
       startColor: args["startColor"],
       startColorVariance: args["startColorVariance"],
       finishColor: args["finishColor"],
@@ -45,6 +46,7 @@ class ParticularEditorController extends ParticularController {
   dynamic getParam(String key) {
     return switch (key) {
       "emitterType" => emitterType,
+      "blendMode" => blendMode,
       "blendFunctionSource" => blendFunctionSource,
       "blendFunctionDestination" => blendFunctionDestination,
       "duration" => duration,
