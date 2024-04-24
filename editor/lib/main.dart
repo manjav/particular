@@ -51,7 +51,7 @@ class _EditorAppState extends State<EditorApp> {
         line["ui"] ?? "input",
         line["type"],
         line["title"] ?? "",
-        line["inputs"],
+        line["inputs"] ?? {},
       ));
     }
     _selectedInspactorColumn.value = list;
@@ -282,7 +282,7 @@ class _EditorAppState extends State<EditorApp> {
       ThemeData themeData,
       Widget Function(MapEntry<String, dynamic> entry) inspectorBuilder) {
     for (var entry in inspector.inputs.entries) {
-      children.add(_getText(entry.key, themeData));
+      children.add(_getText(entry.key.toTitleCase(), themeData));
       children.add(const SizedBox(width: 4));
       children.add(
         Expanded(
@@ -333,4 +333,8 @@ class _EditorAppState extends State<EditorApp> {
       },
     );
   }
+}
+
+extension StringExtension on String {
+  String toTitleCase() => "${this[0].toUpperCase()}${substring(1)}";
 }
