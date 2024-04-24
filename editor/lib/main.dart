@@ -26,7 +26,7 @@ class _EditorAppState extends State<EditorApp> {
   final _particleController = ParticularEditorController();
   final _selectedInspactorColumn = ValueNotifier([]);
   final _selectedColor = ValueNotifier<String?>(null);
-  int _selectedTabIndex = 1;
+  int _selectedTabIndex = 0;
   List _inspactorData = [];
 
   @override
@@ -152,20 +152,27 @@ class _EditorAppState extends State<EditorApp> {
   }
 
   Widget _tabBarBuilder() {
+    return ValueListenableBuilder(
+      valueListenable: _selectedInspactorColumn,
+      builder: (context, value, child) {
     return Container(
       color: Colors.black12,
       child: Row(
         children: [
-          _tabItemBuilder(0, Icons.animation),
-          _tabItemBuilder(1, Icons.circle),
+              _tabItemBuilder(0, Icons.snowing),
+              _tabItemBuilder(1, Icons.color_lens),
         ],
       ),
+        );
+      },
     );
   }
 
   Widget _tabItemBuilder(int index, IconData icon) {
     return Expanded(
       child: IconButton(
+        color:
+            _selectedTabIndex != index ? Theme.of(context).splashColor : null,
         icon: Icon(icon),
         onPressed: () => _selectTab(index),
       ),
