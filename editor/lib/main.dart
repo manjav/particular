@@ -215,28 +215,20 @@ class _EditorAppState extends State<EditorApp> {
   void _addInputs(
       Inspector inspector, List<Widget> children, ThemeData themeData) {
     if (inspector.ui == "input") {
-      for (var entry in inspector.inputs.entries) {
-        children.add(_getText(entry.key, themeData));
-        children.add(const SizedBox(width: 4));
-        children.add(
-          Expanded(
-            child: ListenableBuilder(
-              listenable: _particleController,
-              builder: (c, w) {
+      _inputLineBuilder(
+        inspector,
+        children,
+        themeData,
+        (entry) {
                 return NumericIntry(
-                  fractionDigits: 1,
                   changeSpeed: 1,
+            decoration: NumericIntryDecoration.outline(context),
                   value: _particleController.getParam(entry.value).toDouble(),
-                  decoration: NumericIntryDecoration.outline(context),
                   onChanged: (double value) =>
                       _updateParticleParam(entry.value, value),
                 );
               },
-            ),
-          ),
         );
-        children.add(const SizedBox(width: 12));
-      }
     } else if (inspector.ui == "dropdown") {
       List<String> values = inspector.inputs.values.first.split(',');
       children.add(_getText(inspector.inputs.keys.first, themeData));
@@ -270,7 +262,34 @@ class _EditorAppState extends State<EditorApp> {
         ),
       );
     } else {
-      
+      _inputLineBuilder(
+        inspector,
+        children,
+        themeData,
+        (entry) {
+          return SizedBox();
+        },
+      );
+    }
+  }
+
+  void _inputLineBuilder(
+      Inspector inspector,
+      List<Widget> children,
+      ThemeData themeData,
+      Widget Function(MapEntry<String, dynamic> entry) inspectorBuilder) {
+    for (var entry in inspector.inputs.entries) {
+      children.add(_getText(entry.key, themeData));
+      children.add(const SizedBox(width: 4));
+      children.add(
+        Expanded(
+          child: ListenableBuilder(
+            listenable: _particleController,
+            builder: (c, w) => inspectorBuilder(entry),
+          ),
+        ),
+      );
+      children.add(const SizedBox(width: 12));
     }
   }
 
