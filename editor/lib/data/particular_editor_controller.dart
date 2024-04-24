@@ -47,12 +47,12 @@ class ParticularEditorController extends ParticularController {
   dynamic getParam(String key) {
     return switch (key) {
       "emitterType" => emitterType,
+      "blendFunctionSource" => blendFunctionSource,
+      "blendFunctionDestination" => blendFunctionDestination,
       "duration" => duration,
       "lifespan" => lifespan,
       "lifespanVariance" => lifespanVariance,
       "maxParticles" => maxParticles,
-      "blendFunctionSource" => blendFunctionSource,
-      "blendFunctionDestination" => blendFunctionDestination,
       "startColor" => startColor,
       "startColorVariance" => startColorVariance,
       "finishColor" => finishColor,

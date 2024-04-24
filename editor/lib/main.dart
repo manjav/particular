@@ -173,12 +173,12 @@ class _EditorAppState extends State<EditorApp> {
   }
 
   Widget _inspactorListBuilder(ThemeData themeData) {
+    return ValueListenableBuilder(
+      valueListenable: _selectedInspactorColumn,
+      builder: (context, value, child) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Expanded(
-        child: ValueListenableBuilder(
-          valueListenable: _selectedInspactorColumn,
-          builder: (context, value, child) => Column(
+          child: Column(
             children: [
               const SizedBox(height: 16),
               Text(
@@ -189,8 +189,8 @@ class _EditorAppState extends State<EditorApp> {
                 _inspectorItemBuilder(themeData, inspector),
             ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
