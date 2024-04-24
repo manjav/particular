@@ -26,7 +26,6 @@ class _EditorAppState extends State<EditorApp> {
   final _particleController = ParticularEditorController();
   final _selectedInspactorColumn = ValueNotifier([]);
   final _selectedColor = ValueNotifier<String?>(null);
-  int _selectedTypeIndex = 0;
   int _selectedTabIndex = 1;
   List _inspactorData = [];
 
@@ -138,7 +137,7 @@ class _EditorAppState extends State<EditorApp> {
   Widget _inspactorBuilder() {
     var themeData = Theme.of(context);
     return Container(
-      width: 320,
+      width: 330,
       color: themeData.colorScheme.inverseSurface,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -233,36 +232,31 @@ class _EditorAppState extends State<EditorApp> {
         },
       );
     } else if (inspector.ui == "dropdown") {
-      List<String> values = inspector.inputs.values.first.split(',');
-      children.add(_getText(inspector.inputs.keys.first, themeData));
-      children.add(const Expanded(child: SizedBox()));
+      _inputLineBuilder(
+        inspector,
+        children,
+        themeData,
+        (entry) {
+          List values = entry.value == "emitterType"
+              ? EmitterType.values
+              : BlendFunction.values;
       var items = values
-          .map(
-            (name) => DropdownMenuItem<String>(
-                value: name,
-                child: _getText(
-                    "${name[0].toUpperCase()}${name.substring(1)}", themeData)),
-          )
+              .map((item) => DropdownMenuItem(
+                  value: item,
+                  child: _getText(item.toString().toTitleCase(), themeData)))
           .toList();
-      children.add(
-        SizedBox(
-          width: 200,
-          height: 46,
-          child: InputDecorator(
+          return InputDecorator(
             decoration: const InputDecoration(border: OutlineInputBorder()),
             child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
+              child: DropdownButton(
                 items: items,
-                value: values[_selectedTypeIndex],
-                onChanged: (String? selected) {
-                  _selectedTypeIndex = values.indexOf(selected!);
-                  _updateParticleParam("emitterType", _selectedTypeIndex);
-                  setState(() {});
-                },
+                value: _particleController.getParam(entry.value),
+                onChanged: (dynamic selected) =>
+                    _particleController.updateFromMap({entry.value: selected}),
               ),
             ),
-          ),
-        ),
+          );
+        },
       );
     } else {
       _inputLineBuilder(
@@ -323,7 +317,6 @@ class _EditorAppState extends State<EditorApp> {
           child: Container(
             color: Colors.black12,
             padding: const EdgeInsets.all(16),
-            // height: 200,
             child: SlidePicker(
               showIndicator: false,
               showSliderText: false,

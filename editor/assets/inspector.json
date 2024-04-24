@@ -27,16 +27,15 @@
                 "Variance": "angleVariance"
             }
         },
+        {},
         {
             "ui": "dropdown",
-            "title": "",
             "inputs": {
-                "Type": "gravity,radial"
+                "Emitter Type": "emitterType"
             }
         },
         {
             "type": "gravity",
-            "title": "",
             "inputs": {
                 "Speed": "speed",
                 "Variance": "speedVariance"
@@ -52,7 +51,6 @@
         },
         {
             "type": "gravity",
-            "title": "",
             "inputs": {
                 "Radial Acceleration": "radialAcceleration",
                 "Variance": "radialAccelerationVariance"
@@ -60,7 +58,6 @@
         },
         {
             "type": "gravity",
-            "title": "",
             "inputs": {
                 "Tangential Acceleration": "tangentialAcceleration",
                 "Variance": "tangentialAccelerationVariance"
@@ -68,7 +65,6 @@
         },
         {
             "type": "radial",
-            "title": "",
             "inputs": {
                 "Min Radius": "minRadius",
                 "Variance": "minRadiusVariance"
@@ -76,7 +72,6 @@
         },
         {
             "type": "radial",
-            "title": "",
             "inputs": {
                 "Max Radius": "maxRadius",
                 "Variance": "maxRadiusVariance"
@@ -84,7 +79,6 @@
         },
         {
             "type": "radial",
-            "title": "",
             "inputs": {
                 "Rotation Per Second": "rotatePerSecond",
                 "Variance": "rotatePerSecondVariance"
@@ -93,21 +87,18 @@
     ],
     [
         {
-            "title": "",
             "inputs": {
                 "Lifespan": "lifespan",
                 "Variance": "lifespanVariance"
             }
         },
         {
-            "title": "",
             "inputs": {
                 "Start Size": "startSize",
                 "Variance": "startSizeVariance"
             }
         },
         {
-            "title": "",
             "inputs": {
                 "End Size": "finishSize",
                 "Variance": "finishSizeVariance"
@@ -125,6 +116,18 @@
             "inputs": {
                 "End Color": "finishColor",
                 "Variance": "finishColorVariance"
+            }
+        },
+        {
+            "ui": "dropdown",
+            "inputs": {
+                "Blend Source": "blendFunctionSource"
+            }
+        },
+        {
+            "ui": "dropdown",
+            "inputs": {
+                "Blend Destination": "blendFunctionDestination"
             }
         }
     ]
