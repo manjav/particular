@@ -220,7 +220,8 @@ class ParticularController extends ChangeNotifier {
       finishColorVariance: ARGB.fromMap(configs, "finishColorVariance"),
       lifespan: (configs["particleLifespan"] * 1000).round(),
       lifespanVariance: (configs["particleLifespanVariance"] * 1000).round(),
-      duration: (configs["duration"] * 1000).round(),
+      duration:
+          (configs["duration"] * (configs["duration"] > -1 ? 1000 : 1)).round(),
       maxParticles: configs["maxParticles"],
       sourcePositionVarianceX: configs["sourcePositionVariancex"],
       sourcePositionVarianceY: configs["sourcePositionVariancey"],
@@ -410,6 +411,50 @@ class ParticularController extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  Map getConfigs() {
+    final startColorMap = startColor.toMap("startColor");
+    final startColorVarianceMap =
+        startColorVariance.toMap("startColorVariance");
+    final finishColorMap = finishColor.toMap("finishColor");
+    final finishColorVarianceMap =
+        finishColorVariance.toMap("finishColorVariance");
+    return {
+      "emitterType": emitterType.index,
+      "renderBlendMode": renderBlendMode.index,
+      "textureBlendMode": textureBlendMode.index,
+      "particleLifespan": (lifespan * 0.001),
+      "particleLifespanVariance": lifespanVariance * 0.001,
+      "duration": duration * (duration > -1 ? 0.001 : 1),
+      "maxParticles": maxParticles,
+      "sourcePositionVariancex": sourcePositionVarianceX,
+      "sourcePositionVariancey": sourcePositionVarianceY,
+      "startParticleSize": startSize,
+      "startParticleSizeVariance": startSizeVariance,
+      "finishParticleSize": finishSize,
+      "finishParticleSizeVariance": finishSizeVariance,
+      "speed": speed,
+      "speedVariance": speedVariance,
+      "gravityx": gravityX,
+      "gravityy": gravityY,
+      "angle": angle,
+      "angleVariance": angleVariance,
+      "minRadius": minRadius,
+      "minRadiusVariance": minRadiusVariance,
+      "maxRadius": maxRadius,
+      "maxRadiusVariance": maxRadiusVariance,
+      "rotatePerSecond": rotatePerSecond,
+      "rotatePerSecondVariance": rotatePerSecondVariance,
+      "radialAcceleration": radialAcceleration,
+      "radialAccelVariance": radialAccelerationVariance,
+      "tangentialAcceleration": tangentialAcceleration,
+      "tangentialAccelVariance": tangentialAccelerationVariance,
+    }
+      ..addAll(startColorMap)
+      ..addAll(startColorVarianceMap)
+      ..addAll(finishColorMap)
+      ..addAll(finishColorVarianceMap);
+  }
 }
 
 /// The wrapper class for colors
@@ -440,4 +485,13 @@ class ARGB {
   // Returns a Color object with ARGB values calculated from the current ARGB instance.
   Color getColor() => Color.fromARGB((a * 255).toInt(), (r * 255).toInt(),
       (g * 255).toInt(), (b * 255).toInt());
+
+  Map toMap(String name) {
+    return {
+      "${name}Alpha": a,
+      "${name}Red": r,
+      "${name}Green": g,
+      "${name}Blue": b
+    };
+  }
 }
