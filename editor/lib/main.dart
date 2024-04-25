@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:editor/data/inspector.dart';
 import 'package:editor/data/particular_editor_controller.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -279,28 +280,26 @@ class _EditorAppState extends State<EditorApp> {
             ),
             onPressed: () => _selectedColor.value = entry.value,
           );
-        },
+    } else {
+      // Button
+      return OutlinedButton(
+        onPressed: _browseTexture,
+        child: _getText("${entry.value}".toTitleCase(), themeData),
       );
     }
   }
 
-  void _inputLineBuilder(
-      Inspector inspector,
-      List<Widget> children,
-      ThemeData themeData,
-      Widget Function(MapEntry<String, dynamic> entry) inspectorBuilder) {
-    for (var entry in inspector.inputs.entries) {
-      children.add(_getText(entry.key.toTitleCase(), themeData));
-      children.add(const SizedBox(width: 4));
-      children.add(
-        Expanded(
-          child: ListenableBuilder(
-            listenable: _particleController,
-            builder: (c, w) => inspectorBuilder(entry),
-          ),
-        ),
-      );
-      children.add(const SizedBox(width: 12));
+  Future<void> _browseTexture() async {
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(type: FileType.image);
+
+    if (result != null) {
+      PlatformFile file = result.files.first;
+      final image = await _loadUIImage(file.bytes!);
+      _particleController.update(texture: image);
+    }
+  }
+
     }
   }
 

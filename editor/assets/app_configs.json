@@ -134,7 +134,7 @@
                 {
                     "ui": "button",
                     "inputs": {
-                        "Load": "texture"
+                        "texture": "load"
                     }
                 }
             ]
