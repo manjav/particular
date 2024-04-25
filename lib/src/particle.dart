@@ -1,3 +1,5 @@
+// ignore_for_file: overridden_fields
+
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -256,7 +258,6 @@ class ParticleTransform extends RSTransform {
 /// Help to reuse colors after rendering
 class ParticleColor extends Color {
   @override
-  // ignore: overridden_fields
   int value = 0;
 
   ParticleColor(super.value);
@@ -361,4 +362,31 @@ class ParticleColor extends Color {
   /// The blue channel of this color in an 8 bit value.
   @override
   int get blue => (0x000000ff & value) >> 0;
+}
+
+/// Help to reuse colors after rendering
+class ParticleRect extends Rect {
+  /// The offset of the left edge of this rectangle from the x axis.
+  @override
+  double left = 0;
+
+  /// The offset of the top edge of this rectangle from the y axis.
+  @override
+  double top = 0;
+
+  /// The offset of the right edge of this rectangle from the x axis.
+  @override
+  double right = 0;
+
+  /// The offset of the bottom edge of this rectangle from the y axis.
+  @override
+  double bottom = 0;
+
+  ParticleRect.fromLTWH(super.left, super.top, super.width, super.height)
+      : super.fromLTWH();
+
+  void update(int width, int height) {
+    right = left + width;
+    bottom = top + height;
+  }
 }

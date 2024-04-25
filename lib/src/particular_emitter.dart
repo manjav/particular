@@ -30,7 +30,7 @@ class _ParticularState extends State<Particular>
   double _devicePixelRatio = 1;
 
   /// The rectangles representing particles.
-  final List<Rect> _rectangles = [];
+  final List<ParticleRect> _rectangles = [];
 
   /// The particles in the system.
   final List<Particle> _particles = [];
@@ -94,16 +94,20 @@ class _ParticularState extends State<Particular>
   /// Spawns a particle.
   void _spawn([int age = 0]) {
     Particle particle;
+    final ParticularController controller = widget.controller!;
     if (_deadParticleIndices.isEmpty) {
       particle = Particle();
       _colors.add(particle.color);
       _transforms.add(particle.transform);
-      _rectangles.add(const Rect.fromLTWH(0, 0, 36, 36));
+      _rectangles.add(ParticleRect.fromLTWH(
+          0,
+          0,
+          controller.texture!.width.toDouble(),
+          controller.texture!.height.toDouble()));
       _particles.add(particle);
     } else {
       particle = _particles[_deadParticleIndices.removeLast()];
     }
-    final ParticularController controller = widget.controller!;
     particle.initialize(
       age: age,
       emitterType: controller.emitterType,
@@ -171,7 +175,7 @@ class ParticlePainter extends CustomPainter {
   final Function() onFinished;
 
   /// The rectangles representing particles.
-  final List<Rect> rectangles;
+  final List<ParticleRect> rectangles;
 
   /// The indices of particles.
   final List<int> deadParticleIndices;
@@ -198,7 +202,6 @@ class ParticlePainter extends CustomPainter {
   ParticlePainter({
     required this.image,
     required this.colors,
-    required this.blendMode,
     required this.deltaTime,
     required this.particles,
     required this.transforms,
@@ -217,6 +220,7 @@ class ParticlePainter extends CustomPainter {
     var allParticlesDead = true;
     for (var i = 0; i < particles.length; i++) {
       var particle = particles[i];
+      rectangles[i].update(image.width, image.height);
       particle.update(deltaTime);
       particle.transform.update(
         rotation: 0,
