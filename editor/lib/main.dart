@@ -1,9 +1,12 @@
 import 'dart:convert';
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:html' as html;
 import 'dart:ui' as ui;
 
 import 'package:editor/data/inspector.dart';
 import 'package:editor/data/particular_editor_controller.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -98,10 +101,18 @@ class _EditorAppState extends State<EditorApp> {
   AppBar _appBarBuilder() {
     return AppBar(
       toolbarHeight: _appConfigs["appBarHeight"],
-      leadingWidth: 240,
       title: Text("Particular Editor",
           style: Theme.of(context).primaryTextTheme.bodyMedium),
       backgroundColor: Theme.of(context).tabBarTheme.indicatorColor,
+      actions: [
+        IconButton(
+            onPressed: _browseParticleConfigs,
+            icon: const Icon(Icons.file_open_outlined)),
+        const SizedBox(width: 8),
+        IconButton(
+            onPressed: _saveParticleConfigs, icon: const Icon(Icons.save)),
+        const SizedBox(width: 12),
+      ],
     );
   }
 
@@ -206,7 +217,14 @@ class _EditorAppState extends State<EditorApp> {
               "radial"
             ][_particleController.getParam("emitterType").index]) {
       var items = <Widget>[];
-      _addInputs(inspector, items, themeData);
+      _inputLineBuilder(
+        inspector,
+        items,
+        themeData,
+        (themeData, inspector, entry) =>
+            _addInputs(themeData, inspector, entry),
+      );
+
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -215,7 +233,7 @@ class _EditorAppState extends State<EditorApp> {
               : _getText(inspector.title, themeData),
           const SizedBox(height: 4),
           Row(children: items),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
         ],
       );
     }
@@ -248,47 +266,47 @@ class _EditorAppState extends State<EditorApp> {
   Widget _addInputs(ThemeData themeData, Inspector inspector,
       MapEntry<String, dynamic> entry) {
     if (inspector.ui == "input") {
-          return NumericIntry(
-            changeSpeed: 1,
-            decoration: NumericIntryDecoration.outline(context),
-            value: _particleController.getParam(entry.value).toDouble(),
+      return NumericIntry(
+        changeSpeed: 1,
+        decoration: NumericIntryDecoration.outline(context),
+        value: _particleController.getParam(entry.value).toDouble(),
         onChanged: (double value) => _updateParticleParam(entry.value, value),
       );
     } else if (inspector.ui == "dropdown") {
-          List values = switch (entry.value) {
-            "blendFunctionSource" ||
-            "blendFunctionDestination" =>
-              BlendFunction.values,
+      List values = switch (entry.value) {
+        "blendFunctionSource" ||
+        "blendFunctionDestination" =>
+          BlendFunction.values,
         "renderBlendMode" || "textureBlendMode" => BlendMode.values,
-            _ => EmitterType.values,
-          };
-          var items = values
-              .map((item) => DropdownMenuItem(
-                  value: item,
-                  child: _getText(item.toString().toTitleCase(), themeData)))
-              .toList();
-          return InputDecorator(
+        _ => EmitterType.values,
+      };
+      var items = values
+          .map((item) => DropdownMenuItem(
+              value: item,
+              child: _getText(item.toString().toTitleCase(), themeData)))
+          .toList();
+      return InputDecorator(
         decoration: const InputDecoration(
             border: OutlineInputBorder(),
             contentPadding: EdgeInsets.symmetric(horizontal: 8)),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton(
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton(
             itemHeight: 56,
-                items: items,
-                value: _particleController.getParam(entry.value),
-                onChanged: (dynamic selected) =>
-                    _particleController.updateFromMap({entry.value: selected}),
-              ),
-            ),
-          );
+            items: items,
+            value: _particleController.getParam(entry.value),
+            onChanged: (dynamic selected) =>
+                _particleController.updateFromMap({entry.value: selected}),
+          ),
+        ),
+      );
     } else if (inspector.ui == "color") {
-          return IconButton(
-            icon: Icon(
-              Icons.circle,
-              color: _particleController.getParam(entry.value).getColor(),
-            ),
-            onPressed: () => _selectedColor.value = entry.value,
-          );
+      return IconButton(
+        icon: Icon(
+          Icons.circle,
+          color: _particleController.getParam(entry.value).getColor(),
+        ),
+        onPressed: () => _selectedColor.value = entry.value,
+      );
     } else {
       // Button
       return OutlinedButton(
@@ -309,6 +327,44 @@ class _EditorAppState extends State<EditorApp> {
     }
   }
 
+  Future<void> _browseParticleConfigs() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ["json"],
+    );
+    if (result != null) {
+      PlatformFile file = result.files.first;
+      String json = String.fromCharCodes(file.bytes!);
+      var configsMap = jsonDecode(json);
+      _particleController.initialize(configs: configsMap);
+    }
+  }
+
+  Future<void> _saveParticleConfigs() async {
+    final json = jsonEncode(_particleController.getConfigs());
+    final bytes = utf8.encode(json);
+
+    if (kIsWeb) {
+      final blob = html.Blob([bytes]);
+      final url = html.Url.createObjectUrlFromBlob(blob);
+      final anchor = html.document.createElement('a') as html.AnchorElement
+        ..href = url
+        ..style.display = 'none'
+        ..download = 'configs.json';
+      html.document.body!.children.add(anchor);
+
+      // Download
+      anchor.click();
+
+      // Cleanup
+      html.document.body!.children.remove(anchor);
+      html.Url.revokeObjectUrl(url);
+    } else {
+      await FilePicker.platform.saveFile(
+        dialogTitle: "Save Particle Configs",
+        fileName: "configs.json",
+        bytes: bytes,
+      );
     }
   }
 
