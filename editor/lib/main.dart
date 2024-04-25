@@ -32,7 +32,7 @@ class _EditorAppState extends State<EditorApp> {
   @override
   void initState() {
     _loadAppConfigs();
-    _loadParticleAssets();
+    _loadDefaultTexture();
     super.initState();
   }
 
@@ -40,7 +40,6 @@ class _EditorAppState extends State<EditorApp> {
   _loadAppConfigs() async {
     var json = await rootBundle.loadString("assets/app_configs.json");
     _appConfigs = Map.castFrom(jsonDecode(json));
-    setState(() {});
   }
 
   void _selectTab(int index) {
@@ -57,26 +56,12 @@ class _EditorAppState extends State<EditorApp> {
     _selectedInspactorColumn.value = list;
   }
 
-  Future<void> _loadParticleAssets() async {
-    // Load json config
-    var json = await rootBundle.loadString("assets/meteor.json");
-    var configsMap = jsonDecode(json);
-
-    // Load particle textu
+  /// Load default particle texture
+  Future<void> _loadDefaultTexture() async {
     final ByteData assetImageByteData =
-        await rootBundle.load("assets/${configsMap["textureFileName"]}");
-    image.Image? baseSizeImage =
-        image.decodeImage(assetImageByteData.buffer.asUint8List());
-    image.Image resizeImage = image.copyResize(baseSizeImage!,
-        height: baseSizeImage.width, width: baseSizeImage.height);
-    ui.Codec codec =
-        await ui.instantiateImageCodec(image.encodePng(resizeImage));
-    ui.FrameInfo frameInfo = await codec.getNextFrame();
-
-    _particleController.initialize(
-      texture: frameInfo.image,
-      configs: configsMap,
-    );
+        await rootBundle.load("assets/texture.png");
+    final image = await _loadUIImage(assetImageByteData.buffer.asUint8List());
+    _particleController.initialize(texture: image);
   }
 
   @override
@@ -349,6 +334,16 @@ class _EditorAppState extends State<EditorApp> {
         );
       },
     );
+  }
+
+  Future<ui.Image> _loadUIImage(Uint8List bytes) async {
+    image.Image? baseSizeImage = image.decodeImage(bytes);
+    image.Image resizeImage = image.copyResize(baseSizeImage!,
+        height: baseSizeImage.width, width: baseSizeImage.height);
+    ui.Codec codec =
+        await ui.instantiateImageCodec(image.encodePng(resizeImage));
+    ui.FrameInfo frameInfo = await codec.getNextFrame();
+    return frameInfo.image;
   }
 }
 
