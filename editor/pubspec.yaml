@@ -2,6 +2,8 @@ name: editor
 description: "Demonstrates how to use the particular package."
 publish_to: 'none'
 
+version: 0.1.0+100
+
 environment:
   sdk: '>=3.3.1 <4.0.0'
 dependencies:
