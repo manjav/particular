@@ -11,13 +11,17 @@
 * add some method and class documentations
 * follow format suggestions
 
-
 ### 0.0.4 (04/18/2024)
 * fix example image flicking
 * follow format suggestions
 * rich instruction
 
-
 ### 0.0.5 (04/19/2024)
 * fix instruction problem
-* Add more symbol comments
+* add more symbol comments
+
+### 0.1.0 (04/26/2024)
+* feature: add editor (initial version)
+* enhance: replace blending functions
+* enhance: limited time particle
+* bugsfix: resize image rects on texture changes
