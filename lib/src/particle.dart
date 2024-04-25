@@ -149,33 +149,47 @@ class Particle {
     velocityY = speed * math.sin(angle / 180.0 * math.pi);
   }
 
-  /// Updates the particle's transform before adding to atlas.
+  /// Updates the particle's state based on the given [deltaTime].
+  ///
+  /// If the particle has already reached its lifespan, it will return without
+  /// performing any updates.
   void update(int deltaTime) {
+    // If the particle has reached its lifespan, return without updating.
     if (isDead()) return;
     age += deltaTime;
     final ratio = age / lifespan;
     final rate = deltaTime / lifespan;
 
+    // Update the particle's state based on its emitter type.
     if (emitterType == EmitterType.radius) {
       angle -= rotatePerSecond * rate;
       radius += radiusDelta * rate;
+
+      // Calculate the cosine and sine of the angle.
       final radiusCos = math.cos(angle / 180.0 * math.pi);
       final radiusSin = math.sin(angle / 180.0 * math.pi);
+
+      // Calculate the new x and y coordinates of the particle.
       x = emitterX - radiusCos * radius;
       y = emitterY - radiusSin * radius;
     } else {
+      // Calculate the distance between the particle and its emitter.
       final distanceX = x - emitterX;
       final distanceY = y - emitterY;
       final distanceScalar =
           math.sqrt(distanceX * distanceX + distanceY * distanceY);
+
+      // Avoid division by zero.
       final distanceScalarClamp = distanceScalar < 0.01 ? 0.01 : distanceScalar;
 
+      // Calculate the radial and tangential components of the distance.
       final radialX = distanceX / distanceScalarClamp;
       final radialY = distanceY / distanceScalarClamp;
 
       final radialXModified = radialX * radialAcceleration;
       final radialYModified = radialY * radialAcceleration;
 
+      // Calculate the tangential components.
       final tangentialX = radialX;
       final tangentialY = radialY;
 
@@ -382,9 +396,19 @@ class ParticleRect extends Rect {
   @override
   double bottom = 0;
 
+  /// Creates a [ParticleRect] from the left, top, width, and height parameters.
+  ///
+  /// The [left] parameter represents the x-coordinate of the left edge of the
+  /// rectangle. The [top] parameter represents the y-coordinate of the top
+  /// edge of the rectangle. The [width] parameter represents the width of the
+  /// rectangle. The [height] parameter represents the height of the rectangle.
   ParticleRect.fromLTWH(super.left, super.top, super.width, super.height)
       : super.fromLTWH();
 
+  /// Updates the particle's rectangle by setting the right and bottom edges based on the given width and height.
+  ///
+  /// The [width] parameter represents the new width of the rectangle.
+  /// The [height] parameter represents the new height of the rectangle.
   void update(int width, int height) {
     right = left + width;
     bottom = top + height;

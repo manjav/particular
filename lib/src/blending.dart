@@ -1,20 +1,19 @@
 import 'dart:ui';
 
-// kClear_Mode,    //!< [0, 0]
-// kSrc_Mode,      //!< [Sa, Sc]
-// kDst_Mode,      //!< [Da, Dc]
-// kSrcOver_Mode,  //!< [Sa + Da - Sa*Da, Rc = Sc + (1 - Sa)*Dc]
-// kDstOver_Mode,  //!< [Sa + Da - Sa*Da, Rc = Dc + (1 - Da)*Sc]
-// kSrcIn_Mode,    //!< [Sa * Da, Sc * Da]
-// kDstIn_Mode,    //!< [Sa * Da, Sa * Dc]
-// kSrcOut_Mode,   //!< [Sa * (1 - Da), Sc * (1 - Da)]
-// kDstOut_Mode,   //!< [Da * (1 - Sa), Dc * (1 - Sa)]
-// kSrcATop_Mode,  //!< [Da, Sc * Da + (1 - Sa) * Dc]
-// kDstATop_Mode,  //!< [Sa, Sa * Dc + Sc * (1 - Da)]
-// kXor_Mode,      //!< [Sa + Da - 2 * Sa * Da, Sc * (1 - Da) + (1 - Sa) * Dc]
-// kPlus_Mode,     //!< [Sa + Da, Sc + Dc]
-// kModulate_Mode, // multiplies all components (= alpha and color)
-
+/// kClear_Mode,    //!< [0, 0]
+/// kSrc_Mode,      //!< [Sa, Sc]
+/// kDst_Mode,      //!< [Da, Dc]
+/// kSrcOver_Mode,  //!< [Sa + Da - Sa*Da, Rc = Sc + (1 - Sa)*Dc]
+/// kDstOver_Mode,  //!< [Sa + Da - Sa*Da, Rc = Dc + (1 - Da)*Sc]
+/// kSrcIn_Mode,    //!< [Sa * Da, Sc * Da]
+/// kDstIn_Mode,    //!< [Sa * Da, Sa * Dc]
+/// kSrcOut_Mode,   //!< [Sa * (1 - Da), Sc * (1 - Da)]
+/// kDstOut_Mode,   //!< [Da * (1 - Sa), Dc * (1 - Sa)]
+/// kSrcATop_Mode,  //!< [Da, Sc * Da + (1 - Sa) * Dc]
+/// kDstATop_Mode,  //!< [Sa, Sa * Dc + Sc * (1 - Da)]
+/// kXor_Mode,      //!< [Sa + Da - 2 * Sa * Da, Sc * (1 - Da) + (1 - Sa) * Dc]
+/// kPlus_Mode,     //!< [Sa + Da, Sc + Dc]
+/// kModulate_Mode, // multiplies all components (= alpha and color)
 List<BlendModeItem> blendModeList = [
   BlendModeItem(
     BlendMode.clear,
@@ -164,10 +163,23 @@ List<BlendModeItem> blendModeList = [
 ];
 
 class BlendModeItem {
+  /// The blend mode to apply.
   final BlendMode blendMode;
+
+  /// The source blend function to apply.
+  ///
+  /// Defaults to [BlendFunction.zero].
   final BlendFunction sourceBlendFunction;
+
+  /// The destination blend function to apply.
+  ///
+  /// Defaults to [BlendFunction.zero].
   final BlendFunction destinationBlendFunction;
 
+  /// Creates a new blend mode item.
+  ///
+  /// If [sourceBlendFunction] and [destinationBlendFunction] are not provided,
+  /// they default to [BlendFunction.zero] and [BlendFunction.zero] respectively.
   BlendModeItem(
     this.blendMode, [
     this.sourceBlendFunction = BlendFunction.zero,
@@ -211,7 +223,9 @@ class BlendModeItem {
     return BlendMode.srcOver;
   }
 
-  static BlendMode computeBlendMode2(BlendFunction src, BlendFunction dst) {
+  // Computes the blend mode based on the source and destination blend functions.
+  static BlendMode computeFlutterBlendMode(
+      BlendFunction src, BlendFunction dst) {
     var item = blendModeList.firstWhere(
         (b) =>
             b.sourceBlendFunction == src && b.destinationBlendFunction == dst,
@@ -240,11 +254,16 @@ enum BlendFunction {
   final int value;
   const BlendFunction(this.value);
 
+  /// Converts the given [value] to a [BlendFunction].
+  ///
+  /// The [value] parameter is the integer representation of the [BlendFunction].
+  ///
+  /// Returns the corresponding [BlendFunction] object.
   static BlendFunction fromValue(int value) {
     return values.where((item) => item.value == value).first;
   }
 
-  // Returns a string representation of the object. In this case, it returns the value of the 'name' property.
+  /// Returns a string representation of the object. In this case, it returns the value of the 'name' property.
   @override
   String toString() => name;
 }

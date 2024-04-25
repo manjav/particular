@@ -16,6 +16,9 @@ class Particular extends StatefulWidget {
     this.controller,
   });
 
+  /// Creates the state for the [Particular] widget.
+  ///
+  /// Returns a new instance of [_ParticularState].
   @override
   State<Particular> createState() => _ParticularState();
 }
@@ -50,6 +53,10 @@ class _ParticularState extends State<Particular>
   /// The time reserved of the last frame.
   int _lastFrameTime = 0;
 
+  /// Initializes the state of the widget.
+  ///
+  /// This method is called when the widget is first created and when it is rebuilt.
+  /// It is responsible for setting up the initial state of the widget.
   @override
   void initState() {
     super.initState();
@@ -69,29 +76,40 @@ class _ParticularState extends State<Particular>
     _ticker!.start();
   }
 
+  // Updates the configuration based on the elapsed time, spawns particles, and updates the frame time.
   void _onTick(Duration elapsed) {
-      var config = widget.controller!;
+    var config = widget.controller!;
     if (config.startTime < 0) {
       config.startTime = elapsed.inMilliseconds - _deltaTime;
       _lastFrameTime = 0;
     }
     final now = elapsed.inMilliseconds - config.startTime;
 
-      // Spawn particles
+    // Spawn particles
     if (config.duration < 0 || now < config.duration) {
-        var particlesPerTick =
-            (_deltaTime * config.maxParticles / config.lifespan).round();
-        for (var i = 0; i < particlesPerTick; i++) {
-          _spawn((i * _deltaTime / particlesPerTick).round());
-        }
+      var particlesPerTick =
+          (_deltaTime * config.maxParticles / config.lifespan).round();
+      for (var i = 0; i < particlesPerTick; i++) {
+        _spawn((i * _deltaTime / particlesPerTick).round());
       }
+    }
 
     _deltaTime = now - _lastFrameTime;
-      _lastFrameTime += _deltaTime;
-      setState(() {});
+    _lastFrameTime += _deltaTime;
+    setState(() {});
   }
 
   /// Spawns a particle.
+  ///
+  /// Spawns a particle object with the given age. If there are no dead particles in the
+  /// pool, a new particle object is created and added to the pool. Otherwise, a dead
+  /// particle object is resurrected and added to the pool. The particle object is
+  /// initialized with the given parameters.
+  ///
+  /// Parameters:
+  ///   - age: The age of the particle. Defaults to 0.
+  ///
+  /// Returns: None.
   void _spawn([int age = 0]) {
     Particle particle;
     final ParticularController controller = widget.controller!;
