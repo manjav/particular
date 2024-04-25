@@ -212,34 +212,44 @@ class _EditorAppState extends State<EditorApp> {
     return const SizedBox();
   }
 
-  void _addInputs(
-      Inspector inspector, List<Widget> children, ThemeData themeData) {
+  void _inputLineBuilder(
+    Inspector inspector,
+    List<Widget> children,
+    ThemeData themeData,
+    Widget Function(ThemeData themeData, Inspector inspector,
+            MapEntry<String, dynamic> entry)
+        inspectorBuilder,
+  ) {
+    for (var entry in inspector.inputs.entries) {
+      children.add(_getText(entry.key.toTitleCase(), themeData));
+      children.add(const SizedBox(width: 8));
+      children.add(
+        Expanded(
+          child: ListenableBuilder(
+            listenable: _particleController,
+            builder: (c, w) => inspectorBuilder(themeData, inspector, entry),
+          ),
+        ),
+      );
+      children.add(const SizedBox(width: 12));
+    }
+  }
+
+  Widget _addInputs(ThemeData themeData, Inspector inspector,
+      MapEntry<String, dynamic> entry) {
     if (inspector.ui == "input") {
-      _inputLineBuilder(
-        inspector,
-        children,
-        themeData,
-        (entry) {
           return NumericIntry(
             changeSpeed: 1,
             decoration: NumericIntryDecoration.outline(context),
             value: _particleController.getParam(entry.value).toDouble(),
-            onChanged: (double value) =>
-                _updateParticleParam(entry.value, value),
-          );
-        },
+        onChanged: (double value) => _updateParticleParam(entry.value, value),
       );
     } else if (inspector.ui == "dropdown") {
-      _inputLineBuilder(
-        inspector,
-        children,
-        themeData,
-        (entry) {
           List values = switch (entry.value) {
             "blendFunctionSource" ||
             "blendFunctionDestination" =>
               BlendFunction.values,
-            "blendMode" => BlendMode.values,
+        "renderBlendMode" || "textureBlendMode" => BlendMode.values,
             _ => EmitterType.values,
           };
           var items = values
@@ -248,9 +258,12 @@ class _EditorAppState extends State<EditorApp> {
                   child: _getText(item.toString().toTitleCase(), themeData)))
               .toList();
           return InputDecorator(
-            decoration: const InputDecoration(border: OutlineInputBorder()),
+        decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            contentPadding: EdgeInsets.symmetric(horizontal: 8)),
             child: DropdownButtonHideUnderline(
               child: DropdownButton(
+            itemHeight: 56,
                 items: items,
                 value: _particleController.getParam(entry.value),
                 onChanged: (dynamic selected) =>
@@ -258,14 +271,7 @@ class _EditorAppState extends State<EditorApp> {
               ),
             ),
           );
-        },
-      );
-    } else {
-      _inputLineBuilder(
-        inspector,
-        children,
-        themeData,
-        (entry) {
+    } else if (inspector.ui == "color") {
           return IconButton(
             icon: Icon(
               Icons.circle,
