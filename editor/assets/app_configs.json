@@ -112,6 +112,12 @@
                     }
                 },
                 {
+                    "inputs": {
+                        "Rotate Per Second": "rotatePerSecond",
+                        "Variance": "rotatePerSecondVariance"
+                    }
+                },
+                {
                     "ui": "color",
                     "inputs": {
                         "Start Color": "startColor",
