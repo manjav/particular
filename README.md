@@ -36,7 +36,7 @@ For detailed installation instructions, refer to the [installation guide](https:
 ### - Configurate your particle
 You have two options for configuring your particles:
 1. <b>Using Editors:</b>  
-Generate particle configurations using popular particle editors such as [Particle 2dx Editor](http://effecthub.com/editor/particle2dx/index_en.php) or [Particle Designer](https://www.71squared.com/particledesigner). (We're working on dedicated editor as soon as possible!)
+Generate particle configurations using popular particle editors such as [Particular Editor](https://manjav.github.io/particular/editor/web) or [Particle Designer](https://www.71squared.com/particledesigner).
 2. <b>Programmatic Configuration:</b>  
 Manually configure your particle controller in code. Refer to the following steps for more details.
 
