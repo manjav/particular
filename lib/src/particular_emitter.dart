@@ -143,7 +143,8 @@ class _ParticularState extends State<Particular>
           transforms: _transforms,
           deadParticleIndices: _deadParticleIndices,
           image: widget.controller!.texture!,
-          blendMode: widget.controller!.blendMode,
+          renderBlendMode: widget.controller!.renderBlendMode,
+          textureBlendMode: widget.controller!.textureBlendMode,
           onFinished: () {},
         ),
       ),
@@ -166,9 +167,6 @@ class ParticlePainter extends CustomPainter {
   /// The image to be used for particles.
   final ui.Image image;
 
-  /// The blend mode for rendering particles.
-  final BlendMode blendMode;
-
   /// A callback function called when particle rendering is finished.
   final Function() onFinished;
 
@@ -187,6 +185,12 @@ class ParticlePainter extends CustomPainter {
   /// The transforms of particles.
   final List<ParticleTransform> transforms;
 
+  /// The blend mode for atlas.
+  final BlendMode renderBlendMode;
+
+  /// The blend mode for rendering particles.
+  final BlendMode textureBlendMode;
+
   /// The paint object for rendering particles.
   final Paint _paint = Paint();
 
@@ -200,9 +204,11 @@ class ParticlePainter extends CustomPainter {
     required this.transforms,
     required this.rectangles,
     required this.onFinished,
+    required this.renderBlendMode,
+    required this.textureBlendMode,
     required this.deadParticleIndices,
   }) {
-    _paint.blendMode = blendMode;
+    _paint.blendMode = textureBlendMode;
   }
 
   /// Draws many parts of an image - the [atlas] - onto the canvas.
@@ -230,7 +236,7 @@ class ParticlePainter extends CustomPainter {
       }
     }
     canvas.drawAtlas(
-        image, transforms, rectangles, colors, BlendMode.dstIn, null, _paint);
+        image, transforms, rectangles, colors, renderBlendMode, null, _paint);
 
     if (allParticlesDead) {
       onFinished();

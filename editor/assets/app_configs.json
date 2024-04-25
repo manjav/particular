@@ -1,7 +1,7 @@
 {
     "appBarHeight": 48,
     "inspector": {
-        "width": 240,
+        "width": 250,
         "components": [
             [
                 {
@@ -128,7 +128,13 @@
                 {
                     "ui": "dropdown",
                     "inputs": {
-                        "Blend Mode": "blendMode"
+                        "Textures Blend Mode": "textureBlendMode"
+                    }
+                },
+                {
+                    "ui": "dropdown",
+                    "inputs": {
+                        "Rendering Blend Mode": "renderBlendMode"
                     }
                 },
                 {

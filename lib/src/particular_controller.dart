@@ -95,8 +95,11 @@ class ParticularController extends ChangeNotifier {
   /// The maximum number of particles.
   int maxParticles = 100;
 
-  /// The blend mode value.
-  BlendMode blendMode = BlendMode.srcOver;
+  /// The blend mode value of textures.
+  BlendMode textureBlendMode = BlendMode.srcOver;
+
+  /// The blend mode value for rendering.
+  BlendMode renderBlendMode = BlendMode.srcIn;
 
   /// The source blend mode function.
   BlendFunction blendFunctionSource = BlendFunction.one;
@@ -196,16 +199,21 @@ class ParticularController extends ChangeNotifier {
 
   /// First time initialize controller
   void initialize({
-    required ui.Image texture,
+    ui.Image? texture,
     Map? configs,
   }) async {
-    update(texture: texture);
+    if (texture != null) {
+      this.texture = texture;
+    }
     if (configs == null) return;
     update(
       emitterType: EmitterType.values[configs["emitterType"]],
-      blendFunctionSource: BlendFunction.fromValue(configs["blendFuncSource"]),
+      blendFunctionSource:
+          BlendFunction.fromValue(configs["blendFuncSource"] ?? 0),
       blendFunctionDestination:
-          BlendFunction.fromValue(configs["blendFuncDestination"]),
+          BlendFunction.fromValue(configs["blendFuncDestination"] ?? 0),
+      renderBlendMode: BlendMode.values[configs["renderBlendMode"] ?? 0],
+      textureBlendMode: BlendMode.values[configs["textureBlendMode"] ?? 0],
       startColor: ARGB.fromMap(configs, "startColor"),
       startColorVariance: ARGB.fromMap(configs, "startColorVariance"),
       finishColor: ARGB.fromMap(configs, "finishColor"),
@@ -242,7 +250,8 @@ class ParticularController extends ChangeNotifier {
   /// particle system updater method
   void update({
     EmitterType? emitterType,
-    BlendMode? blendMode,
+    BlendMode? renderBlendMode,
+    BlendMode? textureBlendMode,
     BlendFunction? blendFunctionSource,
     BlendFunction? blendFunctionDestination,
     int? duration,
@@ -298,19 +307,20 @@ class ParticularController extends ChangeNotifier {
     if (maxParticles != null) {
       this.maxParticles = maxParticles;
     }
-    if (blendMode != null) {
-      this.blendMode = blendMode;
+
+    if (textureBlendMode != null) {
+      this.textureBlendMode = textureBlendMode;
+    }
+    if (renderBlendMode != null) {
+      this.renderBlendMode = renderBlendMode;
     }
     if (blendFunctionSource != null) {
       this.blendFunctionSource = blendFunctionSource;
-      this.blendMode = BlendModeItem.computeBlendMode2(
-          this.blendFunctionSource, this.blendFunctionDestination);
     }
     if (blendFunctionDestination != null) {
       this.blendFunctionDestination = blendFunctionDestination;
-      this.blendMode = BlendModeItem.computeBlendMode2(
-          this.blendFunctionSource, this.blendFunctionDestination);
     }
+
     if (startColor != null) {
       this.startColor = startColor;
     }
