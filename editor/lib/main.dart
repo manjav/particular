@@ -27,26 +27,26 @@ class _EditorAppState extends State<EditorApp> {
   final _selectedInspactorColumn = ValueNotifier([]);
   final _selectedColor = ValueNotifier<String?>(null);
   int _selectedTabIndex = 0;
-  List _inspactorData = [];
+  Map _appConfigs = {};
 
   @override
   void initState() {
-    _loadInspectorsData();
+    _loadAppConfigs();
     _loadParticleAssets();
     super.initState();
   }
 
-  // Load configs from json
-  void _loadInspectorsData() async {
-    var json = await rootBundle.loadString("assets/inspector.json");
-    _inspactorData = List.castFrom(jsonDecode(json));
-    setState(() => _selectTab(_selectedTabIndex));
+  // Load configs data for app from json
+  _loadAppConfigs() async {
+    var json = await rootBundle.loadString("assets/app_configs.json");
+    _appConfigs = Map.castFrom(jsonDecode(json));
+    setState(() {});
   }
 
   void _selectTab(int index) {
     _selectedTabIndex = index;
     var list = <Inspector>[];
-    for (var line in _inspactorData[index]) {
+    for (var line in _appConfigs["inspector"]["components"][index]) {
       list.add(Inspector(
         line["ui"] ?? "input",
         line["type"],
@@ -81,7 +81,7 @@ class _EditorAppState extends State<EditorApp> {
 
   @override
   Widget build(BuildContext context) {
-    if (_inspactorData.isEmpty) {
+    if (_appConfigs.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
     return MaterialApp(
@@ -102,11 +102,10 @@ class _EditorAppState extends State<EditorApp> {
 
   AppBar _appBarBuilder() {
     return AppBar(
-      toolbarHeight: 48,
-      title: Text(
-        "Particular Editor",
-        style: Theme.of(context).primaryTextTheme.headlineSmall,
-      ),
+      toolbarHeight: _appConfigs["appBarHeight"],
+      leadingWidth: 240,
+      title: Text("Particular Editor",
+          style: Theme.of(context).primaryTextTheme.bodyMedium),
       backgroundColor: Theme.of(context).tabBarTheme.indicatorColor,
     );
   }
