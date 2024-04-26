@@ -231,9 +231,9 @@ class _EditorAppState extends State<EditorApp> {
           inspector.title.isEmpty
               ? const SizedBox()
               : _getText(inspector.title, themeData),
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
           Row(children: items),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
         ],
       );
     }
@@ -291,7 +291,7 @@ class _EditorAppState extends State<EditorApp> {
             contentPadding: EdgeInsets.symmetric(horizontal: 8)),
         child: DropdownButtonHideUnderline(
           child: DropdownButton(
-            itemHeight: 56,
+            itemHeight: 48,
             items: items,
             value: _particleController.getParam(entry.value),
             onChanged: (dynamic selected) {
