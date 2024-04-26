@@ -40,6 +40,9 @@ class Particle {
   /// Dynamic rotation angle of the particle.
   double angle = 0;
 
+  /// Dynamic rotation of the particle.
+  double rotation = 0;
+
   /// Dynamic radius of the particle.
   double radius = 0;
 
@@ -79,6 +82,12 @@ class Particle {
   /// Rotation per second of the particle.
   double rotatePerSecond = 0;
 
+  /// Start rotation of the particle.
+  double startRotation = 0;
+
+  /// End rotation of the particle.
+  double finishRotation = 0;
+
   /// Radial acceleration of the particle.
   double radialAcceleration = 0;
 
@@ -111,6 +120,8 @@ class Particle {
     required Color startColor,
     required Color finishColor,
     required double rotatePerSecond,
+    required double startRotation,
+    required double finishRotation,
     required double radialAcceleration,
     required double tangentialAcceleration,
     required double minRadius,
@@ -129,7 +140,8 @@ class Particle {
     this.finishSize = finishSize;
     this.startColor = startColor;
     this.finishColor = finishColor;
-    this.rotatePerSecond = rotatePerSecond;
+    this.startRotation = startRotation / 180.0 * math.pi;
+    this.finishRotation = finishRotation / 180.0 * math.pi;
     this.radialAcceleration = radialAcceleration;
     this.tangentialAcceleration = tangentialAcceleration;
     this.minRadius = minRadius;
@@ -141,6 +153,7 @@ class Particle {
     x = emitterX;
     y = emitterY;
     size = startSize;
+    rotation = startRotation;
     color.update(
         startColor.alpha, startColor.red, startColor.green, startColor.blue);
     radius = maxRadius;
@@ -205,6 +218,7 @@ class Particle {
 
     color.lerp(startColor, finishColor, ratio);
     size = startSize + (finishSize - startSize) * ratio;
+    rotation = startRotation + (finishRotation - startRotation) * ratio;
   }
 
   /// Return true if finished its life and reserved in pooling system

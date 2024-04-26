@@ -106,8 +106,14 @@
                 },
                 {
                     "inputs": {
-                        "Rotate Per Second": "rotatePerSecond",
-                        "Variance": "rotatePerSecondVariance"
+                        "Start Rotation": "startRotation",
+                        "Variance": "startRotationVariance"
+                    }
+                },
+                {
+                    "inputs": {
+                        "End Rotation": "finishRotation",
+                        "Variance": "finishRotationVariance"
                     }
                 },
                 {

@@ -143,6 +143,8 @@ class _ParticularState extends State<Particular>
       minRadius: controller.getMinRadius(1),
       maxRadius: controller.getMaxRadius(1),
       rotatePerSecond: controller.getRotatePerSecond(),
+      startRotation: controller.getStartRotaion(),
+      finishRotation: controller.getFinishRotaion(),
       radialAcceleration: controller.getRadialAcceleration(),
       tangentialAcceleration: controller.getTangentialAcceleration(),
     );
@@ -241,7 +243,7 @@ class ParticlePainter extends CustomPainter {
       rectangles[i].update(image.width, image.height);
       particle.update(deltaTime);
       particle.transform.update(
-        rotation: 0,
+        rotation: particle.rotation,
         translateX: particle.x,
         translateY: particle.y,
         anchorX: image.width * 0.5,

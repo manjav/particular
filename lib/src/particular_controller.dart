@@ -50,6 +50,14 @@ class ParticularController extends ChangeNotifier {
   double getRotatePerSecond() =>
       _getVariantDouble(rotatePerSecond, rotatePerSecondVariance);
 
+  /// Gets the start rotation of particles.
+  double getStartRotaion() =>
+      _getVariantDouble(startRotation, startRotationVariance);
+
+  /// Gets the end rotation of particles.
+  double getFinishRotaion() =>
+      _getVariantDouble(finishRotation, finishRotationVariance);
+
   /// Gets the radial acceleration of particles.
   double getRadialAcceleration() =>
       _getVariantDouble(radialAcceleration, radialAccelerationVariance);
@@ -182,6 +190,18 @@ class ParticularController extends ChangeNotifier {
   /// The variance of the rotation rate of particles per second.
   num rotatePerSecondVariance = 0;
 
+  /// The start rotation of particles.
+  num startRotation = 0;
+
+  /// The start rotation variance of particles.
+  num startRotationVariance = 0;
+
+  /// The final rotation of particles.
+  num finishRotation = 0;
+
+  /// The final rotation variance of particles.
+  num finishRotationVariance = 0;
+
   /// The radial acceleration of particles.
   num radialAcceleration = 0;
 
@@ -241,6 +261,10 @@ class ParticularController extends ChangeNotifier {
       maxRadiusVariance: configs["maxRadiusVariance"],
       rotatePerSecond: configs["rotatePerSecond"],
       rotatePerSecondVariance: configs["rotatePerSecondVariance"],
+      startRotation: configs["rotationStart"],
+      startRotationVariance: configs["rotationStartVariance"],
+      finishRotation: configs["rotationEnd"],
+      finishRotationVariance: configs["rotationEndVariance"],
       radialAcceleration: configs["radialAcceleration"],
       radialAccelerationVariance: configs["radialAccelVariance"],
       tangentialAcceleration: configs["tangentialAcceleration"],
@@ -284,6 +308,10 @@ class ParticularController extends ChangeNotifier {
     num? maxRadiusVariance,
     num? rotatePerSecond,
     num? rotatePerSecondVariance,
+    num? startRotation,
+    num? startRotationVariance,
+    num? finishRotation,
+    num? finishRotationVariance,
     num? radialAcceleration,
     num? radialAccelerationVariance,
     num? tangentialAcceleration,
@@ -334,12 +362,14 @@ class ParticularController extends ChangeNotifier {
     if (finishColorVariance != null) {
       this.finishColorVariance = finishColorVariance;
     }
+
     if (sourcePositionVarianceX != null) {
       this.sourcePositionVarianceX = sourcePositionVarianceX;
     }
     if (sourcePositionVarianceY != null) {
       this.sourcePositionVarianceY = sourcePositionVarianceY;
     }
+
     if (startSize != null) {
       this.startSize = startSize;
     }
@@ -352,6 +382,7 @@ class ParticularController extends ChangeNotifier {
     if (finishSizeVariance != null) {
       this.finishSizeVariance = finishSizeVariance;
     }
+
     if (speed != null) {
       this.speed = speed;
     }
@@ -388,12 +419,26 @@ class ParticularController extends ChangeNotifier {
     if (maxRadiusVariance != null) {
       this.maxRadiusVariance = maxRadiusVariance;
     }
+
     if (rotatePerSecond != null) {
       this.rotatePerSecond = rotatePerSecond;
     }
     if (rotatePerSecondVariance != null) {
       this.rotatePerSecondVariance = rotatePerSecondVariance;
     }
+    if (startRotation != null) {
+      this.startRotation = startRotation;
+    }
+    if (startRotationVariance != null) {
+      this.startRotationVariance = startRotationVariance;
+    }
+    if (finishRotation != null) {
+      this.finishRotation = finishRotation;
+    }
+    if (finishRotationVariance != null) {
+      this.finishRotationVariance = finishRotationVariance;
+    }
+    
     if (radialAcceleration != null) {
       this.radialAcceleration = radialAcceleration;
     }
@@ -437,14 +482,18 @@ class ParticularController extends ChangeNotifier {
       "speedVariance": speedVariance,
       "gravityx": gravityX,
       "gravityy": gravityY,
-      "angle": angle,
-      "angleVariance": angleVariance,
       "minRadius": minRadius,
       "minRadiusVariance": minRadiusVariance,
       "maxRadius": maxRadius,
       "maxRadiusVariance": maxRadiusVariance,
+      "angle": angle,
+      "angleVariance": angleVariance,
       "rotatePerSecond": rotatePerSecond,
       "rotatePerSecondVariance": rotatePerSecondVariance,
+      "rotationStart": startRotation,
+      "rotationStartVariance": startRotationVariance,
+      "rotationEnd": finishRotation,
+      "rotationEndVariance": finishRotationVariance,
       "radialAcceleration": radialAcceleration,
       "radialAccelVariance": radialAccelerationVariance,
       "tangentialAcceleration": tangentialAcceleration,
