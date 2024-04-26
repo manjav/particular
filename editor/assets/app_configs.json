@@ -5,10 +5,8 @@
         "components": [
             [
                 {
-                    "title": "Emitter",
                     "inputs": {
-                        "X": "emitterX",
-                        "Y": "emitterY"
+                        "Duration": "duration"
                     }
                 },
                 {
@@ -16,11 +14,6 @@
                     "inputs": {
                         "X": "sourcePositionVarianceX",
                         "Y": "sourcePositionVarianceY"
-                    }
-                },
-                {
-                    "inputs": {
-                        "Duration": "duration"
                     }
                 },
                 {
