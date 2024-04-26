@@ -154,13 +154,13 @@ class Particle {
     x = emitterX;
     y = emitterY;
     size = startSize;
-    rotation = startRotation;
+    rotation = this.startRotation;
     color.update(
         startColor.alpha, startColor.red, startColor.green, startColor.blue);
     radius = maxRadius;
     radiusDelta = (minRadius - maxRadius);
-    velocityX = speed * math.cos(angle);
-    velocityY = speed * math.sin(angle);
+    velocityX = speed * math.cos(this.angle);
+    velocityY = speed * math.sin(this.angle);
   }
 
   /// Updates the particle's state based on the given [deltaTime].
