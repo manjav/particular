@@ -37,7 +37,7 @@ class Particle {
   /// Dynamic Y position of the particle.
   double y = 0;
 
-  /// Dynamic rotation angle of the particle.
+  /// Dynamic angle of the particle.
   double angle = 0;
 
   /// Dynamic rotation of the particle.
@@ -112,13 +112,13 @@ class Particle {
     required int age,
     required int lifespan,
     required double speed,
-    required double angle,
     required double emitterX,
     required double emitterY,
     required double startSize,
     required double finishSize,
     required Color startColor,
     required Color finishColor,
+    required double angle,
     required double rotatePerSecond,
     required double startRotation,
     required double finishRotation,
@@ -133,13 +133,14 @@ class Particle {
     this.age = age;
     this.speed = speed;
     this.lifespan = lifespan;
-    this.angle = angle;
     this.emitterX = emitterX;
     this.emitterY = emitterY;
     this.startSize = startSize;
     this.finishSize = finishSize;
     this.startColor = startColor;
     this.finishColor = finishColor;
+    this.angle = angle / 180.0 * math.pi;
+    this.rotatePerSecond = rotatePerSecond / 180.0 * math.pi;
     this.startRotation = startRotation / 180.0 * math.pi;
     this.finishRotation = finishRotation / 180.0 * math.pi;
     this.radialAcceleration = radialAcceleration;
@@ -158,8 +159,8 @@ class Particle {
         startColor.alpha, startColor.red, startColor.green, startColor.blue);
     radius = maxRadius;
     radiusDelta = (minRadius - maxRadius);
-    velocityX = speed * math.cos(angle / 180.0 * math.pi);
-    velocityY = speed * math.sin(angle / 180.0 * math.pi);
+    velocityX = speed * math.cos(angle);
+    velocityY = speed * math.sin(angle);
   }
 
   /// Updates the particle's state based on the given [deltaTime].
@@ -179,8 +180,8 @@ class Particle {
       radius += radiusDelta * rate;
 
       // Calculate the cosine and sine of the angle.
-      final radiusCos = math.cos(angle / 180.0 * math.pi);
-      final radiusSin = math.sin(angle / 180.0 * math.pi);
+      final radiusCos = math.cos(angle);
+      final radiusSin = math.sin(angle);
 
       // Calculate the new x and y coordinates of the particle.
       x = emitterX - radiusCos * radius;
