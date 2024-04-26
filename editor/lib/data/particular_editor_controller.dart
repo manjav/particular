@@ -49,7 +49,7 @@ class ParticularEditorController extends ParticularController {
       radialAccelerationVariance: args["radialAccelerationVariance"],
       tangentialAcceleration: args["tangentialAcceleration"],
       tangentialAccelerationVariance: args["tangentialAccelerationVariance"],
-      texture: args["tangentialAccelerationVariance"],
+      texture: args["texture"],
     );
     for (var key in args.keys) {
       getNotifier(key).notifyListeners();
