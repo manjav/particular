@@ -1,9 +1,14 @@
+import 'package:flutter/material.dart';
 import 'package:particular/particular.dart';
 
 class ParticularEditorController extends ParticularController {
+  final Map<String, ChangeNotifier> _notifiers = {};
+  ChangeNotifier getNotifier(String key) =>
+      _notifiers[key] ??= ChangeNotifier();
+
   void updateFromMap(Map<String, dynamic> args) {
     update(
-      emitterType: args["emitterType"] ?? EmitterType.gravity,
+      emitterType: args["emitterType"],
       renderBlendMode: args["renderBlendMode"],
       textureBlendMode: args["textureBlendMode"],
       blendFunctionSource: args["blendFunctionSource"],
@@ -42,6 +47,9 @@ class ParticularEditorController extends ParticularController {
       tangentialAccelerationVariance: args["tangentialAccelerationVariance"],
       texture: args["tangentialAccelerationVariance"],
     );
+    for (var key in args.keys) {
+      getNotifier(key).notifyListeners();
+    }
   }
 
   dynamic getParam(String key) {

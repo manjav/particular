@@ -254,7 +254,7 @@ class _EditorAppState extends State<EditorApp> {
       children.add(
         Expanded(
           child: ListenableBuilder(
-            listenable: _particleController,
+            listenable: _particleController.getNotifier(entry.value),
             builder: (c, w) => inspectorBuilder(themeData, inspector, entry),
           ),
         ),
@@ -294,8 +294,12 @@ class _EditorAppState extends State<EditorApp> {
             itemHeight: 56,
             items: items,
             value: _particleController.getParam(entry.value),
-            onChanged: (dynamic selected) =>
-                _particleController.updateFromMap({entry.value: selected}),
+            onChanged: (dynamic selected) {
+              _particleController.updateFromMap({entry.value: selected});
+              if (entry.value == "emitterType") {
+                setState(() {});
+              }
+            },
           ),
         ),
       );
