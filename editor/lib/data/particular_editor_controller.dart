@@ -25,12 +25,12 @@ class ParticularEditorController extends ParticularController {
       sourcePositionVarianceY: args["sourcePositionVarianceY"],
       startSize: args["startSize"],
       startSizeVariance: args["startSizeVariance"],
-      angle: args["angle"],
+      angle: _loopClamp(args["angle"], -180, 180),
+      angleVariance: _clamp(args["angleVariance"], 0, 360),
       finishSize: args["finishSize"],
       finishSizeVariance: args["finishSizeVariance"],
       speed: args["speed"],
       speedVariance: args["speedVariance"],
-      angleVariance: args["angleVariance"],
       emitterX: args["emitterX"],
       emitterY: args["emitterY"],
       gravityX: args["gravityX"],
@@ -101,5 +101,23 @@ class ParticularEditorController extends ParticularController {
       "tangentialAccelerationVariance" => tangentialAccelerationVariance,
       _ => texture,
     };
+  }
+
+  num? _loopClamp(num? value, int min, int max) {
+    if (value == null) return null;
+    var diff = max - min;
+    // var half = (diff * 0.5).round();
+    while (value! < min) {
+      value += diff;
+    }
+    while (value! > max) {
+      value -= diff;
+    }
+    return value;
+  }
+
+  num? _clamp(num? value, int min, int max) {
+    if (value == null) return null;
+    return value.clamp(min, max);
   }
 }
