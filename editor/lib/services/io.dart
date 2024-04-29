@@ -46,7 +46,7 @@ Future<Map<dynamic, dynamic>?> browseConfigs(List<String> extensions) async {
   return null;
 }
 
-Future<void> saveConfigs(Map configs) async {
+Future<void> saveConfigs({required Map configs, String? filename}) async {
   final json = jsonEncode(configs);
   final bytes = utf8.encode(json);
 
@@ -68,7 +68,7 @@ Future<void> saveConfigs(Map configs) async {
   } else {
     await FilePicker.platform.saveFile(
       dialogTitle: "Save Particle Configs",
-      fileName: "configs.json",
+      fileName: "${filename ?? "configs"}.json",
       bytes: bytes,
     );
   }
