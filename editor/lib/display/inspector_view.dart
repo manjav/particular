@@ -66,7 +66,6 @@ class _InspactorViewState extends State<InspactorView> {
             children: [
               _tabBarBuilder(),
               _inspactorListBuilder(themeData),
-              const Expanded(child: SizedBox()),
               _colorPickerBuilder(),
             ],
           );
@@ -107,16 +106,11 @@ class _InspactorViewState extends State<InspactorView> {
     return ValueListenableBuilder(
       valueListenable: Inspector.list,
       builder: (context, value, child) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Column(
-            children: [
-              const SizedBox(height: 12),
-              Text(value.title),
-              const SizedBox(height: 12),
-              for (var inspector in value.children)
-                _inspectorItemBuilder(themeData, inspector),
-            ],
+        return Expanded(
+          child: ListView.builder(
+            itemCount: value.children.length,
+            itemBuilder: (context, index) =>
+                _inspectorItemBuilder(themeData, value.children[index]),
           ),
         );
       },
@@ -145,13 +139,13 @@ class _InspactorViewState extends State<InspactorView> {
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          inspector.title.isEmpty
-              ? const SizedBox()
-              : Text(inspector.title,
+              children: [
+                inspector.title.isEmpty
+                    ? const SizedBox()
+                    : Text(inspector.title,
                         style: themeData.textTheme.titleMedium),
-          const SizedBox(height: 2),
-          Row(children: items),
+                const SizedBox(height: 2),
+                Row(children: items),
               ],
             ),
           ),
@@ -218,17 +212,17 @@ class _InspactorViewState extends State<InspactorView> {
       return DropdownButtonFormField(
         decoration: const InputDecoration(
           contentPadding: EdgeInsets.symmetric(horizontal: 12),
-            border: OutlineInputBorder(),
+          border: OutlineInputBorder(),
         ),
-            itemHeight: 48,
-            items: items,
-            value: _selectedController!.getParam(entry.value),
-            onChanged: (dynamic selected) {
-              _selectedController!.updateFromMap({entry.value: selected});
-              if (entry.value == "emitterType") {
-                setState(() {});
-              }
-            },
+        itemHeight: 48,
+        items: items,
+        value: _selectedController!.getParam(entry.value),
+        onChanged: (dynamic selected) {
+          _selectedController!.updateFromMap({entry.value: selected});
+          if (entry.value == "emitterType") {
+            setState(() {});
+          }
+        },
       );
     } else if (inspector.ui == "color") {
       return _buttonBuilder(
