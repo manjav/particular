@@ -211,25 +211,47 @@ class _InspactorViewState extends State<InspactorView> {
         ),
       );
     } else if (inspector.ui == "color") {
-      return IconButton(
-        icon: Icon(
-          Icons.circle,
-          color: widget.controller.getParam(entry.value).getColor(),
-        ),
-        onPressed: () => _selectedColor.value = entry.value,
+      return _buttonBuilder(
+        themeData,
+        color: widget.controller.getParam(entry.value).getColor(),
+        onTap: () => _selectedColor.value = entry.value,
       );
     } else {
       // Button
-      return OutlinedButton(
-        onPressed: () async {
+      return _buttonBuilder(
+        themeData,
+        child: _getText("${entry.value}".toTitleCase(), themeData),
+        onTap: () async {
           final image = await browseImage();
           if (image != null) {
             widget.controller.update(texture: image);
           }
         },
-        child: _getText("${entry.value}".toTitleCase(), themeData),
       );
     }
+  }
+
+  Widget _buttonBuilder(
+    ThemeData themeData, {
+    Color? color,
+    Widget? child,
+    required Function() onTap,
+  }) {
+    return InkWell(
+      onTap: () => onTap(),
+      child: Container(
+        height: 28,
+        margin: const EdgeInsets.symmetric(vertical: 2),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: color ?? themeData.splashColor,
+          shape: BoxShape.rectangle,
+          borderRadius: const BorderRadius.all(Radius.circular(4)),
+          border: Border.all(width: 1, color: themeData.splashColor),
+        ),
+        child: child,
+      ),
+    );
   }
 
   Text _getText(String text, ThemeData themeData) =>
