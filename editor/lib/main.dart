@@ -22,7 +22,7 @@ class EditorApp extends StatefulWidget {
 class _EditorAppState extends State<EditorApp> {
   Map<String, dynamic> _appConfigs = {};
   late final ui.Image _defaultTexture;
-  final _particleController = ParticularEditorController();
+  final ParticularControllers _particleControllers = ParticularControllers();
 
   @override
   void initState() {
@@ -60,10 +60,17 @@ class _EditorAppState extends State<EditorApp> {
         body: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Expanded(
+              child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
             _canvasBuilder(),
+                ],
+              ),
+            ),
             InspactorView(
               configs: _appConfigs,
-              controller: _particleController,
+              controllers: _particleControllers,
             ),
           ],
         ),
@@ -91,13 +98,13 @@ class _EditorAppState extends State<EditorApp> {
     return Expanded(
       child: GestureDetector(
         onPanUpdate: (details) {
-          _particleController.update(
+          _particleControllers.selected?.update(
             emitterX: details.localPosition.dx,
             emitterY: details.localPosition.dy,
           );
         },
         onTapDown: (details) {
-          _particleController.update(
+          _particleControllers.selected?.update(
             emitterX: details.localPosition.dx,
             emitterY: details.localPosition.dy,
             startTime: -1,
@@ -105,8 +112,17 @@ class _EditorAppState extends State<EditorApp> {
         },
         child: Container(
           color: Colors.black,
-          child: Particular(
-            controller: _particleController,
+          child: ValueListenableBuilder(
+            valueListenable: _particleControllers,
+            builder: (context, value, child) {
+              return Stack(
+                children: [
+                  for (var c in _particleControllers.value)
+                    if (c.isVisible)
+                      Particular(key: Key("${c.index}"), controller: c),
+                ],
+              );
+            },
           ),
         ),
       ),
