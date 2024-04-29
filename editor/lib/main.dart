@@ -35,19 +35,22 @@ class _EditorAppState extends State<EditorApp> {
     var json = await rootBundle.loadString("assets/app_configs.json");
     _appConfigs = Map.castFrom(jsonDecode(json));
 
-  /// Load default particle texture
+    /// Load default particle texture
     final ByteData assetImageByteData =
         await rootBundle.load("assets/texture.png");
     final image = await loadUIImage(assetImageByteData.buffer.asUint8List());
     _particleController.initialize(texture: image);
+    setState(() {});
 
+    // // Add sample emitter
+    await Future.delayed(const Duration(milliseconds: 100));
     if (mounted) {
       var size = MediaQuery.of(context).size;
       _particleController.update(
-          emitterX: (size.width - _appConfigs["inspector"]["width"]) * 0.5,
-          emitterY: (size.height - _appConfigs["appBarHeight"]) * 0.5);
+        emitterX: size.width * 0.5 - _appConfigs["inspector"]["width"] * 0.5,
+        emitterY: size.height * 0.5 + _appConfigs["appBarHeight"] * 0.5,
+      );
     }
-    setState(() => _selectTab(_selectedTabIndex));
   }
 
   @override
