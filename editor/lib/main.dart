@@ -123,4 +123,19 @@ class _EditorAppState extends State<EditorApp> {
       ),
     );
   }
+
+  Future<void> _addParticleSystem() async {
+    final controller = ParticularEditorController();
+    controller.initialize(texture: _defaultTexture);
+    _particleControllers.add(controller);
+    await Future.delayed(const Duration(milliseconds: 100));
+
+    if (mounted) {
+      final size = MediaQuery.of(context).size;
+      controller.update(
+        emitterX: size.width * 0.5 - _appConfigs["inspector"]["width"] * 0.5,
+        emitterY: (size.height - _appConfigs["appBarHeight"]) * 0.5,
+      );
+    }
+  }
 }
