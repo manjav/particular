@@ -136,6 +136,7 @@ class ParticularControllers
   void add(ParticularEditorController? controller) {
     controller ??= ParticularEditorController();
     controller.index = value.length;
+    selectedIndex = controller.index;
     value.add(controller);
     notifyListeners();
   }

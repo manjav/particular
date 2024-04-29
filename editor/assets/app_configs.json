@@ -1,6 +1,11 @@
 {
     "appBarHeight": 48.0,
     "footerHeight": 36.0,
+    "timeline": {
+        "height": 200.0,
+        "itemHeight": 48.0,
+        "sideWidth": 200.0
+    },
     "inspector": {
         "width": 250.0,
         "components": [

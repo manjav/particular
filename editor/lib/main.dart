@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:editor/data/particular_editor_controller.dart';
 import 'package:editor/display/inspector_view.dart';
+import 'package:editor/display/timeline_view.dart';
 import 'package:editor/services/io.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -62,9 +63,13 @@ class _EditorAppState extends State<EditorApp> {
           children: [
             Expanded(
               child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _canvasBuilder(),
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _canvasBuilder(),
+                  TimelineView(
+                    configs: _appConfigs,
+                    controllers: _particleControllers,
+                  ),
                 ],
               ),
             ),
@@ -165,6 +170,7 @@ class _EditorAppState extends State<EditorApp> {
         emitterX: size.width * 0.5 - _appConfigs["inspector"]["width"] * 0.5,
         emitterY: (size.height +
                 _appConfigs["appBarHeight"] -
+                _appConfigs["timeline"]["height"] -
                 _appConfigs["footerHeight"]) *
             0.5,
       );
