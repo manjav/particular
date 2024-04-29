@@ -31,9 +31,10 @@ class _InspactorViewState extends State<InspactorView> {
 
   void _selectTab(int index) {
     _selectedTabIndex = index;
-    var list = <Inspector>[];
-    for (var line in widget.configs["inspector"]["components"][index]) {
-      list.add(Inspector(
+    final node = widget.configs["inspector"]["components"][index];
+    final children = <Inspector>[];
+    for (var line in node["children"]) {
+      children.add(Inspector(
         line["ui"] ?? "input",
         line["min"],
         line["max"],
@@ -42,7 +43,7 @@ class _InspactorViewState extends State<InspactorView> {
         line["inputs"] ?? {},
       ));
     }
-    Inspector.list.value = list;
+    Inspector.list.value = InspectorList(node["title"], children);
   }
 
   @override
@@ -98,12 +99,10 @@ class _InspactorViewState extends State<InspactorView> {
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Column(
             children: [
-              const SizedBox(height: 16),
-              Text(
-                ["Emitter Settings", "Particle Settings"][_selectedTabIndex],
-              ),
-              const SizedBox(height: 16),
-              for (Inspector inspector in value)
+              const SizedBox(height: 12),
+              Text(value.title),
+              const SizedBox(height: 12),
+              for (var inspector in value.children)
                 _inspectorItemBuilder(themeData, inspector),
             ],
           ),
@@ -133,7 +132,9 @@ class _InspactorViewState extends State<InspactorView> {
         children: [
           inspector.title.isEmpty
               ? const SizedBox()
-              : _getText(inspector.title, themeData),
+              : Text(inspector.title,
+                  style: themeData.primaryTextTheme.labelSmall!
+                      .copyWith(fontSize: 8)),
           const SizedBox(height: 2),
           Row(children: items),
           const SizedBox(height: 6),
@@ -188,7 +189,8 @@ class _InspactorViewState extends State<InspactorView> {
       var items = values
           .map((item) => DropdownMenuItem(
               value: item,
-              child: _getText(item.toString().toTitleCase(), themeData)))
+              child: _getText(
+                  item.toString().split('.').last.toTitleCase(), themeData)))
           .toList();
       return InputDecorator(
         decoration: const InputDecoration(
