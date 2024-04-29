@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 
 import '../particular.dart';
 
+/// The controller for the particle system.
 class ParticularController extends ValueNotifier<List<ParticularConfigs>> {
   /// The ticker for the particle system.
   Ticker? _ticker;
@@ -81,6 +82,7 @@ class ParticularController extends ValueNotifier<List<ParticularConfigs>> {
     _add(particleConfigs);
   }
 
+  /// Notifies listeners that the duration of the particle system has changed.
   void _onDurationChange() => notifyListeners();
 
   /// Adds a new particle system to the application.
@@ -94,11 +96,13 @@ class ParticularController extends ValueNotifier<List<ParticularConfigs>> {
     notifyListeners();
   }
 
+  /// Selects the particle system at the given index.
   void selectAt(int index) {
     selectedIndex = index;
     notifyListeners();
   }
 
+  /// Removes the particle system at the given index.
   void removeAt(int index) {
     value[index].getNotifier("duration").removeListener(_onDurationChange);
     value[index].getNotifier("startTime").removeListener(_onDurationChange);
@@ -109,6 +113,7 @@ class ParticularController extends ValueNotifier<List<ParticularConfigs>> {
     notifyListeners();
   }
 
+  /// Reorders the particle system's items based on the new index.
   void reOrder(int oldIndex, int newIndex) {
     if (oldIndex < newIndex) {
       newIndex -= 1;
@@ -118,6 +123,7 @@ class ParticularController extends ValueNotifier<List<ParticularConfigs>> {
     notifyListeners();
   }
 
+  /// Toggles the visibility of the particle system.
   void toggleVisible(int index) {
     // value[index].isVisible = !value[index].isVisible;
     notifyListeners();

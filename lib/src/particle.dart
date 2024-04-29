@@ -9,7 +9,7 @@ enum EmitterType {
   gravity,
   radius;
 
-  // Returns a string representation of the object. In this case, it returns the value of the 'name' property.
+  /// Returns a string representation of the object. In this case, it returns the value of the 'name' property.
   @override
   String toString() => name;
 }
