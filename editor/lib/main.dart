@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'dart:ui' as ui;
 
-import 'package:editor/data/particular_editor_controller.dart';
+import 'package:editor/data/controllers.dart';
+import 'package:editor/display/footer_view.dart';
 import 'package:editor/display/inspector_view.dart';
 import 'package:editor/display/timeline_view.dart';
 import 'package:editor/services/io.dart';
@@ -79,6 +79,10 @@ class _EditorAppState extends State<EditorApp> {
             ),
           ],
         ),
+        bottomNavigationBar: FooterView(
+          appConfigs: _appConfigs,
+          controllers: _particleControllers,
+        ),
       ),
     );
   }
@@ -127,26 +131,6 @@ class _EditorAppState extends State<EditorApp> {
     );
   }
 
-  Widget _footerBuilder() {
-    return SizedBox(
-      height: _appConfigs["footerHeight"],
-      child: Row(
-        children: [
-          IconButton(
-            icon: const Icon(Icons.add, size: 16),
-            onPressed: () => _addParticleSystem(),
-          ),
-          IconButton(
-            icon: const Icon(Icons.file_open, size: 16),
-            onPressed: () async {
-              final configs = await browseConfigs(["json"]);
-              _addParticleSystem(configs: configs);
-            },
-          ),
-        ],
-      ),
-    );
-  }
 
   /// Adds a particle system to the application.
   ///
