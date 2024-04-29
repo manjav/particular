@@ -30,6 +30,9 @@ class ParticularControllers
     final controller = ParticularEditorController();
     controller.initialize(texture: _defaultTexture, configs: configs);
 
+    if (configs == null || !configs.containsKey("configName")) {
+      controller.updateFromMap({"configName": "Layer ${value.length + 1}"});
+    }
     add(controller);
   }
 

@@ -11,6 +11,7 @@ class ParticularEditorController extends ParticularController {
 
   void updateFromMap(Map<String, dynamic> args) {
     update(
+      configName: args["configName"],
       emitterType: args["emitterType"],
       renderBlendMode: args["renderBlendMode"],
       textureBlendMode: args["textureBlendMode"],

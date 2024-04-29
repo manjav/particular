@@ -60,7 +60,7 @@ class _TimelineViewState extends State<TimelineView> {
                     child: const Icon(Icons.drag_handle, size: 12),
                   ),
                   const SizedBox(width: 8),
-                  Text(name),
+                  Text(controller.configName),
                   const Expanded(child: SizedBox()),
                   IconButton(
                     onPressed: () => widget.controllers.toggleVisible(index),
