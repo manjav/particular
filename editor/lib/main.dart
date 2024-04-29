@@ -62,7 +62,6 @@ class _EditorAppState extends State<EditorApp> {
       theme: ThemeData.dark(useMaterial3: true),
       home: Scaffold(
         appBar: _appBarBuilder(),
-        bottomNavigationBar: _footerBuilder(),
         body: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -72,14 +71,14 @@ class _EditorAppState extends State<EditorApp> {
                 children: [
                   _canvasBuilder(),
                   TimelineView(
-                    configs: _appConfigs,
+                    appConfigs: _appConfigs,
                     controllers: _particleControllers,
                   ),
                 ],
               ),
             ),
             InspactorView(
-              configs: _appConfigs,
+              appConfigs: _appConfigs,
               controllers: _particleControllers,
             ),
           ],

@@ -1,3 +1,4 @@
+import 'package:editor/data/controllers.dart';
 import 'package:editor/data/inspector.dart';
 import 'package:editor/data/particular_editor_controller.dart';
 import 'package:editor/services/io.dart';
@@ -7,11 +8,11 @@ import 'package:intry/intry.dart';
 import 'package:particular/particular.dart';
 
 class InspactorView extends StatefulWidget {
-  final Map configs;
+  final Map appConfigs;
   final ParticularControllers controllers;
   const InspactorView({
     super.key,
-    required this.configs,
+    required this.appConfigs,
     required this.controllers,
   });
 
@@ -33,7 +34,7 @@ class _InspactorViewState extends State<InspactorView> {
 
   void _selectTab(int index) {
     _selectedTabIndex = index;
-    final node = widget.configs["inspector"]["components"][index];
+    final node = widget.appConfigs["inspector"]["components"][index];
     final children = <Inspector>[];
     for (var line in node["children"]) {
       children.add(Inspector(
@@ -52,7 +53,7 @@ class _InspactorViewState extends State<InspactorView> {
   Widget build(BuildContext context) {
     var themeData = Theme.of(context);
     return SizedBox(
-      width: widget.configs["inspector"]["width"],
+      width: widget.appConfigs["inspector"]["width"],
       child: ValueListenableBuilder(
         valueListenable: widget.controllers,
         builder: (context, value, child) {

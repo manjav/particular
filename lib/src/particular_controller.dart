@@ -88,6 +88,9 @@ class ParticularController extends ChangeNotifier {
     return Color.fromARGB(alpha, red, green, blue);
   }
 
+  /// The name of the config.
+  String configName = "";
+
   /// The duration of the particle system in milliseconds, -1 for infinite.
   int duration = -1;
 
@@ -227,6 +230,7 @@ class ParticularController extends ChangeNotifier {
     }
     if (configs == null) return;
     update(
+      configName: configs["configName"],
       emitterType: EmitterType.values[configs["emitterType"]],
       blendFunctionSource:
           BlendFunction.fromValue(configs["blendFuncSource"] ?? 0),
@@ -274,6 +278,7 @@ class ParticularController extends ChangeNotifier {
 
   /// particle system updater method
   void update({
+    String? configName,
     EmitterType? emitterType,
     BlendMode? renderBlendMode,
     BlendMode? textureBlendMode,
@@ -318,6 +323,9 @@ class ParticularController extends ChangeNotifier {
     num? tangentialAccelerationVariance,
     ui.Image? texture,
   }) {
+    if (configName != null) {
+      this.configName = configName;
+    }
     if (emitterType != null) {
       this.emitterType = emitterType;
     }
@@ -438,7 +446,7 @@ class ParticularController extends ChangeNotifier {
     if (finishRotationVariance != null) {
       this.finishRotationVariance = finishRotationVariance;
     }
-    
+
     if (radialAcceleration != null) {
       this.radialAcceleration = radialAcceleration;
     }
