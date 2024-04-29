@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui' as ui;
 
 import 'package:editor/data/particular_editor_controller.dart';
 import 'package:editor/display/inspector_view.dart';
@@ -19,7 +20,7 @@ class EditorApp extends StatefulWidget {
 }
 
 class _EditorAppState extends State<EditorApp> {
-  Map _appConfigs = {};
+  Map<String, dynamic> _appConfigs = {};
   late final ui.Image _defaultTexture;
   final _particleController = ParticularEditorController();
 
@@ -41,15 +42,8 @@ class _EditorAppState extends State<EditorApp> {
     _defaultTexture = await loadUIImage(bytes.buffer.asUint8List());
     setState(() {});
 
-    // // Add sample emitter
-    await Future.delayed(const Duration(milliseconds: 100));
-    if (mounted) {
-      var size = MediaQuery.of(context).size;
-      _particleController.update(
-        emitterX: size.width * 0.5 - _appConfigs["inspector"]["width"] * 0.5,
-        emitterY: size.height * 0.5 + _appConfigs["appBarHeight"] * 0.5,
-      );
-    }
+    // Add sample emitter
+    _addParticleSystem();
   }
 
   @override
@@ -62,6 +56,7 @@ class _EditorAppState extends State<EditorApp> {
       theme: ThemeData.dark(useMaterial3: true),
       home: Scaffold(
         appBar: _appBarBuilder(),
+        bottomNavigationBar: _footerBuilder(),
         body: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -84,14 +79,8 @@ class _EditorAppState extends State<EditorApp> {
       backgroundColor: Theme.of(context).tabBarTheme.indicatorColor,
       actions: [
         IconButton(
-            onPressed: () async {
-              final configs = await browseConfigs(["json"]);
-              _particleController.initialize(configs: configs);
-            },
-            icon: const Icon(Icons.file_open_outlined)),
-        const SizedBox(width: 8),
-        IconButton(
-            onPressed: () => saveConfigs(_particleController.getConfigs()),
+            onPressed: () =>
+                saveConfigs(_particleControllers.selected!.getConfigs()),
             icon: const Icon(Icons.save)),
         const SizedBox(width: 12),
       ],
@@ -124,9 +113,33 @@ class _EditorAppState extends State<EditorApp> {
     );
   }
 
-  Future<void> _addParticleSystem() async {
+  Widget _footerBuilder() {
+    return SizedBox(
+      height: _appConfigs["footerHeight"],
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.add, size: 16),
+            onPressed: () => _addParticleSystem(),
+          ),
+          IconButton(
+            icon: const Icon(Icons.file_open, size: 16),
+            onPressed: () async {
+              final configs = await browseConfigs(["json"]);
+              _addParticleSystem(configs: configs);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Adds a particle system to the application.
+  ///
+  /// The [configs] parameter is an optional map of configurations for the particle system.
+  Future<void> _addParticleSystem({Map<dynamic, dynamic>? configs}) async {
     final controller = ParticularEditorController();
-    controller.initialize(texture: _defaultTexture);
+    controller.initialize(texture: _defaultTexture, configs: configs);
     _particleControllers.add(controller);
     await Future.delayed(const Duration(milliseconds: 100));
 
@@ -134,7 +147,10 @@ class _EditorAppState extends State<EditorApp> {
       final size = MediaQuery.of(context).size;
       controller.update(
         emitterX: size.width * 0.5 - _appConfigs["inspector"]["width"] * 0.5,
-        emitterY: (size.height - _appConfigs["appBarHeight"]) * 0.5,
+        emitterY: (size.height +
+                _appConfigs["appBarHeight"] -
+                _appConfigs["footerHeight"]) *
+            0.5,
       );
     }
   }
