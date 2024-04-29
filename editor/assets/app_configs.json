@@ -10,7 +10,7 @@
                     }
                 },
                 {
-                    "title": "Source Position Variance",
+                        "title": "Emittor Size",
                     "inputs": {
                         "X": "sourcePositionVarianceX",
                         "Y": "sourcePositionVarianceY"
@@ -18,27 +18,27 @@
                 },
                 {
                     "inputs": {
-                        "Max Particles": "maxParticles"
+                            "Quantitiy": "maxParticles"
                     }
                 },
                 {
                     "inputs": {
                         "Angle": "angle",
-                        "Variance": "angleVariance"
+                            "+\n-": "angleVariance"
                     }
                 },
                 {},
                 {
                     "ui": "dropdown",
                     "inputs": {
-                        "Emitter Type": "emitterType"
+                            "Emission": "emitterType"
                     }
                 },
                 {
                     "type": "gravity",
                     "inputs": {
                         "Speed": "speed",
-                        "Variance": "speedVariance"
+                            "+\n-": "speedVariance"
                     }
                 },
                 {
@@ -52,36 +52,36 @@
                 {
                     "type": "gravity",
                     "inputs": {
-                        "Radial Acceleration": "radialAcceleration",
-                        "Variance": "radialAccelerationVariance"
+                            "Rad Force": "radialAcceleration",
+                            "+\n-": "radialAccelerationVariance"
                     }
                 },
                 {
                     "type": "gravity",
                     "inputs": {
-                        "Tangential Acceleration": "tangentialAcceleration",
-                        "Variance": "tangentialAccelerationVariance"
+                            "Tan Force": "tangentialAcceleration",
+                            "+\n-": "tangentialAccelerationVariance"
                     }
                 },
                 {
                     "type": "radial",
                     "inputs": {
                         "Min Radius": "minRadius",
-                        "Variance": "minRadiusVariance"
+                            "+\n-": "minRadiusVariance"
                     }
                 },
                 {
                     "type": "radial",
                     "inputs": {
                         "Max Radius": "maxRadius",
-                        "Variance": "maxRadiusVariance"
+                            "+\n-": "maxRadiusVariance"
                     }
                 },
                 {
                     "type": "radial",
                     "inputs": {
                         "Rotation Per Second": "rotatePerSecond",
-                        "Variance": "rotatePerSecondVariance"
+                            "+\n-": "rotatePerSecondVariance"
                     }
                 }
             ],
@@ -89,57 +89,57 @@
                 {
                     "inputs": {
                         "Lifespan": "lifespan",
-                        "Variance": "lifespanVariance"
+                            "+\n-": "lifespanVariance"
                     }
                 },
                 {
                     "inputs": {
                         "Start Size": "startSize",
-                        "Variance": "startSizeVariance"
+                            "+\n-": "startSizeVariance"
                     }
                 },
                 {
                     "inputs": {
                         "End Size": "finishSize",
-                        "Variance": "finishSizeVariance"
+                            "+\n-": "finishSizeVariance"
                     }
                 },
                 {
                     "inputs": {
                         "Start Rotation": "startRotation",
-                        "Variance": "startRotationVariance"
+                            "+\n-": "startRotationVariance"
                     }
                 },
                 {
                     "inputs": {
                         "End Rotation": "finishRotation",
-                        "Variance": "finishRotationVariance"
+                            "+\n-": "finishRotationVariance"
                     }
                 },
                 {
                     "ui": "color",
                     "inputs": {
                         "Start Color": "startColor",
-                        "Variance": "startColorVariance"
+                            "+\n-": "startColorVariance"
                     }
                 },
                 {
                     "ui": "color",
                     "inputs": {
                         "End Color": "finishColor",
-                        "Variance": "finishColorVariance"
+                            "+\n-": "finishColorVariance"
                     }
                 },
                 {
                     "ui": "dropdown",
                     "inputs": {
-                        "Textures Blend Mode": "textureBlendMode"
+                            "Paint Blending": "textureBlendMode"
                     }
                 },
                 {
                     "ui": "dropdown",
                     "inputs": {
-                        "Rendering Blend Mode": "renderBlendMode"
+                            "Draw Blending": "renderBlendMode"
                     }
                 },
                 {
