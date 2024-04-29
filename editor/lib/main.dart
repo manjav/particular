@@ -4,6 +4,7 @@ import 'package:editor/data/controllers.dart';
 import 'package:editor/display/footer_view.dart';
 import 'package:editor/display/inspector_view.dart';
 import 'package:editor/display/timeline_view.dart';
+import 'package:editor/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:particular/particular.dart';
@@ -59,7 +60,7 @@ class _EditorAppState extends State<EditorApp> {
     }
     return MaterialApp(
       title: "Particular Editor",
-      theme: ThemeData.dark(useMaterial3: true),
+      theme: customTheme,
       home: Scaffold(
         appBar: _appBarBuilder(),
         body: Row(

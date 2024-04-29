@@ -267,7 +267,7 @@ class _InspactorViewState extends State<InspactorView> {
   }
 
   Text _getText(String text, ThemeData themeData) =>
-      Text(text, style: themeData.primaryTextTheme.labelSmall);
+      Text(text, style: themeData.textTheme.labelMedium);
 
   void _updateParticleParam(String key, num value) {
     var param = _selectedController!.getParam(key);
