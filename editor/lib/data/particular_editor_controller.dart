@@ -62,6 +62,7 @@ class ParticularEditorController extends ParticularController {
 
   dynamic getParam(String key) {
     return switch (key) {
+      "configName" => configName,
       "emitterType" => emitterType,
       "renderBlendMode" => renderBlendMode,
       "textureBlendMode" => textureBlendMode,
@@ -123,5 +124,54 @@ class ParticularEditorController extends ParticularController {
   num? _clamp(num? value, int min, int max) {
     if (value == null) return null;
     return value.clamp(min, max);
+  }
+
+  Map getConfigs() {
+    final startColorMap = startColor.toMap("startColor");
+    final startColorVarianceMap =
+        startColorVariance.toMap("startColorVariance");
+    final finishColorMap = finishColor.toMap("finishColor");
+    final finishColorVarianceMap =
+        finishColorVariance.toMap("finishColorVariance");
+    return {
+      "configName": configName,
+      "emitterType": emitterType.index,
+      "renderBlendMode": renderBlendMode.index,
+      "textureBlendMode": textureBlendMode.index,
+      "particleLifespan": (lifespan * 0.001),
+      "particleLifespanVariance": lifespanVariance * 0.001,
+      "duration": duration * (duration > -1 ? 0.001 : 1),
+      "maxParticles": maxParticles,
+      "sourcePositionVariancex": sourcePositionVarianceX,
+      "sourcePositionVariancey": sourcePositionVarianceY,
+      "startParticleSize": startSize,
+      "startParticleSizeVariance": startSizeVariance,
+      "finishParticleSize": finishSize,
+      "finishParticleSizeVariance": finishSizeVariance,
+      "speed": speed,
+      "speedVariance": speedVariance,
+      "gravityx": gravityX,
+      "gravityy": gravityY,
+      "minRadius": minRadius,
+      "minRadiusVariance": minRadiusVariance,
+      "maxRadius": maxRadius,
+      "maxRadiusVariance": maxRadiusVariance,
+      "angle": angle,
+      "angleVariance": angleVariance,
+      "rotatePerSecond": rotatePerSecond,
+      "rotatePerSecondVariance": rotatePerSecondVariance,
+      "rotationStart": startRotation,
+      "rotationStartVariance": startRotationVariance,
+      "rotationEnd": finishRotation,
+      "rotationEndVariance": finishRotationVariance,
+      "radialAcceleration": radialAcceleration,
+      "radialAccelVariance": radialAccelerationVariance,
+      "tangentialAcceleration": tangentialAcceleration,
+      "tangentialAccelVariance": tangentialAccelerationVariance,
+    }
+      ..addAll(startColorMap)
+      ..addAll(startColorVarianceMap)
+      ..addAll(finishColorMap)
+      ..addAll(finishColorVarianceMap);
   }
 }

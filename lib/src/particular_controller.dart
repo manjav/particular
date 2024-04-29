@@ -464,54 +464,6 @@ class ParticularController extends ChangeNotifier {
     }
     notifyListeners();
   }
-
-  Map getConfigs() {
-    final startColorMap = startColor.toMap("startColor");
-    final startColorVarianceMap =
-        startColorVariance.toMap("startColorVariance");
-    final finishColorMap = finishColor.toMap("finishColor");
-    final finishColorVarianceMap =
-        finishColorVariance.toMap("finishColorVariance");
-    return {
-      "emitterType": emitterType.index,
-      "renderBlendMode": renderBlendMode.index,
-      "textureBlendMode": textureBlendMode.index,
-      "particleLifespan": (lifespan * 0.001),
-      "particleLifespanVariance": lifespanVariance * 0.001,
-      "duration": duration * (duration > -1 ? 0.001 : 1),
-      "maxParticles": maxParticles,
-      "sourcePositionVariancex": sourcePositionVarianceX,
-      "sourcePositionVariancey": sourcePositionVarianceY,
-      "startParticleSize": startSize,
-      "startParticleSizeVariance": startSizeVariance,
-      "finishParticleSize": finishSize,
-      "finishParticleSizeVariance": finishSizeVariance,
-      "speed": speed,
-      "speedVariance": speedVariance,
-      "gravityx": gravityX,
-      "gravityy": gravityY,
-      "minRadius": minRadius,
-      "minRadiusVariance": minRadiusVariance,
-      "maxRadius": maxRadius,
-      "maxRadiusVariance": maxRadiusVariance,
-      "angle": angle,
-      "angleVariance": angleVariance,
-      "rotatePerSecond": rotatePerSecond,
-      "rotatePerSecondVariance": rotatePerSecondVariance,
-      "rotationStart": startRotation,
-      "rotationStartVariance": startRotationVariance,
-      "rotationEnd": finishRotation,
-      "rotationEndVariance": finishRotationVariance,
-      "radialAcceleration": radialAcceleration,
-      "radialAccelVariance": radialAccelerationVariance,
-      "tangentialAcceleration": tangentialAcceleration,
-      "tangentialAccelVariance": tangentialAccelerationVariance,
-    }
-      ..addAll(startColorMap)
-      ..addAll(startColorVarianceMap)
-      ..addAll(finishColorMap)
-      ..addAll(finishColorVarianceMap);
-  }
 }
 
 /// The wrapper class for colors
