@@ -34,37 +34,23 @@ class _MyAppState extends State<MyApp> {
         backgroundColor: Colors.black,
         body: Column(
           children: [
-            GestureDetector(
-              onPanUpdate: (details) {
-                _particleController.update(
-                    emitterX: details.localPosition.dx,
-                    emitterY: details.localPosition.dy);
-              },
-              onTapDown: (details) {
-                _particleController.update(
-                    emitterX: details.localPosition.dx,
-                    emitterY: details.localPosition.dy);
-              },
-              child: SizedBox(
-                width: 600,
-                height: 600,
-                child: Particular(
-                  controller: _particleController,
-                ),
+            Container(
+              color: Colors.black,
+              child: ValueListenableBuilder(
+                valueListenable: _particleController,
+                builder: (context, value, child) {
+                  return Stack(
+                    children: [
+                      for (var configs in _particleController.value)
+                        Particular(
+                          configs: configs,
+                          controller: _particleController,
+                        ),
+                    ],
+                  );
+                },
               ),
             ),
-            TextButton(
-              onPressed: () {
-                _particleController.update(
-                    maxParticles:
-                        _particleController.maxParticles > 500 ? 300 : 13000);
-              },
-              child: ListenableBuilder(
-                listenable: _particleController,
-                builder: (c, w) =>
-                    Text("${_particleController.maxParticles} particles."),
-              ),
-            )
           ],
         ),
       ),
