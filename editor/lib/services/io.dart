@@ -18,8 +18,10 @@ Future<ui.Image> loadUIImage(Uint8List bytes) async {
 }
 
 Future<ui.Image?> browseImage() async {
-  FilePickerResult? result =
-      await FilePicker.platform.pickFiles(type: FileType.image);
+  FilePickerResult? result = await FilePicker.platform.pickFiles(
+    withData: true,
+    type: FileType.image,
+  );
 
   if (result != null) {
     PlatformFile file = result.files.first;

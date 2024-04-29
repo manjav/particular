@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:particular/particular.dart';
 
 class ParticularEditorController extends ParticularController {
+  int index = 0;
+  bool isVisible = true;
   final Map<String, ChangeNotifier> _notifiers = {};
+
   ChangeNotifier getNotifier(String key) =>
       _notifiers[key] ??= ChangeNotifier();
 
@@ -119,5 +122,45 @@ class ParticularEditorController extends ParticularController {
   num? _clamp(num? value, int min, int max) {
     if (value == null) return null;
     return value.clamp(min, max);
+  }
+}
+
+class ParticularControllers
+    extends ValueNotifier<List<ParticularEditorController>> {
+  ParticularControllers() : super([]);
+
+  int selectedIndex = 0;
+  ParticularEditorController? get selected =>
+      value.isEmpty ? null : value[selectedIndex];
+
+  void add(ParticularEditorController? controller) {
+    controller ??= ParticularEditorController();
+    controller.index = value.length;
+    value.add(controller);
+    notifyListeners();
+  }
+
+  void selectAt(int index) {
+    selectedIndex = index;
+    notifyListeners();
+  }
+
+  void removeAt(int index) {
+    value.removeAt(index);
+    notifyListeners();
+  }
+
+  void reOrder(int oldIndex, int newIndex) {
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+    final item = value.removeAt(oldIndex);
+    value.insert(newIndex, item);
+    notifyListeners();
+  }
+
+  void toggleVisible(int index) {
+    value[index].isVisible = !value[index].isVisible;
+    notifyListeners();
   }
 }

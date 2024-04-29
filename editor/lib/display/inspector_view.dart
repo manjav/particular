@@ -8,11 +8,11 @@ import 'package:particular/particular.dart';
 
 class InspactorView extends StatefulWidget {
   final Map configs;
-  final ParticularEditorController controller;
+  final ParticularControllers controllers;
   const InspactorView({
     super.key,
     required this.configs,
-    required this.controller,
+    required this.controllers,
   });
 
   @override
@@ -22,6 +22,8 @@ class InspactorView extends StatefulWidget {
 class _InspactorViewState extends State<InspactorView> {
   final _selectedColor = ValueNotifier<String?>(null);
   int _selectedTabIndex = 0;
+
+  ParticularEditorController? _selectedController;
 
   @override
   void initState() {
@@ -51,14 +53,23 @@ class _InspactorViewState extends State<InspactorView> {
     var themeData = Theme.of(context);
     return SizedBox(
       width: widget.configs["inspector"]["width"],
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _tabBarBuilder(),
-          _inspactorListBuilder(themeData),
-          const Expanded(child: SizedBox()),
-          _colorPickerBuilder(),
-        ],
+      child: ValueListenableBuilder(
+        valueListenable: widget.controllers,
+        builder: (context, value, child) {
+          _selectedController = widget.controllers.selected;
+          if (widget.controllers.selected == null) {
+            return const SizedBox();
+          }
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _tabBarBuilder(),
+              _inspactorListBuilder(themeData),
+              const Expanded(child: SizedBox()),
+              _colorPickerBuilder(),
+            ],
+          );
+        },
       ),
     );
   }
@@ -117,7 +128,7 @@ class _InspactorViewState extends State<InspactorView> {
             [
               "gravity",
               "radial"
-            ][widget.controller.getParam("emitterType").index]) {
+            ][_selectedController!.getParam("emitterType").index]) {
       var items = <Widget>[];
       _inputLineBuilder(
         inspector,
@@ -158,7 +169,7 @@ class _InspactorViewState extends State<InspactorView> {
       children.add(
         Expanded(
           child: ListenableBuilder(
-            listenable: widget.controller.getNotifier(entry.value),
+            listenable: _selectedController!.getNotifier(entry.value),
             builder: (c, w) => inspectorBuilder(themeData, inspector, entry),
           ),
         ),
@@ -175,7 +186,7 @@ class _InspactorViewState extends State<InspactorView> {
         min: inspector.min,
         max: inspector.max,
         decoration: NumericIntryDecoration.outline(context),
-        value: widget.controller.getParam(entry.value).toDouble(),
+        value: _selectedController!.getParam(entry.value).toDouble(),
         onChanged: (double value) => _updateParticleParam(entry.value, value),
       );
     } else if (inspector.ui == "dropdown") {
@@ -200,9 +211,9 @@ class _InspactorViewState extends State<InspactorView> {
           child: DropdownButton(
             itemHeight: 48,
             items: items,
-            value: widget.controller.getParam(entry.value),
+            value: _selectedController!.getParam(entry.value),
             onChanged: (dynamic selected) {
-              widget.controller.updateFromMap({entry.value: selected});
+              _selectedController!.updateFromMap({entry.value: selected});
               if (entry.value == "emitterType") {
                 setState(() {});
               }
@@ -213,7 +224,7 @@ class _InspactorViewState extends State<InspactorView> {
     } else if (inspector.ui == "color") {
       return _buttonBuilder(
         themeData,
-        color: widget.controller.getParam(entry.value).getColor(),
+        color: _selectedController!.getParam(entry.value).getColor(),
         onTap: () => _selectedColor.value = entry.value,
       );
     } else {
@@ -224,7 +235,7 @@ class _InspactorViewState extends State<InspactorView> {
         onTap: () async {
           final image = await browseImage();
           if (image != null) {
-            widget.controller.update(texture: image);
+            _selectedController!.update(texture: image);
           }
         },
       );
@@ -258,8 +269,8 @@ class _InspactorViewState extends State<InspactorView> {
       Text(text, style: themeData.primaryTextTheme.labelSmall);
 
   void _updateParticleParam(String key, num value) {
-    var param = widget.controller.getParam(key);
-    widget.controller
+    var param = _selectedController!.getParam(key);
+    _selectedController!
         .updateFromMap({key: param is int ? value.toInt() : value});
   }
 
@@ -278,9 +289,9 @@ class _InspactorViewState extends State<InspactorView> {
             child: SlidePicker(
               showIndicator: false,
               showSliderText: false,
-              pickerColor: widget.controller.getParam(value).getColor(),
+              pickerColor: _selectedController!.getParam(value).getColor(),
               onColorChanged: (color) {
-                widget.controller.updateFromMap({
+                _selectedController!.updateFromMap({
                   value: ARGB(color.alpha / 255, color.red / 255,
                       color.green / 255, color.blue / 255)
                 });
