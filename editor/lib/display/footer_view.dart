@@ -12,6 +12,9 @@ class FooterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return ValueListenableBuilder<List<ParticularEditorController>>(
+      valueListenable: controllers,
+      builder: (context, value, child) {
         var items = <Widget>[
           _footerItem(Icons.add, () => controllers.addParticleSystem()),
           _footerItem(Icons.file_open, () async {
@@ -21,11 +24,35 @@ class FooterView extends StatelessWidget {
           const SizedBox(width: 32),
         ];
 
+        if (!controllers.isEmpty) {
+          items.addAll(
+            [
+              _footerItem(
+                Icons.save,
+                () => saveConfigs(
+                    configs: controllers.selected!.getConfigs(),
+                    filename: controllers.selected!.configName),
+              ),
+              _footerItem(
+                controllers.selected!.isVisible
+                    ? Icons.visibility
+                    : Icons.visibility_off,
+                () => controllers.toggleVisible(controllers.selectedIndex),
+              ),
+              _footerItem(
+                Icons.close,
+                () => controllers.removeAt(controllers.selectedIndex),
+              ),
+            ],
+          );
+        }
         return Container(
           color: Colors.white10,
           height: appConfigs["footerHeight"],
           child: Row(children: items),
         );
+      },
+    );
   }
 
   Widget _footerItem(IconData icon, Function() onPressed) {
