@@ -1,18 +1,18 @@
-import 'package:editor/data/controllers.dart';
 import 'package:editor/data/particular_editor_controller.dart';
 import 'package:editor/services/io.dart';
 import 'package:flutter/material.dart';
+import 'package:particular/particular.dart';
 
 class FooterView extends StatelessWidget {
   final Map appConfigs;
-  final ParticularControllers controllers;
+  final ParticularController controllers;
 
   const FooterView(
       {super.key, required this.appConfigs, required this.controllers});
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<List<ParticularEditorController>>(
+    return ValueListenableBuilder<List<ParticularConfigs>>(
       valueListenable: controllers,
       builder: (context, value, child) {
         var items = <Widget>[
@@ -33,12 +33,12 @@ class FooterView extends StatelessWidget {
                     configs: controllers.selected!.getConfigs(),
                     filename: controllers.selected!.configName),
               ),
-              _footerItem(
+              /* _footerItem(
                 controllers.selected!.isVisible
                     ? Icons.visibility
                     : Icons.visibility_off,
                 () => controllers.toggleVisible(controllers.selectedIndex),
-              ),
+              ), */
               _footerItem(
                 Icons.close,
                 () => controllers.removeAt(controllers.selectedIndex),

@@ -1,19 +1,19 @@
-import 'package:editor/data/controllers.dart';
 import 'package:editor/data/inspector.dart';
 import 'package:editor/data/particular_editor_controller.dart';
-import 'package:editor/services/io.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:intry/intry.dart';
 import 'package:particular/particular.dart';
 
+import '../services/io.dart';
+
 class InspactorView extends StatefulWidget {
   final Map appConfigs;
-  final ParticularControllers controllers;
+  final ParticularController controller;
   const InspactorView({
     super.key,
     required this.appConfigs,
-    required this.controllers,
+    required this.controller,
   });
 
   @override
@@ -24,7 +24,7 @@ class _InspactorViewState extends State<InspactorView> {
   final _selectedColor = ValueNotifier<String?>(null);
   int _selectedTabIndex = 0;
 
-  ParticularEditorController? _selectedController;
+  ParticularConfigs? _selectedConfigs;
 
   @override
   void initState() {
@@ -55,10 +55,10 @@ class _InspactorViewState extends State<InspactorView> {
     return SizedBox(
       width: widget.appConfigs["inspector"]["width"],
       child: ValueListenableBuilder(
-        valueListenable: widget.controllers,
+        valueListenable: widget.controller,
         builder: (context, value, child) {
-          _selectedController = widget.controllers.selected;
-          if (widget.controllers.selected == null) {
+          _selectedConfigs = widget.controller.selected;
+          if (widget.controller.selected == null) {
             return const SizedBox();
           }
           return Column(
@@ -123,7 +123,7 @@ class _InspactorViewState extends State<InspactorView> {
             [
               "gravity",
               "radial"
-            ][_selectedController!.getParam("emitterType").index]) {
+            ][_selectedConfigs!.getParam("emitterType").index]) {
       var items = <Widget>[];
       _inputLineBuilder(
         inspector,
@@ -172,7 +172,7 @@ class _InspactorViewState extends State<InspactorView> {
       children.add(
         Expanded(
           child: ListenableBuilder(
-            listenable: _selectedController!.getNotifier(entry.value),
+            listenable: _selectedConfigs!.getNotifier(entry.value),
             builder: (c, w) => inspectorBuilder(themeData, inspector, entry),
           ),
         ),
@@ -191,7 +191,7 @@ class _InspactorViewState extends State<InspactorView> {
         min: inspector.min,
         max: inspector.max,
         decoration: NumericIntryDecoration.outline(context),
-        value: _selectedController!.getParam(entry.value).toDouble(),
+        value: _selectedConfigs!.getParam(entry.value).toDouble(),
         onChanged: (double value) => _updateParticleParam(entry.value, value),
       );
     } else if (inspector.ui == "dropdown") {
@@ -216,9 +216,9 @@ class _InspactorViewState extends State<InspactorView> {
         ),
         itemHeight: 48,
         items: items,
-        value: _selectedController!.getParam(entry.value),
+        value: _selectedConfigs!.getParam(entry.value),
         onChanged: (dynamic selected) {
-          _selectedController!.updateFromMap({entry.value: selected});
+          _selectedConfigs!.updateFromMap({entry.value: selected});
           if (entry.value == "emitterType") {
             setState(() {});
           }
@@ -227,7 +227,7 @@ class _InspactorViewState extends State<InspactorView> {
     } else if (inspector.ui == "color") {
       return _buttonBuilder(
         themeData,
-        color: _selectedController!.getParam(entry.value).getColor(),
+        color: _selectedConfigs!.getParam(entry.value).getColor(),
         onTap: () => _selectedColor.value = entry.value,
       );
     } else {
@@ -238,7 +238,7 @@ class _InspactorViewState extends State<InspactorView> {
         onTap: () async {
           final image = await browseImage();
           if (image != null) {
-            _selectedController!.update(texture: image);
+            _selectedConfigs!.update(texture: image);
           }
         },
       );
@@ -272,8 +272,8 @@ class _InspactorViewState extends State<InspactorView> {
       Text(text, style: themeData.textTheme.labelMedium);
 
   void _updateParticleParam(String key, num value) {
-    var param = _selectedController!.getParam(key);
-    _selectedController!
+    var param = _selectedConfigs!.getParam(key);
+    _selectedConfigs!
         .updateFromMap({key: param is int ? value.toInt() : value});
   }
 
@@ -292,9 +292,9 @@ class _InspactorViewState extends State<InspactorView> {
             child: SlidePicker(
               showIndicator: false,
               showSliderText: false,
-              pickerColor: _selectedController!.getParam(value).getColor(),
+              pickerColor: _selectedConfigs!.getParam(value).getColor(),
               onColorChanged: (color) {
-                _selectedController!.updateFromMap({
+                _selectedConfigs!.updateFromMap({
                   value: ARGB(color.alpha / 255, color.red / 255,
                       color.green / 255, color.blue / 255)
                 });

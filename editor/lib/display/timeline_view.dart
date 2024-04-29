@@ -1,10 +1,9 @@
-import 'package:editor/data/controllers.dart';
-import 'package:editor/data/particular_editor_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:particular/particular.dart';
 
 class TimelineView extends StatefulWidget {
   final Map<String, dynamic> appConfigs;
-  final ParticularControllers controllers;
+  final ParticularController controllers;
   const TimelineView({
     super.key,
     required this.appConfigs,
@@ -20,12 +19,14 @@ class _TimelineViewState extends State<TimelineView> {
   Widget build(BuildContext context) {
     return SizedBox(
         height: widget.appConfigs["timeline"]["height"],
-        child: ValueListenableBuilder<List<ParticularEditorController>>(
+        child: ValueListenableBuilder<List<ParticularConfigs>>(
           valueListenable: widget.controllers,
           builder: (context, value, child) {
-            return ReorderableListView.builder(
+            return Stack(
+              children: [
+                ReorderableListView.builder(
               buildDefaultDragHandles: false,
-              itemBuilder: _layerItemBuilder,
+                  itemBuilder: (c, i) => _layerItemBuilder(i),
               itemCount: widget.controllers.value.length,
               onReorder: (int oldIndex, int newIndex) {
                 widget.controllers.reOrder(oldIndex, newIndex);

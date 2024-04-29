@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:editor/data/controllers.dart';
 import 'package:editor/display/footer_view.dart';
 import 'package:editor/display/inspector_view.dart';
 import 'package:editor/display/timeline_view.dart';
@@ -22,7 +21,7 @@ class EditorApp extends StatefulWidget {
 
 class _EditorAppState extends State<EditorApp> {
   Map<String, dynamic> _appConfigs = {};
-  final ParticularControllers _particleControllers = ParticularControllers();
+  final ParticularController _particleController = ParticularController();
 
   @override
   void initState() {
@@ -39,11 +38,11 @@ class _EditorAppState extends State<EditorApp> {
     setState(() {});
 
     // Add sample emitter
-    await _particleControllers.addParticleSystem();
+    await _particleController.addParticleSystem();
     await Future.delayed(const Duration(milliseconds: 100));
     if (mounted) {
       final size = MediaQuery.of(context).size;
-      _particleControllers.selected!.update(
+      _particleController.selected!.update(
           emitterX: size.width * 0.5 - _appConfigs["inspector"]["width"] * 0.5,
           emitterY: (size.height +
                   _appConfigs["appBarHeight"] -
@@ -73,20 +72,20 @@ class _EditorAppState extends State<EditorApp> {
                   _canvasBuilder(),
                   TimelineView(
                     appConfigs: _appConfigs,
-                    controllers: _particleControllers,
+                    controllers: _particleController,
                   ),
                 ],
               ),
             ),
             InspactorView(
               appConfigs: _appConfigs,
-              controllers: _particleControllers,
+              controller: _particleController,
             ),
           ],
         ),
         bottomNavigationBar: FooterView(
           appConfigs: _appConfigs,
-          controllers: _particleControllers,
+          controllers: _particleController,
         ),
       ),
     );
@@ -104,28 +103,30 @@ class _EditorAppState extends State<EditorApp> {
     return Expanded(
       child: GestureDetector(
         onPanUpdate: (details) {
-          _particleControllers.selected?.update(
+          _particleController.selected?.update(
             emitterX: details.localPosition.dx,
             emitterY: details.localPosition.dy,
           );
         },
         onTapDown: (details) {
-          _particleControllers.selected?.update(
+          _particleController.selected?.update(
             emitterX: details.localPosition.dx,
             emitterY: details.localPosition.dy,
-            startTime: -1,
           );
         },
         child: Container(
           color: Colors.black,
           child: ValueListenableBuilder(
-            valueListenable: _particleControllers,
+            valueListenable: _particleController,
             builder: (context, value, child) {
               return Stack(
                 children: [
-                  for (var c in _particleControllers.value)
-                    if (c.isVisible)
-                      Particular(key: Key("${c.index}"), controller: c),
+                  for (var configs in _particleController.value)
+                    // if (configs.isVisible)
+                    Particular(
+                      configs: configs,
+                      controller: _particleController,
+                    ),
                 ],
               );
             },

@@ -4,8 +4,11 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:particular/particular.dart';
 
-/// A controller for managing parameters and behavior of a particle system.
-class ParticularController extends ChangeNotifier {
+/// Configs for managing parameters and behavior of a particle system.
+class ParticularConfigs {
+  /// The index of the particle system.
+  int index = 0;
+
   /// Gets the start color of particles.
   Color getStartColor() => _getVariantColor(startColor, startColorVariance);
 
@@ -220,10 +223,17 @@ class ParticularController extends ChangeNotifier {
   /// The type of emitter (gravity or radius).
   EmitterType emitterType = EmitterType.gravity;
 
+  /// The map of notifiers
+  final Map<String, ChangeNotifier> _notifiers = {};
+
+  /// Get notifier
+  ChangeNotifier getNotifier(String key) =>
+      _notifiers[key] ??= ChangeNotifier();
+
   /// First time initialize controller
   void initialize({
+    Map<dynamic, dynamic>? configs,
     ui.Image? texture,
-    Map? configs,
   }) async {
     if (texture != null) {
       this.texture = texture;
@@ -462,7 +472,89 @@ class ParticularController extends ChangeNotifier {
     if (texture != null) {
       this.texture = texture;
     }
-    notifyListeners();
+  }
+
+  /// Updates the controller from a map
+  void updateFromMap(Map<String, dynamic> args) {
+    update(
+      configName: args["configName"],
+      emitterType: args["emitterType"],
+      renderBlendMode: args["renderBlendMode"],
+      textureBlendMode: args["textureBlendMode"],
+      blendFunctionSource: args["blendFunctionSource"],
+      blendFunctionDestination: args["blendFunctionDestination"],
+      startTime: args["startTime"],
+      duration: args["duration"],
+      lifespan: args["lifespan"],
+      lifespanVariance: args["lifespanVariance"],
+      maxParticles: args["maxParticles"],
+      startColor: args["startColor"],
+      startColorVariance: args["startColorVariance"],
+      finishColor: args["finishColor"],
+      finishColorVariance: args["finishColorVariance"],
+      sourcePositionVarianceX: args["sourcePositionVarianceX"],
+      sourcePositionVarianceY: args["sourcePositionVarianceY"],
+      startSize: args["startSize"],
+      startSizeVariance: args["startSizeVariance"],
+      angle: _loopClamp(args["angle"], -180, 180),
+      angleVariance: _clamp(args["angleVariance"], 0, 360),
+      finishSize: args["finishSize"],
+      finishSizeVariance: args["finishSizeVariance"],
+      speed: args["speed"],
+      speedVariance: args["speedVariance"],
+      emitterX: args["emitterX"],
+      emitterY: args["emitterY"],
+      gravityX: args["gravityX"],
+      gravityY: args["gravityY"],
+      minRadius: args["minRadius"],
+      minRadiusVariance: args["minRadiusVariance"],
+      maxRadius: args["maxRadius"],
+      maxRadiusVariance: args["maxRadiusVariance"],
+      rotatePerSecond: args["rotatePerSecond"],
+      rotatePerSecondVariance: args["rotatePerSecondVariance"],
+      startRotation: args["startRotation"],
+      startRotationVariance: args["startRotationVariance"],
+      finishRotation: args["finishRotation"],
+      finishRotationVariance: args["finishRotationVariance"],
+      radialAcceleration: args["radialAcceleration"],
+      radialAccelerationVariance: args["radialAccelerationVariance"],
+      tangentialAcceleration: args["tangentialAcceleration"],
+      tangentialAccelerationVariance: args["tangentialAccelerationVariance"],
+      texture: args["texture"],
+    );
+    for (var key in args.keys) {
+      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+      getNotifier(key).notifyListeners();
+    }
+  }
+
+  /// Circulate the given [value] between the specified [min] and [max]
+  /// boundaries.
+  ///
+  /// Parameters:
+  ///   - [value]: The value to be clamped.
+  ///   - [min]: The lower boundary of the range.
+  ///   - [max]: The upper boundary of the range.
+  ///
+  /// Returns:
+  ///   - The clamped value.
+  num? _loopClamp(num? value, int min, int max) {
+    if (value == null) return null;
+    var diff = max - min;
+    // var half = (diff * 0.5).round();
+    while (value! < min) {
+      value += diff;
+    }
+    while (value! > max) {
+      value -= diff;
+    }
+    return value;
+  }
+
+  /// Clamp value between min and max
+  num? _clamp(num? value, int min, int max) {
+    if (value == null) return null;
+    return value.clamp(min, max);
   }
 }
 

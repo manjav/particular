@@ -7,13 +7,17 @@ import 'package:particular/particular.dart';
 
 /// A widget that represents a particle system.
 class Particular extends StatefulWidget {
+  /// The configurations for the particle system.
+  final ParticularConfigs configs;
+
   /// The controller for the particle system.
-  final ParticularController? controller;
+  final ParticularController controller;
 
   /// Creates a [Particular] widget.
   const Particular({
     super.key,
-    this.controller,
+    required this.configs,
+    required this.controller,
   });
 
   /// Creates the state for the [Particular] widget.
@@ -111,8 +115,8 @@ class _ParticularState extends State<Particular>
   ///
   /// Returns: None.
   void _spawn([int age = 0]) {
+    final configs = widget.configs;
     Particle particle;
-    final ParticularController controller = widget.controller!;
     if (_deadParticleIndices.isEmpty) {
       particle = Particle();
       _colors.add(particle.color);
@@ -120,33 +124,33 @@ class _ParticularState extends State<Particular>
       _rectangles.add(ParticleRect.fromLTWH(
           0,
           0,
-          controller.texture!.width.toDouble(),
-          controller.texture!.height.toDouble()));
+          configs.texture!.width.toDouble(),
+          configs.texture!.height.toDouble()));
       _particles.add(particle);
     } else {
       particle = _particles[_deadParticleIndices.removeLast()];
     }
     particle.initialize(
       age: age,
-      emitterType: controller.emitterType,
-      emitterX: controller.getEmitterX(1),
-      emitterY: controller.getEmitterY(1),
-      startSize: controller.getStartSize(1),
-      finishSize: controller.getFinishSize(1),
-      startColor: controller.getStartColor(),
-      finishColor: controller.getFinishColor(),
-      angle: controller.getAngle(),
-      lifespan: controller.getLifespan(),
-      speed: controller.getSpeed(_devicePixelRatio),
-      gravityX: controller.gravityX * _devicePixelRatio,
-      gravityY: controller.gravityY * _devicePixelRatio,
-      minRadius: controller.getMinRadius(1),
-      maxRadius: controller.getMaxRadius(1),
-      rotatePerSecond: controller.getRotatePerSecond(),
-      startRotation: controller.getStartRotaion(),
-      finishRotation: controller.getFinishRotaion(),
-      radialAcceleration: controller.getRadialAcceleration(),
-      tangentialAcceleration: controller.getTangentialAcceleration(),
+      emitterType: configs.emitterType,
+      emitterX: configs.getEmitterX(1),
+      emitterY: configs.getEmitterY(1),
+      startSize: configs.getStartSize(1),
+      finishSize: configs.getFinishSize(1),
+      startColor: configs.getStartColor(),
+      finishColor: configs.getFinishColor(),
+      angle: configs.getAngle(),
+      lifespan: configs.getLifespan(),
+      speed: configs.getSpeed(_devicePixelRatio),
+      gravityX: configs.gravityX * _devicePixelRatio,
+      gravityY: configs.gravityY * _devicePixelRatio,
+      minRadius: configs.getMinRadius(1),
+      maxRadius: configs.getMaxRadius(1),
+      rotatePerSecond: configs.getRotatePerSecond(),
+      startRotation: configs.getStartRotaion(),
+      finishRotation: configs.getFinishRotaion(),
+      radialAcceleration: configs.getRadialAcceleration(),
+      tangentialAcceleration: configs.getTangentialAcceleration(),
     );
   }
 
@@ -154,21 +158,18 @@ class _ParticularState extends State<Particular>
   /// any side effects beyond building a widget.
   @override
   Widget build(BuildContext context) {
-    if (widget.controller!.texture == null) {
-      return const SizedBox();
-    }
     return SizedBox(
       child: CustomPaint(
         painter: ParticlePainter(
           colors: _colors,
-          deltaTime: _deltaTime,
           particles: _particles,
           rectangles: _rectangles,
           transforms: _transforms,
+          image: widget.configs.texture!,
+          deltaTime: widget.controller.deltaTime,
           deadParticleIndices: _deadParticleIndices,
-          image: widget.controller!.texture!,
-          renderBlendMode: widget.controller!.renderBlendMode,
-          textureBlendMode: widget.controller!.textureBlendMode,
+          renderBlendMode: widget.configs.renderBlendMode,
+          textureBlendMode: widget.configs.textureBlendMode,
           onFinished: () {},
         ),
       ),
