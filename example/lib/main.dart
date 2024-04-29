@@ -1,9 +1,4 @@
-import 'dart:convert';
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:image/image.dart' as image;
 import 'package:particular/particular.dart';
 
 void main() {
@@ -29,25 +24,7 @@ class _MyAppState extends State<MyApp> {
 
   // Load configs and texture of particle
   Future<void> _loadParticleAssets() async {
-    // Load json config
-    var json = await rootBundle.loadString("assets/meteor.json");
-    var configsMap = jsonDecode(json);
-
-    // Load particle texture
-    final ByteData assetImageByteData =
-        await rootBundle.load("assets/${configsMap["textureFileName"]}");
-    image.Image? baseSizeImage =
-        image.decodeImage(assetImageByteData.buffer.asUint8List());
-    image.Image resizeImage = image.copyResize(baseSizeImage!,
-        height: baseSizeImage.width, width: baseSizeImage.height);
-    ui.Codec codec =
-        await ui.instantiateImageCodec(image.encodePng(resizeImage));
-    ui.FrameInfo frameInfo = await codec.getNextFrame();
-
-    _particleController.initialize(
-      texture: frameInfo.image,
-      configs: configsMap,
-    );
+    await _particleController.addParticleSystem();
   }
 
   @override

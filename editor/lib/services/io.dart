@@ -1,21 +1,12 @@
 import 'dart:convert';
+import 'dart:ui' as ui;
+
 // ignore: avoid_web_libraries_in_flutter
 // import 'dart:html' as html;
-import 'dart:ui' as ui;
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:flutter/services.dart';
-import 'package:image/image.dart' as image;
-
-Future<ui.Image> loadUIImage(Uint8List bytes) async {
-  image.Image? baseSizeImage = image.decodeImage(bytes);
-  image.Image resizeImage = image.copyResize(baseSizeImage!,
-      height: baseSizeImage.width, width: baseSizeImage.height);
-  ui.Codec codec = await ui.instantiateImageCodec(image.encodePng(resizeImage));
-  ui.FrameInfo frameInfo = await codec.getNextFrame();
-  return frameInfo.image;
-}
+import 'package:particular/particular.dart';
 
 Future<ui.Image?> browseImage() async {
   FilePickerResult? result = await FilePicker.platform.pickFiles(
