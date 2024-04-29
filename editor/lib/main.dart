@@ -20,6 +20,7 @@ class EditorApp extends StatefulWidget {
 
 class _EditorAppState extends State<EditorApp> {
   Map _appConfigs = {};
+  late final ui.Image _defaultTexture;
   final _particleController = ParticularEditorController();
 
   @override
@@ -32,14 +33,12 @@ class _EditorAppState extends State<EditorApp> {
   ///
   /// This function does not have any parameters and does not return any value.
   void _loadInitialConfigs() async {
-    var json = await rootBundle.loadString("assets/app_configs.json");
+    final json = await rootBundle.loadString("assets/app_configs.json");
     _appConfigs = Map.castFrom(jsonDecode(json));
 
     /// Load default particle texture
-    final ByteData assetImageByteData =
-        await rootBundle.load("assets/texture.png");
-    final image = await loadUIImage(assetImageByteData.buffer.asUint8List());
-    _particleController.initialize(texture: image);
+    final bytes = await rootBundle.load("assets/texture.png");
+    _defaultTexture = await loadUIImage(bytes.buffer.asUint8List());
     setState(() {});
 
     // // Add sample emitter
