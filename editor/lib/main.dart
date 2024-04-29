@@ -89,13 +89,6 @@ class _EditorAppState extends State<EditorApp> {
       title: Text("Particular Editor",
           style: Theme.of(context).primaryTextTheme.bodyMedium),
       backgroundColor: Theme.of(context).tabBarTheme.indicatorColor,
-      actions: [
-        IconButton(
-            onPressed: () =>
-                saveConfigs(_particleControllers.selected!.getConfigs()),
-            icon: const Icon(Icons.save)),
-        const SizedBox(width: 12),
-      ],
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:editor/data/particular_editor_controller.dart';
+import 'package:editor/services/io.dart';
 import 'package:flutter/material.dart';
 
 class TimelineView extends StatefulWidget {
@@ -35,8 +36,9 @@ class _TimelineViewState extends State<TimelineView> {
   }
 
   Widget _layerItemBuilder(BuildContext context, int index) {
-    var controller = widget.controllers.value[index];
-    var key = Key('$index');
+    final key = Key('$index');
+    final controller = widget.controllers.value[index];
+    final name = "Layer ${controller.index + 1}";
     return Container(
       key: key,
       height: widget.configs["timeline"]["layerHeight"],
@@ -57,7 +59,8 @@ class _TimelineViewState extends State<TimelineView> {
                     index: index,
                     child: const Icon(Icons.drag_handle, size: 12),
                   ),
-                  Text("  Layer ${controller.index + 1}"),
+                  const SizedBox(width: 8),
+                  Text(name),
                   const Expanded(child: SizedBox()),
                   IconButton(
                     onPressed: () => widget.controllers.toggleVisible(index),
@@ -72,6 +75,14 @@ class _TimelineViewState extends State<TimelineView> {
                     onPressed: () => widget.controllers.removeAt(index),
                     icon: const Icon(
                       Icons.close,
+                      size: 12,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => saveConfigs(
+                        configs: controller.getConfigs(), filename: name),
+                    icon: const Icon(
+                      Icons.save,
                       size: 12,
                     ),
                   ),
