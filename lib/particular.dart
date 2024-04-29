@@ -12,8 +12,8 @@
 library particular;
 
 export 'src/blending.dart';
-export 'src/controllers.dart';
 export 'src/image_loader.dart';
 export 'src/particle.dart';
+export 'src/particular_configs.dart';
 export 'src/particular_controller.dart';
 export 'src/particular_emitter.dart';
