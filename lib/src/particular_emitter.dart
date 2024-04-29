@@ -1,8 +1,6 @@
-import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:particular/particular.dart';
 
 /// A widget that represents a particle system.
@@ -30,9 +28,6 @@ class Particular extends StatefulWidget {
 /// The state for the [Particular] widget.
 class _ParticularState extends State<Particular>
     with SingleTickerProviderStateMixin {
-  /// The ticker for animation.
-  Ticker? _ticker;
-
   /// The device pixel ratio.
   double _devicePixelRatio = 1;
 
@@ -51,12 +46,6 @@ class _ParticularState extends State<Particular>
   /// The transforms of particles.
   final List<ParticleTransform> _transforms = [];
 
-  /// The time difference between frames.
-  int _deltaTime = 0;
-
-  /// The time reserved of the last frame.
-  int _lastFrameTime = 0;
-
   /// Initializes the state of the widget.
   ///
   /// This method is called when the widget is first created and when it is rebuilt.
@@ -64,42 +53,26 @@ class _ParticularState extends State<Particular>
   @override
   void initState() {
     super.initState();
-    widget.controller!.addListener(() {
-      if (widget.controller!.texture == null) return;
-      _devicePixelRatio =
-          MediaQuery.of(context).devicePixelRatio; //2.65, 411.4, 867.4
-      _spawn(0);
-      _iterate();
-    });
+    _devicePixelRatio = 1;
+//        MediaQuery.of(context).devicePixelRatio; //2.65, 411.4, 867.4
+    widget.controller.addListener(_onControllerTick);
   }
 
-  /// Iterates over frames.
-  Future<void> _iterate() async {
-    if (_ticker != null) return;
-    _ticker = createTicker(_onTick);
-    _ticker!.start();
-  }
-
-  // Updates the configuration based on the elapsed time, spawns particles, and updates the frame time.
-  void _onTick(Duration elapsed) {
-    var config = widget.controller!;
-    if (config.startTime < 0) {
-      config.startTime = elapsed.inMilliseconds - _deltaTime;
-      _lastFrameTime = 0;
-    }
-    final now = elapsed.inMilliseconds - config.startTime;
+  void _onControllerTick() {
+    var configs = widget.configs;
+    var controller = widget.controller;
 
     // Spawn particles
-    if (config.duration < 0 || now < config.duration) {
+    if (configs.duration < 0 ||
+        (controller.elapsedTime >= configs.startTime &&
+            controller.elapsedTime < configs.duration)) {
       var particlesPerTick =
-          (_deltaTime * config.maxParticles / config.lifespan).round();
+          (controller.deltaTime * configs.maxParticles / configs.lifespan)
+              .round();
       for (var i = 0; i < particlesPerTick; i++) {
-        _spawn((i * _deltaTime / particlesPerTick).round());
+        _spawn((i * controller.deltaTime / particlesPerTick).round());
       }
     }
-
-    _deltaTime = now - _lastFrameTime;
-    _lastFrameTime += _deltaTime;
     setState(() {});
   }
 
@@ -179,7 +152,7 @@ class _ParticularState extends State<Particular>
   /// Was called on the mixin, that Ticker was still active. The Ticker must be disposed.
   @override
   void dispose() {
-    _ticker?.dispose();
+    widget.controller.removeListener(_onControllerTick);
     super.dispose();
   }
 }

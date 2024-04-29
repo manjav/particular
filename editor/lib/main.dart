@@ -109,6 +109,7 @@ class _EditorAppState extends State<EditorApp> {
           );
         },
         onTapDown: (details) {
+          _particleController.resetTick();
           _particleController.selected?.update(
             emitterX: details.localPosition.dx,
             emitterY: details.localPosition.dy,

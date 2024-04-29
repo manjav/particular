@@ -7,10 +7,54 @@ import 'package:flutter/services.dart';
 import '../particular.dart';
 
 class ParticularController extends ValueNotifier<List<ParticularConfigs>> {
+  /// The ticker for the particle system.
   Ticker? _ticker;
+
+  /// The ticker for the particle system.
   int selectedIndex = 0;
+
+  /// The ticker for the particle system.
   ui.Image? _defaultTexture;
+
+  /// The ticker for the particle system.
   int timelineDuration = 1000;
+
+  /// The delta time of the particle system in milliseconds.
+  int deltaTime = 0;
+
+  /// The elapsed time of the particle system in milliseconds.
+  int elapsedTime = 0;
+
+  /// The ticker for the particle system.
+  ParticularController() : super([]);
+
+  /// The ticker for the particle system.
+  ParticularConfigs? get selected =>
+      value.isEmpty ? null : value[selectedIndex];
+
+  /// Whether the particle system is empty.
+  bool get isEmpty => value.isEmpty;
+
+  /// Updates the particle system's delta time and elapsed time based on the given [elapsed] duration.
+  ///
+  /// This function is called periodically to update the particle system's state. It calculates the
+  /// delta time and current elapsed time.
+  ///
+  /// Parameters:
+  ///   - elapsed: The duration since the last update.
+  void _onTick(Duration elapsed) {
+    deltaTime = elapsed.inMilliseconds - elapsedTime;
+    elapsedTime = elapsed.inMilliseconds;
+    notifyListeners();
+  }
+
+  /// Resets the tick of the particle system.
+  void resetTick() {
+    _ticker?.stop();
+    elapsedTime = 0;
+    _ticker?.start();
+  }
+
   /// Adds a particle system to the application.
   ///
   /// The [configs] parameter is an optional map of configurations for the particle system.
