@@ -140,16 +140,22 @@ class _InspactorViewState extends State<InspactorView> {
       );
 
       return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           inspector.title.isEmpty
               ? const SizedBox()
               : Text(inspector.title,
-                  style: themeData.primaryTextTheme.labelSmall!
-                      .copyWith(fontSize: 8)),
+                        style: themeData.textTheme.titleMedium),
           const SizedBox(height: 2),
           Row(children: items),
-          const SizedBox(height: 6),
+              ],
+            ),
+          ),
+          items.isEmpty ? const SizedBox(height: 12) : const Divider(height: 14)
         ],
       );
     }
@@ -164,7 +170,9 @@ class _InspactorViewState extends State<InspactorView> {
             MapEntry<String, dynamic> entry)
         inspectorBuilder,
   ) {
-    for (var entry in inspector.inputs.entries) {
+    final entries = inspector.inputs.entries.toList();
+    for (var i = 0; i < entries.length; i++) {
+      var entry = entries[i];
       children.add(_getText(entry.key.toTitleCase(), themeData));
       children.add(const SizedBox(width: 8));
       children.add(
@@ -175,7 +183,9 @@ class _InspactorViewState extends State<InspactorView> {
           ),
         ),
       );
-      children.add(const SizedBox(width: 12));
+      if (i < entries.length - 1) {
+        children.add(const SizedBox(width: 20));
+      }
     }
   }
 
@@ -200,16 +210,16 @@ class _InspactorViewState extends State<InspactorView> {
       };
       var items = values
           .map((item) => DropdownMenuItem(
+              alignment: Alignment.center,
               value: item,
               child: _getText(
                   item.toString().split('.').last.toTitleCase(), themeData)))
           .toList();
-      return InputDecorator(
+      return DropdownButtonFormField(
         decoration: const InputDecoration(
+          contentPadding: EdgeInsets.symmetric(horizontal: 12),
             border: OutlineInputBorder(),
-            contentPadding: EdgeInsets.symmetric(horizontal: 8)),
-        child: DropdownButtonHideUnderline(
-          child: DropdownButton(
+        ),
             itemHeight: 48,
             items: items,
             value: _selectedController!.getParam(entry.value),
@@ -219,8 +229,6 @@ class _InspactorViewState extends State<InspactorView> {
                 setState(() {});
               }
             },
-          ),
-        ),
       );
     } else if (inspector.ui == "color") {
       return _buttonBuilder(
@@ -256,7 +264,7 @@ class _InspactorViewState extends State<InspactorView> {
         margin: const EdgeInsets.symmetric(vertical: 2),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: color ?? themeData.splashColor,
+          color: color ?? themeData.scaffoldBackgroundColor,
           shape: BoxShape.rectangle,
           borderRadius: const BorderRadius.all(Radius.circular(4)),
           border: Border.all(width: 1, color: themeData.splashColor),

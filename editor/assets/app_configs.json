@@ -1,8 +1,8 @@
 {
-    "appBarHeight": 48.0,
+    "appBarHeight": 32.0,
     "footerHeight": 24.0,
     "timeline": {
-        "height": 200.0,
+        "height": 160.0,
         "layerHeight": 32.0,
         "sideWidth": 100.0
     },

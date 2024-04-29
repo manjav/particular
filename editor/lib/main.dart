@@ -94,10 +94,9 @@ class _EditorAppState extends State<EditorApp> {
 
   AppBar _appBarBuilder() {
     return AppBar(
-      toolbarHeight: _appConfigs["appBarHeight"] * 1.0,
-      title: Text("Particular Editor",
-          style: Theme.of(context).primaryTextTheme.bodyMedium),
-      backgroundColor: Theme.of(context).tabBarTheme.indicatorColor,
+      centerTitle: false,
+      title: const Text("Particular Editor"),
+      toolbarHeight: _appConfigs["appBarHeight"],
     );
   }
 

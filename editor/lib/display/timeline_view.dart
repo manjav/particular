@@ -19,7 +19,7 @@ class _TimelineViewState extends State<TimelineView> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        height: 200,
+        height: widget.appConfigs["timeline"]["height"],
         child: ValueListenableBuilder<List<ParticularEditorController>>(
           valueListenable: widget.controllers,
           builder: (context, value, child) {
