@@ -1,9 +1,5 @@
 import 'dart:convert';
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html;
-import 'dart:ui' as ui;
 
-import 'package:editor/data/inspector.dart';
 import 'package:editor/data/particular_editor_controller.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -62,10 +58,9 @@ class _EditorAppState extends State<EditorApp> {
   }
 
   /// Load default particle texture
-  Future<void> _loadDefaultTexture() async {
     final ByteData assetImageByteData =
         await rootBundle.load("assets/texture.png");
-    final image = await _loadUIImage(assetImageByteData.buffer.asUint8List());
+    final image = await loadUIImage(assetImageByteData.buffer.asUint8List());
     _particleController.initialize(texture: image);
 
     if (mounted) {
@@ -106,11 +101,15 @@ class _EditorAppState extends State<EditorApp> {
       backgroundColor: Theme.of(context).tabBarTheme.indicatorColor,
       actions: [
         IconButton(
-            onPressed: _browseParticleConfigs,
+            onPressed: () async {
+              final configs = await browseConfigs(["json"]);
+              _particleController.initialize(configs: configs);
+            },
             icon: const Icon(Icons.file_open_outlined)),
         const SizedBox(width: 8),
         IconButton(
-            onPressed: _saveParticleConfigs, icon: const Icon(Icons.save)),
+            onPressed: () => saveConfigs(_particleController.getConfigs()),
+            icon: const Icon(Icons.save)),
         const SizedBox(width: 12),
       ],
     );
@@ -320,58 +319,6 @@ class _EditorAppState extends State<EditorApp> {
     }
   }
 
-  Future<void> _browseTexture() async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(type: FileType.image);
-
-    if (result != null) {
-      PlatformFile file = result.files.first;
-      final image = await _loadUIImage(file.bytes!);
-      _particleController.update(texture: image);
-    }
-  }
-
-  Future<void> _browseParticleConfigs() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ["json"],
-    );
-    if (result != null) {
-      PlatformFile file = result.files.first;
-      String json = String.fromCharCodes(file.bytes!);
-      var configsMap = jsonDecode(json);
-      _particleController.initialize(configs: configsMap);
-    }
-  }
-
-  Future<void> _saveParticleConfigs() async {
-    final json = jsonEncode(_particleController.getConfigs());
-    final bytes = utf8.encode(json);
-
-    if (kIsWeb) {
-      final blob = html.Blob([bytes]);
-      final url = html.Url.createObjectUrlFromBlob(blob);
-      final anchor = html.document.createElement('a') as html.AnchorElement
-        ..href = url
-        ..style.display = 'none'
-        ..download = 'configs.json';
-      html.document.body!.children.add(anchor);
-
-      // Download
-      anchor.click();
-
-      // Cleanup
-      html.document.body!.children.remove(anchor);
-      html.Url.revokeObjectUrl(url);
-    } else {
-      await FilePicker.platform.saveFile(
-        dialogTitle: "Save Particle Configs",
-        fileName: "configs.json",
-        bytes: bytes,
-      );
-    }
-  }
-
   Text _getText(String text, ThemeData themeData) =>
       Text(text, style: themeData.primaryTextTheme.labelSmall);
 
@@ -410,15 +357,6 @@ class _EditorAppState extends State<EditorApp> {
     );
   }
 
-  Future<ui.Image> _loadUIImage(Uint8List bytes) async {
-    image.Image? baseSizeImage = image.decodeImage(bytes);
-    image.Image resizeImage = image.copyResize(baseSizeImage!,
-        height: baseSizeImage.width, width: baseSizeImage.height);
-    ui.Codec codec =
-        await ui.instantiateImageCodec(image.encodePng(resizeImage));
-    ui.FrameInfo frameInfo = await codec.getNextFrame();
-    return frameInfo.image;
-  }
 }
 
 extension StringExtension on String {
