@@ -65,9 +65,8 @@ class _ParticularState extends State<Particular>
     var controller = widget.controller;
 
     // Spawn particles
-    if (configs.duration < 0 ||
-        (controller.elapsedTime >= configs.startTime &&
-            controller.elapsedTime < configs.duration)) {
+    if (controller.elapsedTime >= configs.startTime &&
+        (configs.endTime < 0 || controller.elapsedTime < configs.endTime)) {
       var particlesPerTick =
           (controller.deltaTime * configs.maxParticles / configs.lifespan)
               .round();

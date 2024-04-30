@@ -17,7 +17,7 @@
                         "min": -1.0,
                         "inputs": {
                             "Start": "startTime",
-                            "End": "duration"
+                            "End": "endTime"
                         }
                     },
                     {

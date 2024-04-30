@@ -6,6 +6,9 @@ import 'package:particular/particular.dart';
 
 /// Configs for managing parameters and behavior of a particle system.
 class ParticularConfigs {
+  static int defaultDuration = 5000;
+  static int maxDuration = 30000;
+
   /// The index of the particle system.
   int index = 0;
 
@@ -94,11 +97,11 @@ class ParticularConfigs {
   /// The name of the config.
   String configName = "";
 
-  /// The duration of the particle system in milliseconds, -1 for infinite.
-  int duration = -1;
-
   /// The start time of the particle system in milliseconds.
   int startTime = 0;
+
+  /// The end time of the particle system in milliseconds, -1 for infinite.
+  int endTime = -1;
 
   /// The lifespan of particles in milliseconds.
   int lifespan = 1000;
@@ -254,7 +257,8 @@ class ParticularConfigs {
       finishColorVariance: ARGB.fromMap(configs, "finishColorVariance"),
       lifespan: (configs["particleLifespan"] * 1000).round(),
       lifespanVariance: (configs["particleLifespanVariance"] * 1000).round(),
-      duration:
+      startTime: (configs["startTime"] * 1000).round(),
+      endTime:
           (configs["duration"] * (configs["duration"] > -1 ? 1000 : 1)).round(),
       maxParticles: configs["maxParticles"],
       sourcePositionVarianceX: configs["sourcePositionVariancex"],
@@ -294,8 +298,8 @@ class ParticularConfigs {
     BlendMode? textureBlendMode,
     BlendFunction? blendFunctionSource,
     BlendFunction? blendFunctionDestination,
-    int? duration,
     int? startTime,
+    int? endTime,
     int? lifespan,
     int? lifespanVariance,
     int? maxParticles,
@@ -345,11 +349,13 @@ class ParticularConfigs {
     if (lifespanVariance != null) {
       this.lifespanVariance = lifespanVariance;
     }
-    if (duration != null) {
-      this.duration = duration;
-    }
     if (startTime != null) {
-      this.startTime = startTime;
+      this.startTime = startTime.clamp(
+          0, this.endTime < 0 ? maxDuration : this.endTime - 50);
+    }
+    if (endTime != null) {
+      this.endTime =
+          endTime.clamp(this.startTime > 0 ? this.startTime : -1, maxDuration);
     }
     if (maxParticles != null) {
       this.maxParticles = maxParticles;
@@ -484,7 +490,7 @@ class ParticularConfigs {
       blendFunctionSource: args["blendFunctionSource"],
       blendFunctionDestination: args["blendFunctionDestination"],
       startTime: args["startTime"],
-      duration: args["duration"],
+      endTime: args["endTime"],
       lifespan: args["lifespan"],
       lifespanVariance: args["lifespanVariance"],
       maxParticles: args["maxParticles"],
