@@ -3,11 +3,11 @@ import 'package:particular/particular.dart';
 
 class TimelineView extends StatefulWidget {
   final Map<String, dynamic> appConfigs;
-  final ParticularController controllers;
+  final ParticularController controller;
   const TimelineView({
     super.key,
     required this.appConfigs,
-    required this.controllers,
+    required this.controller,
   });
 
   @override

@@ -72,7 +72,7 @@ class _EditorAppState extends State<EditorApp> {
                   _canvasBuilder(),
                   TimelineView(
                     appConfigs: _appConfigs,
-                    controllers: _particleController,
+                    controller: _particleController,
                   ),
                 ],
               ),

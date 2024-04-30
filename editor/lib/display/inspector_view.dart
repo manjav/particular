@@ -79,6 +79,7 @@ class _InspactorViewState extends State<InspactorView> {
       valueListenable: Inspector.list,
       builder: (context, value, child) {
         return Container(
+          margin: const EdgeInsets.only(bottom: 10),
           color: Colors.black12,
           child: Row(
             children: [
