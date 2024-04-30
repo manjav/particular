@@ -127,7 +127,7 @@ class ParticularController {
     layers[index].getNotifier("duration").removeListener(_onDurationChange);
     layers[index].getNotifier("startTime").removeListener(_onDurationChange);
     layers.removeAt(index);
-    if (index >= layers.length) {
+    if (selectedLayerIndex >= layers.length) {
       selectedLayerIndex = layers.length - 1;
     }
     notify(NotifierType.layer);
@@ -140,6 +140,7 @@ class ParticularController {
     }
     final item = layers.removeAt(oldIndex);
     layers.insert(newIndex, item);
+    selectedLayerIndex = newIndex;
     notify(NotifierType.layer);
   }
 
