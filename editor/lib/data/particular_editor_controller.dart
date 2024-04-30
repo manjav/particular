@@ -6,6 +6,7 @@ extension ParticularEditorController on ParticularConfigs {
   dynamic getParam(String key) {
     return switch (key) {
       "configName" => configName,
+      "textureFileName" => textureFileName,
       "emitterType" => emitterType,
       "renderBlendMode" => renderBlendMode,
       "textureBlendMode" => textureBlendMode,
@@ -61,6 +62,7 @@ extension ParticularEditorController on ParticularConfigs {
         finishColorVariance.toMap("finishColorVariance");
     return {
       "configName": configName,
+      "textureFileName": textureFileName,
       "emitterType": emitterType.index,
       "renderBlendMode": renderBlendMode.index,
       "textureBlendMode": textureBlendMode.index,

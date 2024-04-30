@@ -97,6 +97,9 @@ class ParticularConfigs {
   /// The name of the config.
   String configName = "";
 
+  /// The name of the texture
+  String textureFileName = "";
+
   /// The start time of the particle system in milliseconds.
   int startTime = 0;
 
@@ -257,7 +260,7 @@ class ParticularConfigs {
       finishColorVariance: ARGB.fromMap(configs, "finishColorVariance"),
       lifespan: (configs["particleLifespan"] * 1000).round(),
       lifespanVariance: (configs["particleLifespanVariance"] * 1000).round(),
-      startTime: (configs["startTime"] * 1000).round(),
+      startTime: ((configs["startTime"] ?? 0) * 1000).round(),
       endTime:
           (configs["duration"] * (configs["duration"] > -1 ? 1000 : 1)).round(),
       maxParticles: configs["maxParticles"],
@@ -293,6 +296,7 @@ class ParticularConfigs {
   /// particle system updater method
   void update({
     String? configName,
+    String? textureFileName,
     EmitterType? emitterType,
     BlendMode? renderBlendMode,
     BlendMode? textureBlendMode,
@@ -339,6 +343,9 @@ class ParticularConfigs {
   }) {
     if (configName != null) {
       this.configName = configName;
+    }
+    if (textureFileName != null) {
+      this.textureFileName = textureFileName;
     }
     if (emitterType != null) {
       this.emitterType = emitterType;
@@ -484,6 +491,7 @@ class ParticularConfigs {
   void updateFromMap(Map<String, dynamic> args) {
     update(
       configName: args["configName"],
+      textureFileName: args["textureFileName"],
       emitterType: args["emitterType"],
       renderBlendMode: args["renderBlendMode"],
       textureBlendMode: args["textureBlendMode"],

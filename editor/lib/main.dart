@@ -70,6 +70,10 @@ class _EditorAppState extends State<EditorApp> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   _canvasBuilder(),
+                  FooterView(
+                    appConfigs: _appConfigs,
+                    controller: _particleController,
+                  ),
                   TimelineView(
                     appConfigs: _appConfigs,
                     controller: _particleController,
@@ -82,10 +86,6 @@ class _EditorAppState extends State<EditorApp> {
               controller: _particleController,
             ),
           ],
-        ),
-        bottomNavigationBar: FooterView(
-          appConfigs: _appConfigs,
-          controllers: _particleController,
         ),
       ),
     );

@@ -238,9 +238,10 @@ class _InspactorViewState extends State<InspactorView> {
         themeData,
         child: _getText("${entry.value}".toTitleCase(), themeData),
         onTap: () async {
-          final image = await browseImage();
-          if (image != null) {
-            _selectedConfigs!.update(texture: image);
+          final result = await browseImage();
+          if (result.$2 != null) {
+            _selectedConfigs!
+                .update(textureFileName: result.$1, texture: result.$2);
           }
         },
       );
