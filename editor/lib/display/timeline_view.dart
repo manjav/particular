@@ -36,9 +36,11 @@ class _TimelineViewState extends State<TimelineView> {
         ));
   }
 
-  Widget _layerItemBuilder(BuildContext context, int index) {
+  Widget _layerItemBuilder(int index) {
     final key = Key('$index');
-    final controller = widget.controllers.value[index];
+    final layer = widget.controller.value[index];
+    var emptyArea = widget.controller.timelineDuration - layer.duration;
+    var positionRate = layer.startTime / emptyArea;
     return Container(
       key: key,
       height: widget.appConfigs["timeline"]["layerHeight"],
@@ -48,7 +50,7 @@ class _TimelineViewState extends State<TimelineView> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Container(
-              color: widget.controllers.selectedIndex == index
+              color: widget.controller.selectedIndex == index
                   ? Colors.white30
                   : Colors.white12,
               width: widget.appConfigs["timeline"]["sideWidth"],
@@ -61,14 +63,26 @@ class _TimelineViewState extends State<TimelineView> {
                     child: const Icon(Icons.drag_handle, size: 12),
                   ),
                   const SizedBox(width: 8),
-                  Text(controller.configName),
-                  const Expanded(child: SizedBox()),
+                  Text(layer.configName),
                 ],
               ),
             ),
+            Expanded(
+              child: SizedBox(
+                child: FractionallySizedBox(
+                  alignment: Alignment(positionRate * 2 - 1, 0),
+                  widthFactor: layer.duration < 0
+                      ? 1
+                      : layer.duration /
+                          widget.controller.timelineDuration,
+                  heightFactor: 0.3,
+                  child: Container(color: Colors.green),
+                ),
+              ),
+            )
           ],
         ),
-        onTap: () => widget.controllers.selectAt(index),
+        onTap: () => widget.controller.selectAt(index),
       ),
     );
   }
