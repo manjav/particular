@@ -81,18 +81,19 @@ class _TimelineViewState extends State<TimelineView> {
   }
 
   Widget _activeLineBuilder(ParticularConfigs layer) {
+    var c = widget.controller;
     return ListenableBuilder(
-      listenable: widget.controller.getNotifier(NotifierType.time),
+      listenable: c.getNotifier(NotifierType.time),
       builder: (context, child) {
-        var emptyArea = widget.controller.timelineDuration - layer.duration;
-        var positionRate = layer.startTime / emptyArea;
+        var end = layer.endTime < 0 ? c.timelineDuration : layer.endTime;
+        var duration = end - layer.startTime;
+        var emptyArea = c.timelineDuration - duration;
+        var positionRate = emptyArea <= 0 ? 0 : layer.startTime / emptyArea;
         return Expanded(
           child: SizedBox(
             child: FractionallySizedBox(
               alignment: Alignment(positionRate * 2 - 1, 0),
-              widthFactor: layer.duration < 0
-                  ? 1
-                  : layer.duration / widget.controller.timelineDuration,
+              widthFactor: duration / c.timelineDuration,
               heightFactor: 0.3,
               child: Container(color: Colors.green),
             ),

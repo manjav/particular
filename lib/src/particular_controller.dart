@@ -22,6 +22,16 @@ class ParticularController {
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       getNotifier(key).notifyListeners();
 
+  /// The duration of the particle system in milliseconds.
+  int get timelineDuration {
+    if (layers.isEmpty) return ParticularConfigs.defaultDuration;
+    var max = layers.reduce((l, r) => l.endTime > r.endTime ? l : r).endTime;
+    if (max < ParticularConfigs.defaultDuration) {
+      return ParticularConfigs.defaultDuration;
+    }
+    return max + 100;
+  }
+
   /// The ticker for the particle system.
   Ticker? _ticker;
 
@@ -30,9 +40,6 @@ class ParticularController {
 
   /// The default texture for the particle system.
   ui.Image? _defaultTexture;
-
-  /// The duration of the particle system in milliseconds.
-  int timelineDuration = 1000;
 
   /// The delta time of the particle system in milliseconds.
   int deltaTime = 0;
