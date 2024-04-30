@@ -32,6 +32,7 @@ class FooterView extends StatelessWidget {
               final configs = await browseConfigs(["json"]);
               controller.addParticleSystem(configs: configs);
             }),
+            _footerItem(Icons.save_alt, _exportConfigs),
           ]),
         );
       },
@@ -42,11 +43,18 @@ class FooterView extends StatelessWidget {
   /// screen. The icon button represents an action and when pressed, it
   /// executes the provided function [onPressed].
   Widget _footerItem(IconData icon, Function() onPressed) {
-    // IconButton configuration
     return IconButton(
       padding: const EdgeInsets.all(2),
       icon: Icon(icon, size: 12),
       onPressed: () => onPressed(),
     );
+  }
+
+  void _exportConfigs() {
+    var layersConfigs = [];
+    for (var i = 0; i < controller.layers.length; i++) {
+      layersConfigs.add(controller.layers[i].getConfigs());
+    }
+    saveConfigs(configs: layersConfigs);
   }
 }
