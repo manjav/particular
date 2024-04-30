@@ -17,20 +17,32 @@ class TimelineView extends StatefulWidget {
 class _TimelineViewState extends State<TimelineView> {
   @override
   Widget build(BuildContext context) {
+    var c = widget.controller;
     return SizedBox(
         height: widget.appConfigs["timeline"]["height"],
         child: ValueListenableBuilder<List<ParticularConfigs>>(
-          valueListenable: widget.controllers,
+          valueListenable: c,
           builder: (context, value, child) {
+            var timeRatio =
+                c.elapsedTime.clamp(0, c.timelineDuration) / c.timelineDuration;
             return Stack(
               children: [
                 ReorderableListView.builder(
               buildDefaultDragHandles: false,
                   itemBuilder: (c, i) => _layerItemBuilder(i),
-              itemCount: widget.controllers.value.length,
+                  itemCount: c.value.length,
               onReorder: (int oldIndex, int newIndex) {
-                widget.controllers.reOrder(oldIndex, newIndex);
+                    c.reOrder(oldIndex, newIndex);
               },
+                ),
+                Align(
+                    alignment: Alignment(timeRatio * 2 - 1, 0),
+                    child: Container(
+                      width: 1,
+                      color: Colors.white,
+                      height: widget.appConfigs["timeline"]["height"],
+                    ))
+              ],
             );
           },
         ));
