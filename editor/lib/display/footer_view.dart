@@ -9,53 +9,30 @@ class FooterView extends StatelessWidget {
   final Map appConfigs;
 
   /// The controller for the particle system.
-  final ParticularController controllers;
+  final ParticularController controller;
 
   /// Creates a footer view.
   const FooterView(
-      {super.key, required this.appConfigs, required this.controllers});
+      {super.key, required this.appConfigs, required this.controller});
 
   /// Creates a footer view.
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: controllers.getNotifier(NotifierType.layer),
+      listenable: controller.getNotifier(NotifierType.layer),
       builder: (context, child) {
-        var items = <Widget>[
-          _footerItem(Icons.add, () => controllers.addParticleSystem()),
-          _footerItem(Icons.file_open, () async {
-            final configs = await browseConfigs(["json"]);
-            controllers.addParticleSystem(configs: configs);
-          }),
-          const SizedBox(width: 32),
-        ];
-
-        if (!controllers.isEmpty) {
-          items.addAll(
-            [
-              _footerItem(
-                Icons.save,
-                () => saveConfigs(
-                    configs: controllers.selectedLayer!.getConfigs(),
-                    filename: controllers.selectedLayer!.configName),
-              ),
-              /* _footerItem(
-                controllers.selected!.isVisible
-                    ? Icons.visibility
-                    : Icons.visibility_off,
-                () => controllers.toggleVisible(controllers.selectedIndex),
-              ), */
-              _footerItem(
-                Icons.close,
-                () => controllers.removeAt(controllers.selectedLayerIndex),
-              ),
-            ],
-          );
-        }
         return Container(
           color: Colors.white10,
           height: appConfigs["footerHeight"],
-          child: Row(children: items),
+          child: Row(children: [
+            _footerItem(Icons.refresh, () => controller.resetTick()),
+            SizedBox(width: appConfigs["timeline"]["sideWidth"] - 40),
+            _footerItem(Icons.add, () => controller.addParticleSystem()),
+            _footerItem(Icons.file_open, () async {
+              final configs = await browseConfigs(["json"]);
+              controller.addParticleSystem(configs: configs);
+            }),
+          ]),
         );
       },
     );

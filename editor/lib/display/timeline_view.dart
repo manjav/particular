@@ -1,3 +1,5 @@
+import 'package:editor/data/particular_editor_controller.dart';
+import 'package:editor/services/io.dart';
 import 'package:flutter/material.dart';
 import 'package:particular/particular.dart';
 
@@ -68,7 +70,23 @@ class _TimelineViewState extends State<TimelineView> {
                     child: const Icon(Icons.drag_handle, size: 12),
                   ),
                   const SizedBox(width: 8),
-                  Text(layer.configName),
+                  Expanded(child: Text(layer.configName)),
+                  _buttonBuilder(
+                    Icons.save,
+                    () => saveConfigs(
+                        configs: layer.getConfigs(),
+                        filename: layer.configName),
+                  ),
+                  _buttonBuilder(
+                    Icons.delete,
+                    () => widget.controller.removeAt(index),
+                  ),
+                  /* _footerItem(
+                controllers.selected!.isVisible
+                    ? Icons.visibility
+                    : Icons.visibility_off,
+                () => controllers.toggleVisible(controllers.selectedIndex),
+              ), */
                 ],
               ),
             ),
@@ -121,4 +139,7 @@ class _TimelineViewState extends State<TimelineView> {
       },
     );
   }
+
+  Widget _buttonBuilder(IconData icon, Function() onPressed) =>
+      IconButton(icon: Icon(icon, size: 12), onPressed: () => onPressed());
 }
