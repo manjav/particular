@@ -1,23 +1,37 @@
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
 import '../particular.dart';
 
+enum NotifierType { time, layer }
+
 /// The controller for the particle system.
-class ParticularController extends ValueNotifier<List<ParticularConfigs>> {
+class ParticularController {
+  /// The map of notifiers
+  final Map<NotifierType, ChangeNotifier> _notifiers = {};
+
+  ChangeNotifier getNotifier(NotifierType key) =>
+      _notifiers[key] ??= ChangeNotifier();
+
+  /// Notifies listeners that the duration of the particle system has changed.
+  void notify(NotifierType key) =>
+      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+      getNotifier(key).notifyListeners();
+
   /// The ticker for the particle system.
   Ticker? _ticker;
 
-  /// The ticker for the particle system.
-  int selectedIndex = 0;
+  /// The index of the selected layer.
+  int selectedLayerIndex = 0;
 
-  /// The ticker for the particle system.
+  /// The default texture for the particle system.
   ui.Image? _defaultTexture;
 
-  /// The ticker for the particle system.
+  /// The duration of the particle system in milliseconds.
   int timelineDuration = 1000;
 
   /// The delta time of the particle system in milliseconds.
@@ -26,15 +40,14 @@ class ParticularController extends ValueNotifier<List<ParticularConfigs>> {
   /// The elapsed time of the particle system in milliseconds.
   int elapsedTime = 0;
 
-  /// The ticker for the particle system.
-  ParticularController() : super([]);
+  final List<ParticularConfigs> layers = [];
 
   /// The ticker for the particle system.
-  ParticularConfigs? get selected =>
-      value.isEmpty ? null : value[selectedIndex];
+  ParticularConfigs? get selectedLayer =>
+      layers.isEmpty ? null : layers[selectedLayerIndex];
 
   /// Whether the particle system is empty.
-  bool get isEmpty => value.isEmpty;
+  bool get isEmpty => layers.isEmpty;
 
   /// Updates the particle system's delta time and elapsed time based on the given [elapsed] duration.
   ///
@@ -46,7 +59,7 @@ class ParticularController extends ValueNotifier<List<ParticularConfigs>> {
   void _onTick(Duration elapsed) {
     deltaTime = elapsed.inMilliseconds - elapsedTime;
     elapsedTime = elapsed.inMilliseconds;
-    notifyListeners();
+    notify(NotifierType.time);
   }
 
   /// Resets the tick of the particle system.
@@ -77,40 +90,40 @@ class ParticularController extends ValueNotifier<List<ParticularConfigs>> {
 
     if (configs == null || !configs.containsKey("configName")) {
       particleConfigs
-          .updateFromMap({"configName": "Layer ${value.length + 1}"});
+          .updateFromMap({"configName": "Layer ${layers.length + 1}"});
     }
     _add(particleConfigs);
   }
 
   /// Notifies listeners that the duration of the particle system has changed.
-  void _onDurationChange() => notifyListeners();
+  void _onDurationChange() => notify(NotifierType.time);
 
   /// Adds a new particle system to the application.
   void _add(ParticularConfigs? particleConfigs) {
     particleConfigs ??= ParticularConfigs();
-    particleConfigs.index = value.length;
+    particleConfigs.index = layers.length;
     particleConfigs.getNotifier("duration").addListener(_onDurationChange);
     particleConfigs.getNotifier("startTime").addListener(_onDurationChange);
-    selectedIndex = particleConfigs.index;
-    value.add(particleConfigs);
-    notifyListeners();
+    selectedLayerIndex = particleConfigs.index;
+    layers.add(particleConfigs);
+    notify(NotifierType.layer);
   }
 
   /// Selects the particle system at the given index.
   void selectAt(int index) {
-    selectedIndex = index;
-    notifyListeners();
+    selectedLayerIndex = index;
+    notify(NotifierType.layer);
   }
 
   /// Removes the particle system at the given index.
   void removeAt(int index) {
-    value[index].getNotifier("duration").removeListener(_onDurationChange);
-    value[index].getNotifier("startTime").removeListener(_onDurationChange);
-    value.removeAt(index);
-    if (index >= value.length) {
-      selectedIndex = value.length - 1;
+    layers[index].getNotifier("duration").removeListener(_onDurationChange);
+    layers[index].getNotifier("startTime").removeListener(_onDurationChange);
+    layers.removeAt(index);
+    if (index >= layers.length) {
+      selectedLayerIndex = layers.length - 1;
     }
-    notifyListeners();
+    notify(NotifierType.layer);
   }
 
   /// Reorders the particle system's items based on the new index.
@@ -118,14 +131,14 @@ class ParticularController extends ValueNotifier<List<ParticularConfigs>> {
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
-    final item = value.removeAt(oldIndex);
-    value.insert(newIndex, item);
-    notifyListeners();
+    final item = layers.removeAt(oldIndex);
+    layers.insert(newIndex, item);
+    notify(NotifierType.layer);
   }
 
   /// Toggles the visibility of the particle system.
   void toggleVisible(int index) {
-    // value[index].isVisible = !value[index].isVisible;
-    notifyListeners();
+    // _layers[index].isVisible = !_layers[index].isVisible;
+    notify(NotifierType.layer);
   }
 }

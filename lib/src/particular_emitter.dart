@@ -55,7 +55,9 @@ class _ParticularState extends State<Particular>
     super.initState();
     _devicePixelRatio = 1;
 //        MediaQuery.of(context).devicePixelRatio; //2.65, 411.4, 867.4
-    widget.controller.addListener(_onControllerTick);
+    widget.controller
+        .getNotifier(NotifierType.time)
+        .addListener(_onControllerTick);
   }
 
   void _onControllerTick() {
@@ -152,7 +154,9 @@ class _ParticularState extends State<Particular>
   /// Was called on the mixin, that Ticker was still active. The Ticker must be disposed.
   @override
   void dispose() {
-    widget.controller.removeListener(_onControllerTick);
+    widget.controller
+        .getNotifier(NotifierType.time)
+        .removeListener(_onControllerTick);
     super.dispose();
   }
 }

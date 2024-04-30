@@ -42,7 +42,7 @@ class _EditorAppState extends State<EditorApp> {
     await Future.delayed(const Duration(milliseconds: 100));
     if (mounted) {
       final size = MediaQuery.of(context).size;
-      _particleController.selected!.update(
+      _particleController.selectedLayer!.update(
           emitterX: size.width * 0.5 - _appConfigs["inspector"]["width"] * 0.5,
           emitterY: (size.height +
                   _appConfigs["appBarHeight"] -
@@ -103,29 +103,29 @@ class _EditorAppState extends State<EditorApp> {
     return Expanded(
       child: GestureDetector(
         onPanUpdate: (details) {
-          _particleController.selected?.update(
+          _particleController.selectedLayer?.update(
             emitterX: details.localPosition.dx,
             emitterY: details.localPosition.dy,
           );
         },
         onTapDown: (details) {
           _particleController.resetTick();
-          _particleController.selected?.update(
+          _particleController.selectedLayer?.update(
             emitterX: details.localPosition.dx,
             emitterY: details.localPosition.dy,
           );
         },
         child: Container(
           color: Colors.black,
-          child: ValueListenableBuilder(
-            valueListenable: _particleController,
-            builder: (context, value, child) {
+          child: ListenableBuilder(
+            listenable: _particleController.getNotifier(NotifierType.layer),
+            builder: (context, child) {
               return Stack(
                 children: [
-                  for (var configs in _particleController.value)
+                  for (var layerConfigs in _particleController.layers)
                     // if (configs.isVisible)
                     Particular(
-                      configs: configs,
+                      configs: layerConfigs,
                       controller: _particleController,
                     ),
                 ],

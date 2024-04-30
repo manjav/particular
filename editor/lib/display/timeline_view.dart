@@ -22,28 +22,20 @@ class _TimelineViewState extends State<TimelineView> {
     var c = widget.controller;
     return SizedBox(
         height: widget.appConfigs["timeline"]["height"],
-        child: ValueListenableBuilder<List<ParticularConfigs>>(
-          valueListenable: c,
-          builder: (context, value, child) {
-            var timeRatio =
-                c.elapsedTime.clamp(0, c.timelineDuration) / c.timelineDuration;
+        child: ListenableBuilder(
+          listenable: c.getNotifier(NotifierType.layer),
+          builder: (context, child) {
             return Stack(
               children: [
                 ReorderableListView.builder(
-              buildDefaultDragHandles: false,
+                  buildDefaultDragHandles: false,
                   itemBuilder: (c, i) => _layerItemBuilder(i),
-                  itemCount: c.value.length,
-              onReorder: (int oldIndex, int newIndex) {
+                  itemCount: c.layers.length,
+                  onReorder: (int oldIndex, int newIndex) {
                     c.reOrder(oldIndex, newIndex);
-              },
+                  },
                 ),
-                Align(
-                    alignment: Alignment(timeRatio * 2 - 1, 0),
-                    child: Container(
-                      width: 1,
-                      color: Colors.white,
-                      height: widget.appConfigs["timeline"]["height"],
-                    ))
+                _timeSeekBarBuilder(),
               ],
             );
           },
@@ -53,9 +45,7 @@ class _TimelineViewState extends State<TimelineView> {
   /// Builds a layer item.
   Widget _layerItemBuilder(int index) {
     final key = Key('$index');
-    final layer = widget.controller.value[index];
-    var emptyArea = widget.controller.timelineDuration - layer.duration;
-    var positionRate = layer.startTime / emptyArea;
+    final layer = widget.controller.layers[index];
     return Container(
       key: key,
       height: widget.appConfigs["timeline"]["layerHeight"],
@@ -65,7 +55,7 @@ class _TimelineViewState extends State<TimelineView> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Container(
-              color: widget.controller.selectedIndex == index
+              color: widget.controller.selectedLayerIndex == index
                   ? Colors.white30
                   : Colors.white12,
               width: widget.appConfigs["timeline"]["sideWidth"],
@@ -82,22 +72,52 @@ class _TimelineViewState extends State<TimelineView> {
                 ],
               ),
             ),
-            Expanded(
-              child: SizedBox(
-                child: FractionallySizedBox(
-                  alignment: Alignment(positionRate * 2 - 1, 0),
-                  widthFactor: layer.duration < 0
-                      ? 1
-                      : layer.duration / widget.controller.timelineDuration,
-                  heightFactor: 0.3,
-                  child: Container(color: Colors.green),
-                ),
-              ),
-            )
+            _activeLineBuilder(layer),
           ],
         ),
         onTap: () => widget.controller.selectAt(index),
       ),
+    );
+  }
+
+  Widget _activeLineBuilder(ParticularConfigs layer) {
+    return ListenableBuilder(
+      listenable: widget.controller.getNotifier(NotifierType.time),
+      builder: (context, child) {
+        var emptyArea = widget.controller.timelineDuration - layer.duration;
+        var positionRate = layer.startTime / emptyArea;
+        return Expanded(
+          child: SizedBox(
+            child: FractionallySizedBox(
+              alignment: Alignment(positionRate * 2 - 1, 0),
+              widthFactor: layer.duration < 0
+                  ? 1
+                  : layer.duration / widget.controller.timelineDuration,
+              heightFactor: 0.3,
+              child: Container(color: Colors.green),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _timeSeekBarBuilder() {
+    var c = widget.controller;
+    return ListenableBuilder(
+      listenable: widget.controller.getNotifier(NotifierType.time),
+      builder: (context, child) {
+        var timeRatio =
+            c.elapsedTime.clamp(0, c.timelineDuration) / c.timelineDuration;
+        return Align(
+          alignment: Alignment(timeRatio * 2 - 1, 0),
+          child: Container(
+            width: 1,
+            color: Colors.white,
+            height: widget.appConfigs["timeline"]["height"],
+          ),
+        );
+      },
     );
   }
 }

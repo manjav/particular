@@ -36,8 +36,8 @@ class FooterView extends StatelessWidget {
               _footerItem(
                 Icons.save,
                 () => saveConfigs(
-                    configs: controllers.selected!.getConfigs(),
-                    filename: controllers.selected!.configName),
+                    configs: controllers.selectedLayer!.getConfigs(),
+                    filename: controllers.selectedLayer!.configName),
               ),
               /* _footerItem(
                 controllers.selected!.isVisible
@@ -47,7 +47,7 @@ class FooterView extends StatelessWidget {
               ), */
               _footerItem(
                 Icons.close,
-                () => controllers.removeAt(controllers.selectedIndex),
+                () => controllers.removeAt(controllers.selectedLayerIndex),
               ),
             ],
           );

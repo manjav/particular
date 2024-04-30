@@ -55,11 +55,11 @@ class _InspactorViewState extends State<InspactorView> {
     var themeData = Theme.of(context);
     return SizedBox(
       width: widget.appConfigs["inspector"]["width"],
-      child: ValueListenableBuilder(
-        valueListenable: widget.controller,
-        builder: (context, value, child) {
-          _selectedConfigs = widget.controller.selected;
-          if (widget.controller.selected == null) {
+      child: ListenableBuilder(
+        listenable: widget.controller.getNotifier(NotifierType.layer),
+        builder: (context, child) {
+          _selectedConfigs = widget.controller.selectedLayer;
+          if (widget.controller.selectedLayer == null) {
             return const SizedBox();
           }
           return Column(

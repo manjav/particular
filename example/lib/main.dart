@@ -36,14 +36,14 @@ class _MyAppState extends State<MyApp> {
           children: [
             Container(
               color: Colors.black,
-              child: ValueListenableBuilder(
-                valueListenable: _particleController,
-                builder: (context, value, child) {
+              child: ListenableBuilder(
+                listenable: _particleController.getNotifier(NotifierType.layer),
+                builder: (context, child) {
                   return Stack(
                     children: [
-                      for (var configs in _particleController.value)
+                      for (var layerConfigs in _particleController.layers)
                         Particular(
-                          configs: configs,
+                          configs: layerConfigs,
                           controller: _particleController,
                         ),
                     ],
