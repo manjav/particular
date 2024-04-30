@@ -116,7 +116,11 @@ class _EditorAppState extends State<EditorApp> {
           );
         },
         child: Container(
-          color: Colors.black,
+          clipBehavior: Clip.hardEdge,
+          decoration: const BoxDecoration(
+            shape: BoxShape.rectangle,
+            color: Colors.black,
+          ),
           child: ListenableBuilder(
             listenable: _particleController.getNotifier(NotifierType.layer),
             builder: (context, child) {
