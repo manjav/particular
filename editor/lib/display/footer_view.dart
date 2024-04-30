@@ -3,18 +3,24 @@ import 'package:editor/services/io.dart';
 import 'package:flutter/material.dart';
 import 'package:particular/particular.dart';
 
+/// The footer line for the application that contains the buttons for layers.
 class FooterView extends StatelessWidget {
+  /// The configurations for the application.
   final Map appConfigs;
+
+  /// The controller for the particle system.
   final ParticularController controllers;
 
+  /// Creates a footer view.
   const FooterView(
       {super.key, required this.appConfigs, required this.controllers});
 
+  /// Creates a footer view.
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<List<ParticularConfigs>>(
-      valueListenable: controllers,
-      builder: (context, value, child) {
+    return ListenableBuilder(
+      listenable: controllers.getNotifier(NotifierType.layer),
+      builder: (context, child) {
         var items = <Widget>[
           _footerItem(Icons.add, () => controllers.addParticleSystem()),
           _footerItem(Icons.file_open, () async {
@@ -55,7 +61,11 @@ class FooterView extends StatelessWidget {
     );
   }
 
+  /// This function creates an [IconButton] widget for the footer of the
+  /// screen. The icon button represents an action and when pressed, it
+  /// executes the provided function [onPressed].
   Widget _footerItem(IconData icon, Function() onPressed) {
+    // IconButton configuration
     return IconButton(
       padding: const EdgeInsets.all(2),
       icon: Icon(icon, size: 12),

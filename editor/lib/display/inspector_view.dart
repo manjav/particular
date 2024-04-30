@@ -7,6 +7,7 @@ import 'package:particular/particular.dart';
 
 import '../services/io.dart';
 
+/// The inspector view for the application
 class InspactorView extends StatefulWidget {
   final Map appConfigs;
   final ParticularController controller;

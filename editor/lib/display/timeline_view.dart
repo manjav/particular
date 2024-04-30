@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:particular/particular.dart';
 
+/// The timeline view for application.
 class TimelineView extends StatefulWidget {
   final Map<String, dynamic> appConfigs;
   final ParticularController controller;
@@ -15,6 +16,7 @@ class TimelineView extends StatefulWidget {
 }
 
 class _TimelineViewState extends State<TimelineView> {
+  /// Creates a timeline view.
   @override
   Widget build(BuildContext context) {
     var c = widget.controller;
@@ -48,6 +50,7 @@ class _TimelineViewState extends State<TimelineView> {
         ));
   }
 
+  /// Builds a layer item.
   Widget _layerItemBuilder(int index) {
     final key = Key('$index');
     final layer = widget.controller.value[index];
@@ -85,8 +88,7 @@ class _TimelineViewState extends State<TimelineView> {
                   alignment: Alignment(positionRate * 2 - 1, 0),
                   widthFactor: layer.duration < 0
                       ? 1
-                      : layer.duration /
-                          widget.controller.timelineDuration,
+                      : layer.duration / widget.controller.timelineDuration,
                   heightFactor: 0.3,
                   child: Container(color: Colors.green),
                 ),

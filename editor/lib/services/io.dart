@@ -8,6 +8,16 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:particular/particular.dart';
 
+/// Browse and load an image from the user's device.
+///
+/// This function uses the [FilePicker] library to allow the user to select an
+/// image file. If the user cancels the selection or no file is selected, the
+/// function returns `null`. Otherwise, it reads the contents of the selected
+/// file and returns the [ui.Image] object.
+///
+/// Returns:
+///   - A [Future] that resolves to a [ui.Image] object, or `null` if no
+///     file was selected.
 Future<ui.Image?> browseImage() async {
   FilePickerResult? result = await FilePicker.platform.pickFiles(
     withData: true,
@@ -22,21 +32,55 @@ Future<ui.Image?> browseImage() async {
   return null;
 }
 
-Future<Map<dynamic, dynamic>?> browseConfigs(List<String> extensions) async {
+/// Browse and load configs from a file with specified extensions.
+///
+/// The function uses the [FilePicker] library to allow the user to select a file
+/// with a specific set of extensions. If the user cancels the selection or no
+/// file is selected, the function returns `null`. Otherwise, it reads the
+/// contents of the selected file, decodes it from JSON and returns the decoded
+/// map.
+///
+/// Parameters:
+/// - [extensions]: A list of file extensions supported by the config file.
+///
+/// Returns:
+/// - A `Future<Map<String, dynamic>?>`: A map of configuration data, decoded
+///   from JSON, or `null` if no file was selected.
+Future<Map<String, dynamic>?> browseConfigs(List<String> extensions) async {
+  // Use the FilePicker library to allow the user to select a config file.
   FilePickerResult? result = await FilePicker.platform.pickFiles(
-    withData: true,
-    type: FileType.custom,
-    allowedExtensions: extensions,
+    withData: true, // Request file contents.
+    type: FileType.custom, // Allow any type of file.
+    allowedExtensions:
+        extensions, // Only allow files with specified extensions.
   );
 
-  if (result != null) {
-    PlatformFile file = result.files.first;
-    String json = String.fromCharCodes(file.bytes!);
-    return jsonDecode(json);
-  }
-  return null;
+  // If no file was selected, return null.
+  if (result == null) return null;
+
+  // Get the first selected file.
+  PlatformFile file = result.files.first;
+
+  // Decode the JSON contents of the file.
+  String json = String.fromCharCodes(file.bytes!);
+  return jsonDecode(json);
 }
 
+/// Save the provided configs to a file.
+///
+/// If the app is running on a non-web platform, the function uses the
+/// [FilePicker.saveFile] method to open a file picker dialog for the user to
+/// select a filename. The configs are encoded to JSON and saved to the
+/// selected file with the `.json` extension.
+///
+/// Parameters:
+/// - [configs]: The configs to save.
+/// - [filename]: The name of the file to save the configs to. If not
+///   provided, the filename will be "configs".
+///
+/// Returns:
+/// - A `Future<void>`: A future that completes when the configs have been
+///   saved to a file.
 Future<void> saveConfigs({required Map configs, String? filename}) async {
   final json = jsonEncode(configs);
   final bytes = utf8.encode(json);
