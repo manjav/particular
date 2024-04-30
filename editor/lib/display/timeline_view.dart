@@ -29,7 +29,12 @@ class _TimelineViewState extends State<TimelineView> {
           builder: (context, child) {
             return Stack(
               children: [
+                Container(
+                  color: Colors.black12,
+                  width: widget.appConfigs["timeline"]["sideWidth"],
+                ),
                 ReorderableListView.builder(
+                  reverse: true,
                   buildDefaultDragHandles: false,
                   itemBuilder: (c, i) => _layerItemBuilder(i),
                   itemCount: c.layers.length,
@@ -51,6 +56,7 @@ class _TimelineViewState extends State<TimelineView> {
     return Container(
       key: key,
       height: widget.appConfigs["timeline"]["layerHeight"],
+      margin: const EdgeInsets.symmetric(vertical: 1),
       color: Colors.black26,
       child: GestureDetector(
         child: Row(
@@ -123,20 +129,24 @@ class _TimelineViewState extends State<TimelineView> {
 
   Widget _timeSeekBarBuilder() {
     var c = widget.controller;
-    return ListenableBuilder(
-      listenable: widget.controller.getNotifier(NotifierType.time),
-      builder: (context, child) {
-        var timeRatio =
-            c.elapsedTime.clamp(0, c.timelineDuration) / c.timelineDuration;
-        return Align(
-          alignment: Alignment(timeRatio * 2 - 1, 0),
-          child: Container(
-            width: 1,
-            color: Colors.white,
-            height: widget.appConfigs["timeline"]["height"],
-          ),
-        );
-      },
+    return Positioned(
+      right: 1,
+      left: widget.appConfigs["timeline"]["sideWidth"],
+      child: ListenableBuilder(
+        listenable: widget.controller.getNotifier(NotifierType.time),
+        builder: (context, child) {
+          var timeRatio =
+              c.elapsedTime.clamp(0, c.timelineDuration) / c.timelineDuration;
+          return Align(
+            alignment: Alignment(timeRatio * 2 - 1, 0),
+            child: Container(
+              width: 1,
+              color: Colors.white,
+              height: widget.appConfigs["timeline"]["height"],
+            ),
+          );
+        },
+      ),
     );
   }
 
