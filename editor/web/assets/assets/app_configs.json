@@ -1,155 +1,177 @@
 {
-    "appBarHeight": 48,
+    "appBarHeight": 32.0,
+    "footerHeight": 24.0,
+    "timeline": {
+        "height": 160.0,
+        "layerHeight": 32.0,
+        "sideWidth": 220.0
+    },
     "inspector": {
-        "width": 250,
+        "width": 250.0,
         "components": [
-            [
-                {
-                    "title": "Emitter",
-                    "inputs": {
-                        "X": "emitterX",
-                        "Y": "emitterY"
+            {
+                "title": "Emission Settings",
+                "children": [
+                    {
+                        "title": "Time",
+                        "min": -1.0,
+                        "inputs": {
+                            "Start": "startTime",
+                            "End": "endTime"
+                        }
+                    },
+                    {
+                        "title": "Emitter Position",
+                        "inputs": {
+                            "X": "emitterX",
+                            "Y": "emitterY"
+                        }
+                    },
+                    {
+                        "title": "Emitter Size",
+                        "inputs": {
+                            "X": "sourcePositionVarianceX",
+                            "Y": "sourcePositionVarianceY"
+                        }
+                    },
+                    {
+                        "min": 0.0,
+                        "inputs": {
+                            "Quantitiy": "maxParticles"
+                        }
+                    },
+                    {
+                        "inputs": {
+                            "Angle": "angle",
+                            "+\n-": "angleVariance"
+                        }
+                    },
+                    {},
+                    {
+                        "ui": "dropdown",
+                        "inputs": {
+                            "Emission": "emitterType"
+                        }
+                    },
+                    {
+                        "type": "gravity",
+                        "inputs": {
+                            "Speed": "speed",
+                            "+\n-": "speedVariance"
+                        }
+                    },
+                    {
+                        "type": "gravity",
+                        "title": "Gravity",
+                        "inputs": {
+                            "x": "gravityX",
+                            "Y": "gravityY"
+                        }
+                    },
+                    {
+                        "type": "gravity",
+                        "inputs": {
+                            "Rad Force": "radialAcceleration",
+                            "+\n-": "radialAccelerationVariance"
+                        }
+                    },
+                    {
+                        "type": "gravity",
+                        "inputs": {
+                            "Tan Force": "tangentialAcceleration",
+                            "+\n-": "tangentialAccelerationVariance"
+                        }
+                    },
+                    {
+                        "type": "radial",
+                        "inputs": {
+                            "Min Radius": "minRadius",
+                            "+\n-": "minRadiusVariance"
+                        }
+                    },
+                    {
+                        "type": "radial",
+                        "inputs": {
+                            "Max Radius": "maxRadius",
+                            "+\n-": "maxRadiusVariance"
+                        }
+                    },
+                    {
+                        "type": "radial",
+                        "inputs": {
+                            "Rotation Per Second": "rotatePerSecond",
+                            "+\n-": "rotatePerSecondVariance"
+                        }
                     }
-                },
-                {
-                    "title": "Source Position Variance",
-                    "inputs": {
-                        "X": "sourcePositionVarianceX",
-                        "Y": "sourcePositionVarianceY"
+                ]
+            },
+            {
+                "title": "Particle Settings",
+                "children": [
+                    {
+                        "inputs": {
+                            "Lifespan": "lifespan",
+                            "+\n-": "lifespanVariance"
+                        }
+                    },
+                    {
+                        "inputs": {
+                            "Start Size": "startSize",
+                            "+\n-": "startSizeVariance"
+                        }
+                    },
+                    {
+                        "inputs": {
+                            "End Size": "finishSize",
+                            "+\n-": "finishSizeVariance"
+                        }
+                    },
+                    {
+                        "inputs": {
+                            "Start Rotation": "startRotation",
+                            "+\n-": "startRotationVariance"
+                        }
+                    },
+                    {
+                        "inputs": {
+                            "End Rotation": "finishRotation",
+                            "+\n-": "finishRotationVariance"
+                        }
+                    },
+                    {
+                        "ui": "color",
+                        "inputs": {
+                            "Start Color": "startColor",
+                            "+\n-": "startColorVariance"
+                        }
+                    },
+                    {
+                        "ui": "color",
+                        "inputs": {
+                            "End Color": "finishColor",
+                            "+\n-": "finishColorVariance"
+                        }
+                    },
+                    {
+                        "ui": "dropdown",
+                        "inputs": {
+                            "Paint Blending": "textureBlendMode"
+                        }
+                    },
+                    {
+                        "ui": "dropdown",
+                        "inputs": {
+                            "Draw Blending": "renderBlendMode"
+                        }
+                    },
+                    {
+                        "ui": "button",
+                        "inputs": {
+                            "texture": "load"
+                        }
                     }
-                },
-                {
-                    "inputs": {
-                        "Duration": "duration"
-                    }
-                },
-                {
-                    "inputs": {
-                        "Max Particles": "maxParticles"
-                    }
-                },
-                {
-                    "inputs": {
-                        "Angle": "angle",
-                        "Variance": "angleVariance"
-                    }
-                },
-                {},
-                {
-                    "ui": "dropdown",
-                    "inputs": {
-                        "Emitter Type": "emitterType"
-                    }
-                },
-                {
-                    "type": "gravity",
-                    "inputs": {
-                        "Speed": "speed",
-                        "Variance": "speedVariance"
-                    }
-                },
-                {
-                    "type": "gravity",
-                    "title": "Gravity",
-                    "inputs": {
-                        "x": "gravityX",
-                        "Y": "gravityY"
-                    }
-                },
-                {
-                    "type": "gravity",
-                    "inputs": {
-                        "Radial Acceleration": "radialAcceleration",
-                        "Variance": "radialAccelerationVariance"
-                    }
-                },
-                {
-                    "type": "gravity",
-                    "inputs": {
-                        "Tangential Acceleration": "tangentialAcceleration",
-                        "Variance": "tangentialAccelerationVariance"
-                    }
-                },
-                {
-                    "type": "radial",
-                    "inputs": {
-                        "Min Radius": "minRadius",
-                        "Variance": "minRadiusVariance"
-                    }
-                },
-                {
-                    "type": "radial",
-                    "inputs": {
-                        "Max Radius": "maxRadius",
-                        "Variance": "maxRadiusVariance"
-                    }
-                },
-                {
-                    "type": "radial",
-                    "inputs": {
-                        "Rotation Per Second": "rotatePerSecond",
-                        "Variance": "rotatePerSecondVariance"
-                    }
-                }
-            ],
-            [
-                {
-                    "inputs": {
-                        "Lifespan": "lifespan",
-                        "Variance": "lifespanVariance"
-                    }
-                },
-                {
-                    "inputs": {
-                        "Start Size": "startSize",
-                        "Variance": "startSizeVariance"
-                    }
-                },
-                {
-                    "inputs": {
-                        "End Size": "finishSize",
-                        "Variance": "finishSizeVariance"
-                    }
-                },
-                {
-                    "inputs": {
-                        "Rotate Per Second": "rotatePerSecond",
-                        "Variance": "rotatePerSecondVariance"
-                    }
-                },
-                {
-                    "ui": "color",
-                    "inputs": {
-                        "Start Color": "startColor",
-                        "Variance": "startColorVariance"
-                    }
-                },
-                {
-                    "ui": "color",
-                    "inputs": {
-                        "End Color": "finishColor",
-                        "Variance": "finishColorVariance"
-                    }
-                },
-                {
-                    "ui": "dropdown",
-                    "inputs": {
-                        "Textures Blend Mode": "textureBlendMode"
-                    }
-                },
-                {
-                    "ui": "dropdown",
-                    "inputs": {
-                        "Rendering Blend Mode": "renderBlendMode"
-                    }
-                },
-                {
-                    "ui": "button",
-                    "inputs": {
-                        "texture": "load"
-                    }
-                }
-            ]
+                ]
+            }
         ]
     }
 }
