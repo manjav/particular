@@ -26,8 +26,7 @@ class Particular extends StatefulWidget {
 }
 
 /// The state for the [Particular] widget.
-class _ParticularState extends State<Particular>
-    with SingleTickerProviderStateMixin {
+class _ParticularState extends State<Particular>{
   /// The device pixel ratio.
   double _devicePixelRatio = 1;
 
@@ -54,12 +53,16 @@ class _ParticularState extends State<Particular>
   void initState() {
     super.initState();
     _devicePixelRatio = 1;
-//        MediaQuery.of(context).devicePixelRatio; //2.65, 411.4, 867.4
     widget.controller
         .getNotifier(NotifierType.time)
         .addListener(_onControllerTick);
   }
 
+  /// Updates the state of the widget based on the controller's tick.
+  ///
+  /// This method is called whenever the controller's tick changes,
+  /// and it checks if it is time to spawn new particles. If so, it spawns
+  /// the appropriate number of particles based on the configuration.
   void _onControllerTick() {
     var configs = widget.configs;
     var controller = widget.controller;

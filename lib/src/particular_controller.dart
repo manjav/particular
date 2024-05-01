@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 
 import '../particular.dart';
 
+/// The type of notifiers
 enum NotifierType { time, layer }
 
 /// The controller for the particle system.

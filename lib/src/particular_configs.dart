@@ -6,7 +6,10 @@ import 'package:particular/particular.dart';
 
 /// Configs for managing parameters and behavior of a particle system.
 class ParticularConfigs {
+  /// The default duration of a particle system.
   static int defaultDuration = 5000;
+
+  /// The maximum duration of a particle system.
   static int maxDuration = 30000;
 
   /// The index of the particle system.
