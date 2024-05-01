@@ -21,14 +21,14 @@
                         }
                     },
                     {
-                        "title": "Emittor Position",
+                        "title": "Emitter Position",
                         "inputs": {
                             "X": "emitterX",
                             "Y": "emitterY"
                         }
                     },
                     {
-                        "title": "Emittor Size",
+                        "title": "Emitter Size",
                         "inputs": {
                             "X": "sourcePositionVarianceX",
                             "Y": "sourcePositionVarianceY"

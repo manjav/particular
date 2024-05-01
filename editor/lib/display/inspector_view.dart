@@ -84,7 +84,7 @@ class _InspactorViewState extends State<InspactorView> {
           color: Colors.black12,
           child: Row(
             children: [
-              _tabItemBuilder(0, Icons.snowing),
+              _tabItemBuilder(0, Icons.stream),
               _tabItemBuilder(1, Icons.color_lens),
             ],
           ),
