@@ -1,6 +1,7 @@
 import 'package:editor/data/particular_editor_controller.dart';
 import 'package:editor/services/io.dart';
 import 'package:flutter/material.dart';
+import 'package:intry/intry.dart';
 import 'package:particular/particular.dart';
 
 /// The timeline view for application.
@@ -76,7 +77,19 @@ class _TimelineViewState extends State<TimelineView> {
                     child: const Icon(Icons.drag_handle, size: 12),
                   ),
                   const SizedBox(width: 8),
-                  Expanded(child: Text(layer.configName)),
+                  Expanded(
+                    child: ListenableBuilder(
+                      listenable: layer.getNotifier("configName"),
+                      builder: (context, child) {
+                        return NumericIntry(
+                          value: layer.configName,
+                          inputType: IntryInputType.text,
+                          onTextChanged: (value) =>
+                              layer.updateFromMap({"configName": value}),
+                        );
+                      },
+                    ),
+                  ),
                   _buttonBuilder(
                     Icons.save,
                     () => saveConfigs(
