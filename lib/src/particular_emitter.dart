@@ -26,7 +26,7 @@ class Particular extends StatefulWidget {
 }
 
 /// The state for the [Particular] widget.
-class _ParticularState extends State<Particular>{
+class _ParticularState extends State<Particular> {
   /// The device pixel ratio.
   double _devicePixelRatio = 1;
 
