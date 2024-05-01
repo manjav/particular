@@ -39,7 +39,7 @@ You have two options for configuring your particles:
 Generate particle configurations using popular particle editors such as [Particular Editor](https://manjav.github.io/particular/editor/web) or [Particle Designer](https://www.71squared.com/particledesigner).
 
 <a href="https://manjav.github.io/particular/editor/web">
-<p align="center"><img src="https://github.com/manjav/particular/raw/main/repo_files/editor.png" alt="Particular Editor" /></p>
+<p align="center"><img src="https://github.com/manjav/particular/raw/main/repo_files/editor.gif" alt="Particular Editor" /></p>
 </a>
 <br>
 
