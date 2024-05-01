@@ -98,7 +98,7 @@ class ParticularConfigs {
   String configName = "";
 
   /// The name of the texture
-  String textureFileName = "";
+  String textureFileName = "texture.png";
 
   /// The start time of the particle system in milliseconds.
   int startTime = 0;
