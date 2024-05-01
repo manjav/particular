@@ -46,9 +46,9 @@ Future<(String, ui.Image?)> browseImage() async {
 /// - [extensions]: A list of file extensions supported by the config file.
 ///
 /// Returns:
-/// - A `Future<Map<String, dynamic>?>`: A map of configuration data, decoded
+/// - A `Future<dynamic>`: A map of configuration data, decoded
 ///   from JSON, or `null` if no file was selected.
-Future<Map<String, dynamic>?> browseConfigs(List<String> extensions) async {
+Future<dynamic> browseConfigs(List<String> extensions) async {
   // Use the FilePicker library to allow the user to select a config file.
   FilePickerResult? result = await FilePicker.platform.pickFiles(
     withData: true, // Request file contents.

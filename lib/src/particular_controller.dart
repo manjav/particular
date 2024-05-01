@@ -14,6 +14,7 @@ class ParticularController {
   /// The map of notifiers
   final Map<NotifierType, ChangeNotifier> _notifiers = {};
 
+  /// Get notifier
   ChangeNotifier getNotifier(NotifierType key) =>
       _notifiers[key] ??= ChangeNotifier();
 
@@ -21,6 +22,28 @@ class ParticularController {
   void notify(NotifierType key) =>
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       getNotifier(key).notifyListeners();
+
+  /// The list of layers in the particle system.
+  final List<ParticularConfigs> layers = [];
+
+  /// The index of the selected layer.
+  int selectedLayerIndex = 0;
+
+  /// The ticker for the particle system.
+  ParticularConfigs? get selectedLayer =>
+      layers.isEmpty ? null : layers[selectedLayerIndex];
+
+  /// Whether the particle system is empty.
+  bool get isEmpty => layers.isEmpty;
+
+  /// The default texture for the particle system.
+  ui.Image? _defaultTexture;
+
+  /// The delta time of the particle system in milliseconds.
+  int deltaTime = 0;
+
+  /// The elapsed time of the particle system in milliseconds.
+  int elapsedTime = 0;
 
   /// The duration of the particle system in milliseconds.
   int get timelineDuration {
@@ -35,27 +58,6 @@ class ParticularController {
   /// The ticker for the particle system.
   Ticker? _ticker;
 
-  /// The index of the selected layer.
-  int selectedLayerIndex = 0;
-
-  /// The default texture for the particle system.
-  ui.Image? _defaultTexture;
-
-  /// The delta time of the particle system in milliseconds.
-  int deltaTime = 0;
-
-  /// The elapsed time of the particle system in milliseconds.
-  int elapsedTime = 0;
-
-  final List<ParticularConfigs> layers = [];
-
-  /// The ticker for the particle system.
-  ParticularConfigs? get selectedLayer =>
-      layers.isEmpty ? null : layers[selectedLayerIndex];
-
-  /// Whether the particle system is empty.
-  bool get isEmpty => layers.isEmpty;
-
   /// Updates the particle system's delta time and elapsed time based on the given [elapsed] duration.
   ///
   /// This function is called periodically to update the particle system's state. It calculates the
@@ -69,6 +71,9 @@ class ParticularController {
     notify(NotifierType.time);
   }
 
+  /// Notifies listeners that the duration of the particle system has changed.
+  void _onDurationChange() => notify(NotifierType.time);
+
   /// Resets the tick of the particle system.
   void resetTick() {
     _ticker?.stop();
@@ -76,15 +81,32 @@ class ParticularController {
     _ticker?.start();
   }
 
-  /// Adds a particle system to the application.
+  /// Adds one or more particle systems to the application.
   ///
-  /// The [configs] parameter is an optional map of configurations for the particle system.
+  /// The [configs] parameter can be either a single configuration map or a
+  /// list of configuration maps. If [configs] is a list, each configuration
+  /// map in the list will be added as a separate particle system.
   Future<void> addParticleSystem({
-    Map<dynamic, dynamic>? configs,
+    dynamic configs,
+  }) async {
+    // If the configs parameter is a list, iterate over each configuration
+    // map and add it as a separate particle system.
+    if (configs is List) {
+      for (var i = 0; i < configs.length; i++) {
+        await _add(configs: configs[i]);
+      }
+    } else {
+      await _add(configs: configs);
+    }
+  }
+
+  /// Adds a new particle system to the application.
+  Future<void> _add({
+    Map<String, dynamic>? configs,
     ui.Image? texture,
   }) async {
+    /// Load default particle texture
     if (_defaultTexture == null) {
-      /// Load default particle texture
       final bytes = await rootBundle.load("assets/texture.png");
       _defaultTexture = await loadUIImage(bytes.buffer.asUint8List());
 
@@ -92,27 +114,18 @@ class ParticularController {
       _ticker!.start();
     }
 
-    final particleConfigs = ParticularConfigs();
-    particleConfigs.initialize(texture: _defaultTexture, configs: configs);
+    final layer = ParticularConfigs();
+    layer.initialize(texture: texture ?? _defaultTexture, configs: configs);
+    layer.getNotifier("duration").addListener(_onDurationChange);
+    layer.getNotifier("startTime").addListener(_onDurationChange);
+    layer.index = layers.length;
+    selectedLayerIndex = layer.index;
 
     if (configs == null || !configs.containsKey("configName")) {
-      particleConfigs
-          .updateFromMap({"configName": "Layer ${layers.length + 1}"});
+      layer.updateFromMap({"configName": "Layer ${layers.length + 1}"});
     }
-    _add(particleConfigs);
-  }
 
-  /// Notifies listeners that the duration of the particle system has changed.
-  void _onDurationChange() => notify(NotifierType.time);
-
-  /// Adds a new particle system to the application.
-  void _add(ParticularConfigs? particleConfigs) {
-    particleConfigs ??= ParticularConfigs();
-    particleConfigs.index = layers.length;
-    particleConfigs.getNotifier("duration").addListener(_onDurationChange);
-    particleConfigs.getNotifier("startTime").addListener(_onDurationChange);
-    selectedLayerIndex = particleConfigs.index;
-    layers.add(particleConfigs);
+    layers.add(layer);
     notify(NotifierType.layer);
   }
 
