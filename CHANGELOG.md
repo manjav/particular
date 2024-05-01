@@ -25,3 +25,10 @@
 * enhance: replace blending functions
 * enhance: limited time particle
 * bugsfix: resize image rects on texture changes
+
+### 0.2.0 (05/01/2024)
+* feature: support finite and infinite particles
+* feature: support multi-layer particle
+* feature: add timeline in editor
+* feature: new editor theme
+* enhance: better ux for inputs
