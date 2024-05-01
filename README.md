@@ -35,8 +35,8 @@ For detailed installation instructions, refer to the [installation guide](https:
 
 ### - Configurate your particle
 You have two options for configuring your particles:
-1. <b>Using Editors:</b>  
-Generate particle configurations using popular particle editors such as [Particular Editor](https://manjav.github.io/particular/editor/web) or [Particle Designer](https://www.71squared.com/particledesigner).
+1. <b>Using Editor:</b>  
+Generate your particle system configurations by [Particular Editor](https://manjav.github.io/particular/editor/web).
 
 <a href="https://manjav.github.io/particular/editor/web">
 <p align="center"><img src="https://github.com/manjav/particular/raw/main/repo_files/editor.gif" alt="Particular Editor" /></p>
