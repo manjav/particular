@@ -274,6 +274,8 @@ class ParticularConfigs {
       speedVariance: configs["speedVariance"],
       gravityX: configs["gravityx"],
       gravityY: configs["gravityy"],
+      emitterX: configs["emitterX"],
+      emitterY: configs["emitterY"],
       angle: configs["angle"],
       angleVariance: configs["angleVariance"],
       minRadius: configs["minRadius"],

@@ -79,6 +79,8 @@ extension ParticularEditorController on ParticularConfigs {
       "finishParticleSizeVariance": finishSizeVariance,
       "speed": speed,
       "speedVariance": speedVariance,
+      "emitterX": emitterX,
+      "emitterY": emitterY,
       "gravityx": gravityX,
       "gravityy": gravityY,
       "minRadius": minRadius,

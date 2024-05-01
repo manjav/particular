@@ -103,17 +103,17 @@ class _EditorAppState extends State<EditorApp> {
     return Expanded(
       child: GestureDetector(
         onPanUpdate: (details) {
-          _particleController.selectedLayer?.update(
-            emitterX: details.localPosition.dx,
-            emitterY: details.localPosition.dy,
-          );
+          _particleController.selectedLayer?.updateFromMap({
+            "emitterX": details.localPosition.dx,
+            "emitterY": details.localPosition.dy
+          });
         },
         onTapDown: (details) {
           _particleController.resetTick();
-          _particleController.selectedLayer?.update(
-            emitterX: details.localPosition.dx,
-            emitterY: details.localPosition.dy,
-          );
+          _particleController.selectedLayer?.updateFromMap({
+            "emitterX": details.localPosition.dx,
+            "emitterY": details.localPosition.dy
+          });
         },
         child: Container(
           clipBehavior: Clip.hardEdge,
