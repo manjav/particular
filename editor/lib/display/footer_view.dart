@@ -27,10 +27,10 @@ class FooterView extends StatelessWidget {
           child: Row(children: [
             _footerItem(Icons.refresh, () => controller.resetTick()),
             SizedBox(width: appConfigs["timeline"]["sideWidth"] - 40),
-            _footerItem(Icons.add, () => controller.addParticle()),
+            _footerItem(Icons.add, () => controller.addLayer()),
             _footerItem(Icons.file_open, () async {
               final configs = await browseConfigs(["json"]);
-              controller.addParticle(configsData: configs);
+              controller.addLayer(configsData: configs);
             }),
             _footerItem(Icons.save_alt, _exportConfigs),
           ]),

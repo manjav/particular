@@ -38,7 +38,7 @@ class _EditorAppState extends State<EditorApp> {
     setState(() {});
 
     // Add sample emitter
-    await _particleController.addParticle();
+    await _particleController.addLayer();
     await Future.delayed(const Duration(milliseconds: 100));
     if (mounted) {
       final size = MediaQuery.of(context).size;

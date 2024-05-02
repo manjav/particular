@@ -40,7 +40,7 @@ class _TimelineViewState extends State<TimelineView> {
                   itemBuilder: (c, i) => _layerItemBuilder(i),
                   itemCount: c.layers.length,
                   onReorder: (int oldIndex, int newIndex) {
-                    c.reOrder(oldIndex, newIndex);
+                    c.reOrderLayer(oldIndex, newIndex);
                   },
                 ),
                 _timeSeekBarBuilder(),
@@ -98,7 +98,7 @@ class _TimelineViewState extends State<TimelineView> {
                   ),
                   _buttonBuilder(
                     Icons.delete,
-                    () => widget.controller.removeAt(index),
+                    () => widget.controller.removeLayerAt(index),
                   ),
                   /* _footerItem(
                 controllers.selected!.isVisible
@@ -112,7 +112,7 @@ class _TimelineViewState extends State<TimelineView> {
             _activeLineBuilder(layer.configs),
           ],
         ),
-        onTap: () => widget.controller.selectAt(index),
+        onTap: () => widget.controller.selectLayerAt(index),
       ),
     );
   }

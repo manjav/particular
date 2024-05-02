@@ -102,7 +102,7 @@ class ParticularController {
   /// The [configs] parameter can be either a single configuration map or a
   /// list of configuration maps. If [configs] is a list, each configuration
   /// map in the list will be added as a separate particle system.
-  Future<void> addParticle({
+  Future<void> addLayer({
     dynamic configsData,
   }) async {
     // If the configs parameter is a list, iterate over each configuration
@@ -153,13 +153,13 @@ class ParticularController {
   }
 
   /// Selects the particle system at the given index.
-  void selectAt(int index) {
+  void selectLayerAt(int index) {
     selectedLayerIndex = index;
     notify(NotifierType.layer);
   }
 
   /// Removes the particle system at the given index.
-  void removeAt(int index) {
+  void removeLayerAt(int index) {
     layers[index]
         .configs
         .getNotifier("duration")
@@ -176,7 +176,7 @@ class ParticularController {
   }
 
   /// Reorders the particle system's items based on the new index.
-  void reOrder(int oldIndex, int newIndex) {
+  void reOrderLayer(int oldIndex, int newIndex) {
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
@@ -187,7 +187,7 @@ class ParticularController {
   }
 
   /// Toggles the visibility of the particle system.
-  void toggleVisible(int index) {
+  void toggleVisibleLayer(int index) {
     // _layers[index].isVisible = !_layers[index].isVisible;
     notify(NotifierType.layer);
   }
