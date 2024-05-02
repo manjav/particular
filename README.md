@@ -49,34 +49,52 @@ Manually configure your particle controller in code. Refer to the following step
 ---
 
 ### - Getting Started with Coding
-To use this library, import `package:intry_numeric/intry_numeric.dart`.<br>
+To use this library, import `package:particular/particular.dart`.<br>
 Follow these steps to integrate the particle system into your Flutter app:<br>
 <b>I. Initialize the Particle Controller in `initState`:</b>
 ``` dart
-final controller = ParticularController();
+final _particleController = ParticularController();
 ...
 @override
 void initState() {
+  // Load particle configs file
+  String json = await rootBundle.loadString("assets/particle.json");
+  final configsData = jsonDecode(json);
 
-  controller.initialize(
-    texture: frameInfo.image,
-    configs: configsMap, // Remove in programmatic configuration case
+  // Load particle texture file
+  ByteData  bytes = await rootBundle.load("assets/${configsData["textureFileName"]}");
+  ui.Image texture = await loadUIImage(bytes.buffer.asUint8List());
+
+  // Add particle layer
+  _particleController.addLayer(
+    texture: frameInfo.image, // Remove in default-texture case
+    configsData: configsData, // Remove in programmatic configuration case
   );
   super.initState();
 }
 ```
 <b>II. Add the `Particular` Widget in Your Widget Three:</b>
 ``` dart
-Particular(controller: controller)
+@override
+Widget build(BuildContext context) {
+  return MaterialApp(
+    home: Scaffold(
+      backgroundColor: Colors.black,
+      body: Particular(
+        controller: _particleController,
+      ),
+    ),
+  );
+}
 ```
 
-<b>III. Live Update Particle System:</b>
+<b>III. Live Update Particle Layer:</b>
 ``` dart
-controller.update(
+_particleController.layers.first.update(
     maxParticles: 100,
     lifespan:1.2,
-    angle:30,
     speed:100,
+    angle:30,
 );
 ```
 
