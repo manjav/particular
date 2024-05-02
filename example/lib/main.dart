@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:particular/particular.dart';
 
 void main() {
@@ -24,7 +27,14 @@ class _MyAppState extends State<MyApp> {
 
   // Load configs and texture of particle
   Future<void> _loadParticleAssets() async {
-    await _particleController.addParticleSystem();
+    // Load particle configs file
+    String json = await rootBundle.loadString("assets/particle.json");
+    final configsData = jsonDecode(json);
+
+    // add particle layer
+    _particleController.addParticle(
+      configsData: configsData, // Remove in programmatic configuration case
+    );
   }
 
   @override
@@ -32,26 +42,8 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Colors.black,
-        body: Column(
-          children: [
-            Container(
-              color: Colors.black,
-              child: ListenableBuilder(
-                listenable: _particleController.getNotifier(NotifierType.layer),
-                builder: (context, child) {
-                  return Stack(
-                    children: [
-                      for (var layerConfigs in _particleController.layers)
-                        Particular(
-                          configs: layerConfigs,
-                          controller: _particleController,
-                        ),
-                    ],
-                  );
-                },
-              ),
-            ),
-          ],
+        body: Particular(
+          controller: _particleController,
         ),
       ),
     );

@@ -121,20 +121,8 @@ class _EditorAppState extends State<EditorApp> {
             shape: BoxShape.rectangle,
             color: Colors.black,
           ),
-          child: ListenableBuilder(
-            listenable: _particleController.getNotifier(NotifierType.layer),
-            builder: (context, child) {
-              return Stack(
-                children: [
-                  for (var layerConfigs in _particleController.layers)
-                    // if (configs.isVisible)
-                    Particular(
-                      configs: layerConfigs,
-                      controller: _particleController,
-                    ),
-                ],
-              );
-            },
+          child: Particular(
+            controller: _particleController,
           ),
         ),
       ),

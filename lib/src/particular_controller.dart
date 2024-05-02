@@ -70,6 +70,20 @@ class ParticularController {
   void _onTick(Duration elapsed) {
     deltaTime = elapsed.inMilliseconds - elapsedTime;
     elapsedTime = elapsed.inMilliseconds;
+
+    // Spawn particles
+    for (var layer in layers) {
+      var configs = layer.configs;
+      if (elapsedTime >= configs.startTime &&
+          (configs.endTime < 0 || elapsedTime < configs.endTime)) {
+        var particlesPerTick =
+            (deltaTime * configs.maxParticles / configs.lifespan).round();
+        for (var i = 0; i < particlesPerTick; i++) {
+          layer.spawn(age: (i * deltaTime / particlesPerTick).round());
+        }
+      }
+    }
+
     notify(NotifierType.time);
   }
 

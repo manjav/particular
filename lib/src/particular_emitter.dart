@@ -21,24 +21,6 @@ class Particular extends StatefulWidget {
 
 /// The state for the [Particular] widget.
 class _ParticularState extends State<Particular> {
-  /// The device pixel ratio.
-  double _devicePixelRatio = 1;
-
-  /// The rectangles representing particles.
-  final List<ParticleRect> _rectangles = [];
-
-  /// The particles in the system.
-  final List<Particle> _particles = [];
-
-  /// The colors of particles.
-  final List<ParticleColor> _colors = [];
-
-  /// The indices of the dead particles.
-  final List<int> _deadParticleIndices = [];
-
-  /// The transforms of particles.
-  final List<ParticleTransform> _transforms = [];
-
   /// Initializes the state of the widget.
   ///
   /// This method is called when the widget is first created and when it is rebuilt.
@@ -46,7 +28,6 @@ class _ParticularState extends State<Particular> {
   @override
   void initState() {
     super.initState();
-    _devicePixelRatio = 1;
     widget.controller
         .getNotifier(NotifierType.time)
         .addListener(_onControllerTick);
@@ -58,19 +39,6 @@ class _ParticularState extends State<Particular> {
   /// and it checks if it is time to spawn new particles. If so, it spawns
   /// the appropriate number of particles based on the configuration.
   void _onControllerTick() {
-    var configs = widget.configs;
-    var controller = widget.controller;
-
-    // Spawn particles
-    if (controller.elapsedTime >= configs.startTime &&
-        (configs.endTime < 0 || controller.elapsedTime < configs.endTime)) {
-      var particlesPerTick =
-          (controller.deltaTime * configs.maxParticles / configs.lifespan)
-              .round();
-      for (var i = 0; i < particlesPerTick; i++) {
-        _spawn((i * controller.deltaTime / particlesPerTick).round());
-      }
-    }
     setState(() {});
   }
 
@@ -81,16 +49,8 @@ class _ParticularState extends State<Particular> {
     return SizedBox(
       child: CustomPaint(
         painter: ParticlePainter(
-          colors: _colors,
-          particles: _particles,
-          rectangles: _rectangles,
-          transforms: _transforms,
-          image: widget.configs.texture!,
+          controller: widget.controller,
           deltaTime: widget.controller.deltaTime,
-          deadParticleIndices: _deadParticleIndices,
-          renderBlendMode: widget.configs.renderBlendMode,
-          textureBlendMode: widget.configs.textureBlendMode,
-          onFinished: () {},
         ),
       ),
     );
@@ -111,82 +71,50 @@ class ParticlePainter extends CustomPainter {
   /// The time difference between frames.
   final int deltaTime;
 
-  /// The image to be used for particles.
-  final ui.Image image;
-
-  /// A callback function called when particle rendering is finished.
-  final Function() onFinished;
-
-  /// The rectangles representing particles.
-  final List<ParticleRect> rectangles;
-
-  /// The indices of particles.
-  final List<int> deadParticleIndices;
-
-  /// The particles to be rendered.
-  final List<Particle> particles;
-
-  /// The colors of particles.
-  final List<ParticleColor> colors;
-
-  /// The transforms of particles.
-  final List<ParticleTransform> transforms;
-
-  /// The blend mode for atlas.
-  final BlendMode renderBlendMode;
-
-  /// The blend mode for rendering particles.
-  final BlendMode textureBlendMode;
-
   /// The paint object for rendering particles.
   final Paint _paint = Paint();
 
+  final ParticularController controller;
+
   /// Creates a [ParticlePainter] with the specified parameters.
   ParticlePainter({
-    required this.image,
-    required this.colors,
     required this.deltaTime,
-    required this.particles,
-    required this.transforms,
-    required this.rectangles,
-    required this.onFinished,
-    required this.renderBlendMode,
-    required this.textureBlendMode,
-    required this.deadParticleIndices,
-  }) {
-    _paint.blendMode = textureBlendMode;
-  }
+    required this.controller,
+  });
 
   /// Draws many parts of an image - the [atlas] - onto the canvas.
   @override
   void paint(Canvas canvas, Size size) {
     var allParticlesDead = true;
-    for (var i = 0; i < particles.length; i++) {
-      var particle = particles[i];
-      rectangles[i].update(image.width, image.height);
-      particle.update(deltaTime);
-      particle.transform.update(
-        rotation: particle.rotation,
-        translateX: particle.x,
-        translateY: particle.y,
-        anchorX: image.width * 0.5,
-        anchorY: image.height * 0.5,
-        scale: particle.size / image.width,
-      );
+    for (var layer in controller.layers) {
+      _paint.blendMode = layer.configs.textureBlendMode;
+      for (var i = 0; i < layer.particles.length; i++) {
+        var particle = layer.particles[i];
+        layer.rectangles[i].update(layer.texture.width, layer.texture.height);
+        particle.update(deltaTime);
+        particle.transform.update(
+          rotation: particle.rotation,
+          translateX: particle.x,
+          translateY: particle.y,
+          anchorX: layer.texture.width * 0.5,
+          anchorY: layer.texture.height * 0.5,
+          scale: particle.size / layer.texture.width,
+        );
 
-      if (particle.isDead()) {
-        deadParticleIndices.add(i);
-        particle.color.update(
-            0, particle.color.red, particle.color.green, particle.color.blue);
-      } else {
-        allParticlesDead = false;
+        if (particle.isDead()) {
+          layer.deadParticleIndices.add(i);
+          particle.color.update(
+              0, particle.color.red, particle.color.green, particle.color.blue);
+        } else {
+          allParticlesDead = false;
+        }
       }
-    }
-    canvas.drawAtlas(
-        image, transforms, rectangles, colors, renderBlendMode, null, _paint);
+      canvas.drawAtlas(layer.texture, layer.transforms, layer.rectangles,
+          layer.colors, layer.configs.renderBlendMode, null, _paint);
 
-    if (allParticlesDead) {
-      onFinished();
+      if (allParticlesDead) {
+        layer.onFinished?.call();
+      }
     }
   }
 
