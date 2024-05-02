@@ -49,11 +49,11 @@ extension ParticularEditorController on ParticularConfigs {
       "radialAccelerationVariance" => radialAccelerationVariance,
       "tangentialAcceleration" => tangentialAcceleration,
       "tangentialAccelerationVariance" => tangentialAccelerationVariance,
-      _ => texture,
+      _ => null,
     };
   }
 
-  Map getConfigs() {
+  Map getData() {
     final startColorMap = startColor.toMap("startColor");
     final startColorVarianceMap =
         startColorVariance.toMap("startColorVariance");

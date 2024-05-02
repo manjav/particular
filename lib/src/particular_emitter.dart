@@ -1,20 +1,14 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:particular/particular.dart';
 
 /// A widget that represents a particle system.
 class Particular extends StatefulWidget {
-  /// The configurations for the particle system.
-  final ParticularConfigs configs;
-
   /// The controller for the particle system.
   final ParticularController controller;
 
   /// Creates a [Particular] widget.
   const Particular({
     super.key,
-    required this.configs,
     required this.controller,
   });
 
@@ -78,57 +72,6 @@ class _ParticularState extends State<Particular> {
       }
     }
     setState(() {});
-  }
-
-  /// Spawns a particle.
-  ///
-  /// Spawns a particle object with the given age. If there are no dead particles in the
-  /// pool, a new particle object is created and added to the pool. Otherwise, a dead
-  /// particle object is resurrected and added to the pool. The particle object is
-  /// initialized with the given parameters.
-  ///
-  /// Parameters:
-  ///   - age: The age of the particle. Defaults to 0.
-  ///
-  /// Returns: None.
-  void _spawn([int age = 0]) {
-    final configs = widget.configs;
-    Particle particle;
-    if (_deadParticleIndices.isEmpty) {
-      particle = Particle();
-      _colors.add(particle.color);
-      _transforms.add(particle.transform);
-      _rectangles.add(ParticleRect.fromLTWH(
-          0,
-          0,
-          configs.texture!.width.toDouble(),
-          configs.texture!.height.toDouble()));
-      _particles.add(particle);
-    } else {
-      particle = _particles[_deadParticleIndices.removeLast()];
-    }
-    particle.initialize(
-      age: age,
-      emitterType: configs.emitterType,
-      emitterX: configs.getEmitterX(1),
-      emitterY: configs.getEmitterY(1),
-      startSize: configs.getStartSize(1),
-      finishSize: configs.getFinishSize(1),
-      startColor: configs.getStartColor(),
-      finishColor: configs.getFinishColor(),
-      angle: configs.getAngle(),
-      lifespan: configs.getLifespan(),
-      speed: configs.getSpeed(_devicePixelRatio),
-      gravityX: configs.gravityX * _devicePixelRatio,
-      gravityY: configs.gravityY * _devicePixelRatio,
-      minRadius: configs.getMinRadius(1),
-      maxRadius: configs.getMaxRadius(1),
-      rotatePerSecond: configs.getRotatePerSecond(),
-      startRotation: configs.getStartRotaion(),
-      finishRotation: configs.getFinishRotaion(),
-      radialAcceleration: configs.getRadialAcceleration(),
-      tangentialAcceleration: configs.getTangentialAcceleration(),
-    );
   }
 
   /// This method can potentially be called in every frame and should not have

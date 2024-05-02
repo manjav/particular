@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:particular/particular.dart';
@@ -11,9 +10,6 @@ class ParticularConfigs {
 
   /// The maximum duration of a particle system.
   static int maxDuration = 30000;
-
-  /// The index of the particle system.
-  int index = 0;
 
   /// Gets the start color of particles.
   Color getStartColor() => _getVariantColor(startColor, startColorVariance);
@@ -130,9 +126,6 @@ class ParticularConfigs {
   /// The destination blend mode function.
   BlendFunction blendFunctionDestination = BlendFunction.oneMinusSourceAlpha;
 
-  /// The texture used for particles.
-  ui.Image? texture;
-
   /// The start color of particles.
   ARGB startColor = ARGB(1, 1, 1, 1);
 
@@ -240,13 +233,7 @@ class ParticularConfigs {
       _notifiers[key] ??= ChangeNotifier();
 
   /// First time initialize controller
-  void initialize({
-    Map<dynamic, dynamic>? configs,
-    ui.Image? texture,
-  }) async {
-    if (texture != null) {
-      this.texture = texture;
-    }
+  void initialize({Map<dynamic, dynamic>? configs}) async {
     if (configs == null) return;
     update(
       configName: configs["configName"],
@@ -344,7 +331,6 @@ class ParticularConfigs {
     num? radialAccelerationVariance,
     num? tangentialAcceleration,
     num? tangentialAccelerationVariance,
-    ui.Image? texture,
   }) {
     if (configName != null) {
       this.configName = configName;
@@ -487,9 +473,6 @@ class ParticularConfigs {
     if (tangentialAccelerationVariance != null) {
       this.tangentialAccelerationVariance = tangentialAccelerationVariance;
     }
-    if (texture != null) {
-      this.texture = texture;
-    }
   }
 
   /// Updates the controller from a map
@@ -539,7 +522,6 @@ class ParticularConfigs {
       radialAccelerationVariance: args["radialAccelerationVariance"],
       tangentialAcceleration: args["tangentialAcceleration"],
       tangentialAccelerationVariance: args["tangentialAccelerationVariance"],
-      texture: args["texture"],
     );
     for (var key in args.keys) {
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member

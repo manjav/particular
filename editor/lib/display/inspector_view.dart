@@ -24,8 +24,7 @@ class InspactorView extends StatefulWidget {
 class _InspactorViewState extends State<InspactorView> {
   final _selectedColor = ValueNotifier<String?>(null);
   int _selectedTabIndex = 0;
-
-  ParticularConfigs? _selectedConfigs;
+  ParticularLayer? _selectedLayer;
 
   @override
   void initState() {
@@ -58,7 +57,7 @@ class _InspactorViewState extends State<InspactorView> {
       child: ListenableBuilder(
         listenable: widget.controller.getNotifier(NotifierType.layer),
         builder: (context, child) {
-          _selectedConfigs = widget.controller.selectedLayer;
+          _selectedLayer = widget.controller.selectedLayer;
           if (widget.controller.selectedLayer == null) {
             return const SizedBox();
           }
@@ -125,7 +124,7 @@ class _InspactorViewState extends State<InspactorView> {
             [
               "gravity",
               "radial"
-            ][_selectedConfigs!.getParam("emitterType").index]) {
+            ][_selectedLayer!.configs.getParam("emitterType").index]) {
       var items = <Widget>[];
       _inputLineBuilder(
         inspector,
@@ -174,7 +173,7 @@ class _InspactorViewState extends State<InspactorView> {
       children.add(
         Expanded(
           child: ListenableBuilder(
-            listenable: _selectedConfigs!.getNotifier(entry.value),
+            listenable: _selectedLayer!.configs.getNotifier(entry.value),
             builder: (c, w) => inspectorBuilder(themeData, inspector, entry),
           ),
         ),
@@ -193,7 +192,7 @@ class _InspactorViewState extends State<InspactorView> {
         min: inspector.min,
         max: inspector.max,
         decoration: NumericIntryDecoration.outline(context),
-        value: _selectedConfigs!.getParam(entry.value).toDouble(),
+        value: _selectedLayer!.configs.getParam(entry.value).toDouble(),
         onChanged: (double value) => _updateParticleParam(entry.value, value),
       );
     } else if (inspector.ui == "dropdown") {
@@ -218,9 +217,9 @@ class _InspactorViewState extends State<InspactorView> {
         ),
         itemHeight: 48,
         items: items,
-        value: _selectedConfigs!.getParam(entry.value),
+        value: _selectedLayer!.configs.getParam(entry.value),
         onChanged: (dynamic selected) {
-          _selectedConfigs!.updateFromMap({entry.value: selected});
+          _selectedLayer!.configs.updateFromMap({entry.value: selected});
           if (entry.value == "emitterType") {
             setState(() {});
           }
@@ -229,7 +228,7 @@ class _InspactorViewState extends State<InspactorView> {
     } else if (inspector.ui == "color") {
       return _buttonBuilder(
         themeData,
-        color: _selectedConfigs!.getParam(entry.value).getColor(),
+        color: _selectedLayer!.configs.getParam(entry.value).getColor(),
         onTap: () => _selectedColor.value = entry.value,
       );
     } else {
@@ -240,8 +239,8 @@ class _InspactorViewState extends State<InspactorView> {
         onTap: () async {
           final result = await browseImage();
           if (result.$2 != null) {
-            _selectedConfigs!
-                .update(textureFileName: result.$1, texture: result.$2);
+            _selectedLayer!.configs.update(textureFileName: result.$1);
+            _selectedLayer!.texture = result.$2!;
           }
         },
       );
@@ -275,8 +274,8 @@ class _InspactorViewState extends State<InspactorView> {
       Text(text, style: themeData.textTheme.labelMedium);
 
   void _updateParticleParam(String key, num value) {
-    var param = _selectedConfigs!.getParam(key);
-    _selectedConfigs!
+    var param = _selectedLayer!.configs.getParam(key);
+    _selectedLayer!.configs
         .updateFromMap({key: param is int ? value.toInt() : value});
   }
 
@@ -295,9 +294,9 @@ class _InspactorViewState extends State<InspactorView> {
             child: SlidePicker(
               showIndicator: false,
               showSliderText: false,
-              pickerColor: _selectedConfigs!.getParam(value).getColor(),
+              pickerColor: _selectedLayer!.configs.getParam(value).getColor(),
               onColorChanged: (color) {
-                _selectedConfigs!.updateFromMap({
+                _selectedLayer!.configs.updateFromMap({
                   value: ARGB(color.alpha / 255, color.red / 255,
                       color.green / 255, color.blue / 255)
                 });

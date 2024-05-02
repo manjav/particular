@@ -79,13 +79,13 @@ class _TimelineViewState extends State<TimelineView> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: ListenableBuilder(
-                      listenable: layer.getNotifier("configName"),
+                      listenable: layer.configs.getNotifier("configName"),
                       builder: (context, child) {
                         return NumericIntry(
-                          value: layer.configName,
+                          value: layer.configs.configName,
                           inputType: IntryInputType.text,
-                          onTextChanged: (value) =>
-                              layer.updateFromMap({"configName": value}),
+                          onTextChanged: (value) => layer.configs
+                              .updateFromMap({"configName": value}),
                         );
                       },
                     ),
@@ -93,8 +93,8 @@ class _TimelineViewState extends State<TimelineView> {
                   _buttonBuilder(
                     Icons.save,
                     () => saveConfigs(
-                        configs: layer.getConfigs(),
-                        filename: layer.configName),
+                        configs: layer.configs.getData(),
+                        filename: layer.configs.configName),
                   ),
                   _buttonBuilder(
                     Icons.delete,
@@ -109,7 +109,7 @@ class _TimelineViewState extends State<TimelineView> {
                 ],
               ),
             ),
-            _activeLineBuilder(layer),
+            _activeLineBuilder(layer.configs),
           ],
         ),
         onTap: () => widget.controller.selectAt(index),
@@ -117,15 +117,15 @@ class _TimelineViewState extends State<TimelineView> {
     );
   }
 
-  Widget _activeLineBuilder(ParticularConfigs layer) {
+  Widget _activeLineBuilder(ParticularConfigs configs) {
     var c = widget.controller;
     return ListenableBuilder(
       listenable: c.getNotifier(NotifierType.time),
       builder: (context, child) {
-        var end = layer.endTime < 0 ? c.timelineDuration : layer.endTime;
-        var duration = end - layer.startTime;
+        var end = configs.endTime < 0 ? c.timelineDuration : configs.endTime;
+        var duration = end - configs.startTime;
         var emptyArea = c.timelineDuration - duration;
-        var positionRate = emptyArea <= 0 ? 0 : layer.startTime / emptyArea;
+        var positionRate = emptyArea <= 0 ? 0 : configs.startTime / emptyArea;
         return Expanded(
           child: SizedBox(
             child: FractionallySizedBox(

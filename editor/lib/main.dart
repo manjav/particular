@@ -38,11 +38,11 @@ class _EditorAppState extends State<EditorApp> {
     setState(() {});
 
     // Add sample emitter
-    await _particleController.addParticleSystem();
+    await _particleController.addParticle();
     await Future.delayed(const Duration(milliseconds: 100));
     if (mounted) {
       final size = MediaQuery.of(context).size;
-      _particleController.selectedLayer!.update(
+      _particleController.selectedLayer!.configs.update(
           emitterX: size.width * 0.5 - _appConfigs["inspector"]["width"] * 0.5,
           emitterY: (size.height +
                   _appConfigs["appBarHeight"] -
@@ -103,14 +103,14 @@ class _EditorAppState extends State<EditorApp> {
     return Expanded(
       child: GestureDetector(
         onPanUpdate: (details) {
-          _particleController.selectedLayer?.updateFromMap({
+          _particleController.selectedLayer?.configs.updateFromMap({
             "emitterX": details.localPosition.dx,
             "emitterY": details.localPosition.dy
           });
         },
         onTapDown: (details) {
           _particleController.resetTick();
-          _particleController.selectedLayer?.updateFromMap({
+          _particleController.selectedLayer?.configs.updateFromMap({
             "emitterX": details.localPosition.dx,
             "emitterY": details.localPosition.dy
           });

@@ -27,10 +27,10 @@ class FooterView extends StatelessWidget {
           child: Row(children: [
             _footerItem(Icons.refresh, () => controller.resetTick()),
             SizedBox(width: appConfigs["timeline"]["sideWidth"] - 40),
-            _footerItem(Icons.add, () => controller.addParticleSystem()),
+            _footerItem(Icons.add, () => controller.addParticle()),
             _footerItem(Icons.file_open, () async {
               final configs = await browseConfigs(["json"]);
-              controller.addParticleSystem(configs: configs);
+              controller.addParticle(configsData: configs);
             }),
             _footerItem(Icons.save_alt, _exportConfigs),
           ]),
@@ -53,7 +53,7 @@ class FooterView extends StatelessWidget {
   void _exportConfigs() {
     var layersConfigs = [];
     for (var i = 0; i < controller.layers.length; i++) {
-      layersConfigs.add(controller.layers[i].getConfigs());
+      layersConfigs.add(controller.layers[i].configs.getData());
     }
     saveConfigs(configs: layersConfigs);
   }

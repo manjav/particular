@@ -17,3 +17,4 @@ export 'src/particle.dart';
 export 'src/particular_configs.dart';
 export 'src/particular_controller.dart';
 export 'src/particular_emitter.dart';
+export 'src/particular_layer.dart';
