@@ -1,7 +1,7 @@
 <p align="center">
 <img src="https://github.com/manjav/particular/raw/main/repo_files/logo.png" alt="Particular Logo" width="140" />
 </p>
-Enhance your app or game visuals with this high-performance Flutter particle system widget. Utilize JSON or programmatic configuration, seamlessly integrating with popular particle editors for effortless customization.  
+Enhance your app or game visuals with this high-performance Flutter Particles System widget. Utilize JSON or programmatic configuration, seamlessly integrating with popular particles editors for effortless customization.  
 <br>
 <br>
 <li>Customizable (live) Particle Effects.
@@ -33,10 +33,11 @@ For detailed installation instructions, refer to the [installation guide](https:
 
 ---
 
-### - Configurate your particle
+### - Configurate your particles
 You have two options for configuring your particles:
-1. <b>Using Editor:</b>  
-Generate your particle system configurations by [Particular Editor](https://manjav.github.io/particular/editor/web).
+1. <b>Using Editors:</b>
+
+Generate your particles system configurations by [Particular Editor](https://manjav.github.io/particular/editor/web).
 
 <a href="https://manjav.github.io/particular/editor/web">
  <p align="center">
@@ -53,8 +54,8 @@ Manually configure your particle controller in code. Refer to the following step
 
 ### - Getting Started with Coding
 To use this library, import `package:particular/particular.dart`.<br>
-Follow these steps to integrate the particle system into your Flutter app:<br>
-<b>I. Initialize the Particle Controller in `initState`:</b>
+Follow these steps to integrate the particles system into your Flutter app:<br>
+<b>I. Initialize the Particles Controller in `initState`:</b>
 ``` dart
 final _particleController = ParticularController();
 ...
@@ -68,7 +69,7 @@ void initState() {
   ByteData  bytes = await rootBundle.load("assets/${configsData["textureFileName"]}");
   ui.Image texture = await loadUIImage(bytes.buffer.asUint8List());
 
-  // Add particle layer
+  // Add particles layer
   _particleController.addLayer(
     texture: frameInfo.image, // Remove in default-texture case
     configsData: configsData, // Remove in programmatic configuration case
@@ -76,7 +77,7 @@ void initState() {
   super.initState();
 }
 ```
-<b>II. Add the `Particular` Widget in Your Widget Three:</b>
+<b>II. Add the `Particular` widget in your widget three:</b>
 ``` dart
 @override
 Widget build(BuildContext context) {

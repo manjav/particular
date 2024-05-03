@@ -32,3 +32,8 @@
 * feature: add timeline in editor
 * feature: new editor theme
 * enhance: better ux for inputs
+
+### 0.2.1 (05/03/2024)
+* feature: multilayer particles support
+* enhance: use mutual emitters for increase performance
+* cleanups: better code instructions
