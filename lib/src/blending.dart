@@ -251,7 +251,10 @@ enum BlendFunction {
   oneMinusDestinationColor(0x307), // GL_ONE_MINUS_DESTINATION_COLOR
   sourceAlphaSaturate(0x307); // GL_SOURCE_ALPHA_SATURATE
 
+  /// Converts the given [value] to a [BlendFunction].
   final int value;
+
+  /// The constructor of the blend function.
   const BlendFunction(this.value);
 
   /// Converts the given [value] to a [BlendFunction].

@@ -1,8 +1,8 @@
 import 'package:particular/particular.dart';
 
+/// Extension methods for `ParticularConfigs` class
 extension ParticularEditorController on ParticularConfigs {
-  // bool isVisible = true;
-
+  /// Gets the value of the given parameter.
   dynamic getParam(String key) {
     return switch (key) {
       "configName" => configName,
@@ -53,7 +53,8 @@ extension ParticularEditorController on ParticularConfigs {
     };
   }
 
-  Map getData() {
+  /// Convert to Map for export
+  Map toMap() {
     final startColorMap = startColor.toMap("startColor");
     final startColorVarianceMap =
         startColorVariance.toMap("startColorVariance");

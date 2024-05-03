@@ -572,6 +572,8 @@ class ARGB {
 
   /// Represents Blue channel
   num b;
+
+  /// Create ARGB class
   ARGB(this.a, this.r, this.g, this.b);
 
   /// Create ARGB class and assign members with data
