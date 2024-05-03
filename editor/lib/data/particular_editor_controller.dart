@@ -106,3 +106,16 @@ extension ParticularEditorController on ParticularConfigs {
       ..addAll(finishColorVarianceMap);
   }
 }
+
+/// Extension methods for `ARGB` class
+extension ARGBExtension on ARGB {
+  /// Convert to Map for export
+  Map toMap(String name) {
+    return {
+      "${name}Alpha": a,
+      "${name}Red": r,
+      "${name}Green": g,
+      "${name}Blue": b
+    };
+  }
+}

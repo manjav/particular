@@ -93,7 +93,7 @@ class _TimelineViewState extends State<TimelineView> {
                   _buttonBuilder(
                     Icons.save,
                     () => saveConfigs(
-                        configs: layer.configs.getData(),
+                        configs: layer.configs.toMap(),
                         filename: layer.configs.configName),
                   ),
                   _buttonBuilder(

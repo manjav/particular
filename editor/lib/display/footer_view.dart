@@ -53,7 +53,7 @@ class FooterView extends StatelessWidget {
   void _exportConfigs() {
     var layersConfigs = [];
     for (var i = 0; i < controller.layers.length; i++) {
-      layersConfigs.add(controller.layers[i].configs.getData());
+      layersConfigs.add(controller.layers[i].configs.toMap());
     }
     saveConfigs(configs: layersConfigs);
   }

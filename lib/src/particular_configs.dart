@@ -584,16 +584,7 @@ class ARGB {
     return color;
   }
 
-  // Returns a Color object with ARGB values calculated from the current ARGB instance.
+  /// Returns a Color object with ARGB values calculated from the current ARGB instance.
   Color getColor() => Color.fromARGB((a * 255).toInt(), (r * 255).toInt(),
       (g * 255).toInt(), (b * 255).toInt());
-
-  Map toMap(String name) {
-    return {
-      "${name}Alpha": a,
-      "${name}Red": r,
-      "${name}Green": g,
-      "${name}Blue": b
-    };
-  }
 }
