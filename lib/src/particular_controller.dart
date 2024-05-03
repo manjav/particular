@@ -38,6 +38,15 @@ class ParticularController {
   /// The default texture for the particle system.
   ui.Image? _defaultTexture;
 
+  /// The default texture for the particle system.
+  Future<ui.Image> _getDefaultTexture() async {
+    if (_defaultTexture == null) {
+      ByteData bytes = await rootBundle.load("assets/texture.png");
+      _defaultTexture = await loadUIImage(bytes.buffer.asUint8List());
+    }
+    return _defaultTexture!;
+  }
+
   /// The delta time of the particle system in milliseconds.
   int deltaTime = 0;
 
@@ -120,11 +129,7 @@ class ParticularController {
   Future<void> _add({Map<String, dynamic>? configsData}) async {
     ByteData bytes;
 
-    /// Load default particle texture
-    if (_defaultTexture == null) {
-      bytes = await rootBundle.load("assets/texture.png");
-      _defaultTexture = await loadUIImage(bytes.buffer.asUint8List());
-
+    if (_ticker == null) {
       _ticker = Ticker(_onTick);
       _ticker!.start();
     }
@@ -137,8 +142,8 @@ class ParticularController {
     }
     final configs = ParticularConfigs()..initialize(configs: configsData);
 
-    final layer =
-        ParticularLayer(texture: texture ?? _defaultTexture!, configs: configs);
+    final layer = ParticularLayer(
+        texture: texture ?? await _getDefaultTexture(), configs: configs);
     configs.getNotifier("duration").addListener(_onDurationChange);
     configs.getNotifier("startTime").addListener(_onDurationChange);
     layer.index = layers.length;
