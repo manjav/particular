@@ -66,6 +66,8 @@ class ParticularController {
     return max + 100;
   }
 
+  double _particlesPerTick = 0;
+
   /// The ticker for the particle system.
   Ticker? _ticker;
 
@@ -85,10 +87,11 @@ class ParticularController {
       var configs = layer.configs;
       if (elapsedTime >= configs.startTime &&
           (configs.endTime < 0 || elapsedTime < configs.endTime)) {
-        var particlesPerTick =
-            (deltaTime * configs.maxParticles / configs.lifespan).round();
-        for (var i = 0; i < particlesPerTick; i++) {
-          layer.spawn(age: (i * deltaTime / particlesPerTick).round());
+        _particlesPerTick +=
+            (deltaTime * configs.maxParticles / configs.lifespan);
+        for (var i = 0; i < _particlesPerTick; i++) {
+          _particlesPerTick -= 1;
+          layer.spawn(age: (i * deltaTime / _particlesPerTick).round());
         }
       }
     }
