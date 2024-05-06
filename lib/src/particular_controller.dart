@@ -91,6 +91,7 @@ class ParticularController {
         for (var i = 0; i < _particlesPerTick; i++) {
           layer.spawn(age: (i * deltaTime / _particlesPerTick).round());
         }
+        _particlesPerTick -= _particlesPerTick.floor();
       }
     }
 
