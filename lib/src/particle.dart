@@ -150,7 +150,6 @@ class Particle {
     this.gravityX = gravityX;
     this.gravityY = gravityY;
 
-    age = 0;
     x = emitterX;
     y = emitterY;
     size = startSize;
