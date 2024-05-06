@@ -171,7 +171,7 @@ class Particle {
     if (isDead()) return;
     age += deltaTime;
     final ratio = age / lifespan;
-    final rate = deltaTime / lifespan;
+    final rate = deltaTime / 1000;
 
     // Update the particle's state based on its emitter type.
     if (emitterType == EmitterType.radius) {
