@@ -24,7 +24,7 @@
 * feature: add editor (initial version)
 * enhance: replace blending functions
 * enhance: limited time particle
-* bugsfix: resize image rects on texture changes
+* fixbugs: resize image rects on texture changes
 
 ### 0.2.0 (05/01/2024)
 * feature: support finite and infinite particles
@@ -37,3 +37,6 @@
 * feature: multilayer particles support
 * enhance: use mutual emitters for increase performance
 * cleanups: better code instructions
+
+### 0.2.2 (23/03/2024)
+* fixbugs: handle low number particles
