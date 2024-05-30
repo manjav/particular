@@ -232,7 +232,6 @@ class _InspactorViewState extends State<InspactorView> {
         onTap: () => _selectedColor.value = entry.value,
       );
     } else {
-      // Button
       return _buttonBuilder(
         themeData,
         child: _getText("${entry.value}".toTitleCase(), themeData),
