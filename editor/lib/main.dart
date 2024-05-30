@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:editor/display/footer_view.dart';
 import 'package:editor/display/inspector_view.dart';
 import 'package:editor/display/timeline_view.dart';
+import 'package:editor/services/io.dart';
 import 'package:editor/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,6 +21,7 @@ class EditorApp extends StatefulWidget {
 }
 
 class _EditorAppState extends State<EditorApp> {
+  Uint8List? _backgroundImage;
   Map<String, dynamic> _appConfigs = {};
   final ParticularController _particleController = ParticularController();
 
@@ -95,6 +97,9 @@ class _EditorAppState extends State<EditorApp> {
     return AppBar(
       centerTitle: false,
       title: const Text("Particular Editor"),
+      actions: [
+        IconButton(onPressed: _loadBackground, icon: const Icon(Icons.image))
+      ],
       toolbarHeight: _appConfigs["appBarHeight"],
     );
   }
@@ -117,15 +122,26 @@ class _EditorAppState extends State<EditorApp> {
         },
         child: Container(
           clipBehavior: Clip.hardEdge,
-          decoration: const BoxDecoration(
-            shape: BoxShape.rectangle,
-            color: Colors.black,
-          ),
+          decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              color: Colors.black,
+              image: _backgroundImage == null
+                  ? null
+                  : DecorationImage(image: MemoryImage(_backgroundImage!))),
           child: Particular(
             controller: _particleController,
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _loadBackground() async {
+    final files = await browseFiles();
+    if (files.isNotEmpty) {
+      setState(() {
+        _backgroundImage = files.first.bytes;
+      });
+    }
   }
 }
