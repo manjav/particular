@@ -138,9 +138,14 @@ class ParticularController {
 
     /// Load particle texture
     ui.Image? texture;
-    if (configsData != null && configsData.containsKey("textureFileName")) {
-      bytes = await rootBundle.load("assets/${configsData["textureFileName"]}");
-      texture = await loadUIImage(bytes.buffer.asUint8List());
+    try {
+      if (configsData != null && configsData.containsKey("textureFileName")) {
+        bytes =
+            await rootBundle.load("assets/${configsData["textureFileName"]}");
+        texture = await loadUIImage(bytes.buffer.asUint8List());
+      }
+    } catch (e) {
+      debugPrint(e.toString());
     }
     final configs = ParticularConfigs()..initialize(configs: configsData);
 
