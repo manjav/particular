@@ -38,5 +38,8 @@
 * enhance: use mutual emitters for increase performance
 * cleanups: better code instructions
 
-### 0.2.2 (23/03/2024)
+### 0.2.2 (05/23/2024)
 * fixbugs: handle low number particles
+
+### 0.2.5 (06/12/2024)
+* add automate publish
