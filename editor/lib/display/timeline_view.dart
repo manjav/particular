@@ -81,10 +81,9 @@ class _TimelineViewState extends State<TimelineView> {
                     child: ListenableBuilder(
                       listenable: layer.configs.getNotifier("configName"),
                       builder: (context, child) {
-                        return NumericIntry(
+                        return IntryTextField(
                           value: layer.configs.configName,
-                          inputType: IntryInputType.text,
-                          onTextChanged: (value) => layer.configs
+                          onChanged: (value) => layer.configs
                               .updateFromMap({"configName": value}),
                         );
                       },

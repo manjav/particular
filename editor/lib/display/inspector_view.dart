@@ -187,11 +187,11 @@ class _InspactorViewState extends State<InspactorView> {
   Widget _addInputs(ThemeData themeData, Inspector inspector,
       MapEntry<String, dynamic> entry) {
     if (inspector.ui == "input") {
-      return NumericIntry(
+      return IntryNumericField(
         slidingSpeed: 1,
         min: inspector.min,
         max: inspector.max,
-        decoration: NumericIntryDecoration.outline(context),
+        decoration: IntryFieldDecoration.outline(context),
         value: _selectedLayer!.configs.getParam(entry.value).toDouble(),
         onChanged: (double value) => _updateParticleParam(entry.value, value),
       );
