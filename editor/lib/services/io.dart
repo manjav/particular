@@ -2,10 +2,11 @@ import 'dart:convert';
 import 'dart:ui' as ui;
 
 // ignore: avoid_web_libraries_in_flutter
-// import 'dart:html' as html;
+import 'dart:html' as html;
 
 import 'package:file_picker/file_picker.dart';
-// import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:particular/particular.dart';
 
 /// Browse files from the user's device.
@@ -109,28 +110,29 @@ Future<dynamic> browseConfigs(List<String> extensions) async {
 ///   saved to a file.
 Future<void> saveConfigs({required dynamic configs, String? filename}) async {
   final json = jsonEncode(configs);
+  debugPrint(json);
   final bytes = utf8.encode(json);
 
-  // if (kIsWeb) {
-  //   final blob = html.Blob([bytes]);
-  //   final url = html.Url.createObjectUrlFromBlob(blob);
-  //   final anchor = html.document.createElement('a') as html.AnchorElement
-  //     ..href = url
-  //     ..style.display = 'none'
-  //     ..download = 'configs.json';
-  //   html.document.body!.children.add(anchor);
+  if (kIsWeb) {
+    final blob = html.Blob([bytes]);
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    final anchor = html.document.createElement('a') as html.AnchorElement
+      ..href = url
+      ..style.display = 'none'
+      ..download = 'configs.json';
+    html.document.body!.children.add(anchor);
 
-  //   // Download
-  //   anchor.click();
+    // Download
+    anchor.click();
 
-  //   // Cleanup
-  //   html.document.body!.children.remove(anchor);
-  //   html.Url.revokeObjectUrl(url);
-  // } else {
-  await FilePicker.platform.saveFile(
-    dialogTitle: "Save Particle Configs",
-    fileName: "${filename ?? "configs"}.json",
-    bytes: bytes,
-  );
-  // }
+    // Cleanup
+    html.document.body!.children.remove(anchor);
+    html.Url.revokeObjectUrl(url);
+  } else {
+    await FilePicker.platform.saveFile(
+      dialogTitle: "Save Particle Configs",
+      fileName: "${filename ?? "configs"}.json",
+      bytes: bytes,
+    );
+  }
 }
