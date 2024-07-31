@@ -25,7 +25,7 @@ class FooterView extends StatelessWidget {
           child: Row(
             children: [
               _footerItem(Icons.refresh, () => controller.resetTick()),
-              SizedBox(width: appConfigs["timeline"]["sideWidth"] - 40),
+              // SizedBox(width: appConfigs["timeline"]["sideWidth"] - 40),
               _footerItem(Icons.add, () => controller.addLayer()),
             ],
           ),

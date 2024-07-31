@@ -14,14 +14,21 @@ class HeaderView extends StatefulWidget {
   /// The controller for the particle system.
   final ParticularController controller;
 
+  /// The callback function for when the background image is changed.
+  final Function(Uint8List) onBackroundImageChanged;
+
   /// Creates a footer view.
   const HeaderView(
-      {super.key, required this.appConfigs, required this.controller});
+      {super.key,
+      required this.appConfigs,
+      required this.controller,
+      required this.onBackroundImageChanged});
 
   @override
   State<HeaderView> createState() => _HeaderViewState();
 }
 
+/// Creates a header view.
 class _HeaderViewState extends State<HeaderView> {
   final Map<String, GlobalKey> _overlayKeys = {
     "Export": GlobalKey(),
@@ -48,7 +55,7 @@ class _HeaderViewState extends State<HeaderView> {
               "Import configs": _importConfigs,
               "Export configs": _exportConfigs,
               "Export with textures (zipped)": _exportConfigsWithTextures,
-              "Add background image": _importConfigs,
+              "Add background image": _browseBackgroundImage,
             },
           ),
           const Expanded(child: SizedBox()),
@@ -121,5 +128,15 @@ class _HeaderViewState extends State<HeaderView> {
       }
     }
     saveConfigsWithTextures(configs: layersConfigs, textures: texures);
+  }
+
+  /// Browse background image
+  void _browseBackgroundImage() async {
+    final files = await browseFiles();
+    if (files.isNotEmpty) {
+      setState(() {
+        widget.onBackroundImageChanged(files.first.bytes!);
+      });
+    }
   }
 }

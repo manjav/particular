@@ -73,6 +73,9 @@ class _EditorAppState extends State<EditorApp> {
                   HeaderView(
                     appConfigs: _appConfigs,
                     controller: _particleController,
+                    onBackroundImageChanged: (image) {
+                      setState(() => _backgroundImage = image);
+                    },
                   ),
                   _canvasBuilder(),
                   FooterView(
@@ -126,14 +129,5 @@ class _EditorAppState extends State<EditorApp> {
         ),
       ),
     );
-  }
-
-  Future<void> _loadBackground() async {
-    final files = await browseFiles();
-    if (files.isNotEmpty) {
-      setState(() {
-        _backgroundImage = files.first.bytes;
-      });
-    }
   }
 }
