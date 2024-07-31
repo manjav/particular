@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:editor/data/particular_editor_controller.dart';
+import 'package:editor/display/context_menu.dart';
 import 'package:editor/services/io.dart';
 import 'package:editor/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +39,18 @@ class _HeaderViewState extends State<HeaderView> {
       child: Row(
         children: [
           Image.asset("assets/favicon.png"),
+          _menuButton(
+            title: "Menu",
+            width: 250,
+            child: const Icon(Icons.menu),
+            style: IconButton.styleFrom(backgroundColor: Colors.white10),
+            items: {
+              "Import configs": _importConfigs,
+              "Export configs": _exportConfigs,
+              "Export with textures (zipped)": _exportConfigsWithTextures,
+              "Add background image": _importConfigs,
+            },
+          ),
           const Expanded(child: SizedBox()),
           _menuButton(title: "Export", items: {
             "Export configs": _exportConfigs,
@@ -80,6 +93,7 @@ class _HeaderViewState extends State<HeaderView> {
     );
   }
 
+  void _importConfigs() {}
 
   /// Save configs without textures
   void _exportConfigs() {
