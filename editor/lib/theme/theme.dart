@@ -3,6 +3,16 @@ import 'package:flutter/material.dart';
 class Themes {
   static Color backgroundColor = const Color(0xFF2C2C2C);
   static Color foregroundColor = const Color(0xFF9E9E9E);
+  static ButtonStyle buttonStyle({Color? color}) {
+    return ElevatedButton.styleFrom(
+      shadowColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(4 ),
+        side: BorderSide(color: foregroundColor),
+      ),
+      backgroundColor: color ?? backgroundColor,
+    );
+  }
 }
 
 ThemeData get customTheme => ThemeData(
