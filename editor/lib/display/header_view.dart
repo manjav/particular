@@ -93,7 +93,11 @@ class _HeaderViewState extends State<HeaderView> {
     );
   }
 
-  void _importConfigs() {}
+  /// Browse and import configs
+  Future<void> _importConfigs() async {
+    final configs = await browseConfigs(["json"]);
+    widget.controller.addLayer(configsData: configs);
+  }
 
   /// Save configs without textures
   void _exportConfigs() {

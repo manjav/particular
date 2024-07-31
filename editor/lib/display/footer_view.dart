@@ -1,4 +1,3 @@
-import 'package:editor/services/io.dart';
 import 'package:flutter/material.dart';
 import 'package:particular/particular.dart';
 
@@ -28,10 +27,6 @@ class FooterView extends StatelessWidget {
               _footerItem(Icons.refresh, () => controller.resetTick()),
               SizedBox(width: appConfigs["timeline"]["sideWidth"] - 40),
               _footerItem(Icons.add, () => controller.addLayer()),
-              _footerItem(Icons.file_open, () async {
-                final configs = await browseConfigs(["json"]);
-                controller.addLayer(configsData: configs);
-              }),
             ],
           ),
         );
