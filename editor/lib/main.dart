@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:editor/display/footer_view.dart';
+import 'package:editor/display/header_view.dart';
 import 'package:editor/display/inspector_view.dart';
 import 'package:editor/display/timeline_view.dart';
-import 'package:editor/services/io.dart';
 import 'package:editor/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -63,7 +63,6 @@ class _EditorAppState extends State<EditorApp> {
       title: "Particular Editor",
       theme: customTheme,
       home: Scaffold(
-        appBar: _appBarBuilder(),
         body: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -71,6 +70,10 @@ class _EditorAppState extends State<EditorApp> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  HeaderView(
+                    appConfigs: _appConfigs,
+                    controller: _particleController,
+                  ),
                   _canvasBuilder(),
                   FooterView(
                     appConfigs: _appConfigs,
@@ -90,17 +93,6 @@ class _EditorAppState extends State<EditorApp> {
           ],
         ),
       ),
-    );
-  }
-
-  AppBar _appBarBuilder() {
-    return AppBar(
-      centerTitle: false,
-      title: const Text("Particular Editor"),
-      actions: [
-        IconButton(onPressed: _loadBackground, icon: const Icon(Icons.image))
-      ],
-      toolbarHeight: _appConfigs["appBarHeight"],
     );
   }
 
