@@ -6,8 +6,9 @@ class Themes {
   static ButtonStyle buttonStyle({Color? color}) {
     return ElevatedButton.styleFrom(
       shadowColor: Colors.transparent,
+      foregroundColor: foregroundColor,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(4 ),
+        borderRadius: BorderRadius.circular(4),
         side: BorderSide(color: foregroundColor),
       ),
       backgroundColor: color ?? backgroundColor,
