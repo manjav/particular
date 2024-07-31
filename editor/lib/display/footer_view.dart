@@ -1,5 +1,3 @@
-import 'package:editor/data/particular_editor_controller.dart';
-import 'package:editor/services/io.dart';
 import 'package:flutter/material.dart';
 import 'package:particular/particular.dart';
 
@@ -24,16 +22,13 @@ class FooterView extends StatelessWidget {
         return Container(
           color: Colors.white10,
           height: appConfigs["footerHeight"],
-          child: Row(children: [
-            _footerItem(Icons.refresh, () => controller.resetTick()),
-            SizedBox(width: appConfigs["timeline"]["sideWidth"] - 40),
-            _footerItem(Icons.add, () => controller.addLayer()),
-            _footerItem(Icons.file_open, () async {
-              final configs = await browseConfigs(["json"]);
-              controller.addLayer(configsData: configs);
-            }),
-            _footerItem(Icons.save_alt, _exportConfigs),
-          ]),
+          child: Row(
+            children: [
+              _footerItem(Icons.refresh, () => controller.resetTick()),
+              // SizedBox(width: appConfigs["timeline"]["sideWidth"] - 40),
+              _footerItem(Icons.add, () => controller.addLayer()),
+            ],
+          ),
         );
       },
     );
@@ -48,13 +43,5 @@ class FooterView extends StatelessWidget {
       icon: Icon(icon, size: 12),
       onPressed: () => onPressed(),
     );
-  }
-
-  void _exportConfigs() {
-    var layersConfigs = [];
-    for (var i = 0; i < controller.layers.length; i++) {
-      layersConfigs.add(controller.layers[i].configs.toMap());
-    }
-    saveConfigs(configs: layersConfigs);
   }
 }

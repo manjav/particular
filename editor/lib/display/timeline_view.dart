@@ -22,11 +22,11 @@ class _TimelineViewState extends State<TimelineView> {
   /// Creates a timeline view.
   @override
   Widget build(BuildContext context) {
-    var c = widget.controller;
+    var controller = widget.controller;
     return SizedBox(
         height: widget.appConfigs["timeline"]["height"],
         child: ListenableBuilder(
-          listenable: c.getNotifier(NotifierType.layer),
+          listenable: controller.getNotifier(NotifierType.layer),
           builder: (context, child) {
             return Stack(
               children: [
@@ -35,13 +35,12 @@ class _TimelineViewState extends State<TimelineView> {
                   width: widget.appConfigs["timeline"]["sideWidth"],
                 ),
                 ReorderableListView.builder(
-                  reverse: true,
                   buildDefaultDragHandles: false,
-                  itemBuilder: (c, i) => _layerItemBuilder(i),
-                  itemCount: c.layers.length,
-                  onReorder: (int oldIndex, int newIndex) {
-                    c.reOrderLayer(oldIndex, newIndex);
-                  },
+                  itemBuilder: (c, i) =>
+                      _layerItemBuilder(controller.layers.length - i - 1),
+                  itemCount: controller.layers.length,
+                  onReorder: (int oldIndex, int newIndex) =>
+                      controller.reOrderLayer(oldIndex, newIndex),
                 ),
                 _timeSeekBarBuilder(),
               ],
