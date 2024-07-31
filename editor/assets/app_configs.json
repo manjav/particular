@@ -13,7 +13,7 @@
                 "title": "Emission Settings",
                 "children": [
                     {
-                        "title": "Time",
+                        "title": "Duration",
                         "min": -1.0,
                         "inputs": {
                             "Start": "startTime",

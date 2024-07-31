@@ -65,7 +65,7 @@ class _InspactorViewState extends State<InspactorView> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _tabBarBuilder(),
+              _tabBarBuilder(themeData),
               _inspactorListBuilder(themeData),
               _colorPickerBuilder(),
             ],
@@ -75,7 +75,7 @@ class _InspactorViewState extends State<InspactorView> {
     );
   }
 
-  Widget _tabBarBuilder() {
+  Widget _tabBarBuilder(ThemeData themeData) {
     return ValueListenableBuilder(
       valueListenable: Inspector.list,
       builder: (context, value, child) {
@@ -84,8 +84,8 @@ class _InspactorViewState extends State<InspactorView> {
           color: Colors.black12,
           child: Row(
             children: [
-              _tabItemBuilder(0, Icons.stream),
-              _tabItemBuilder(1, Icons.color_lens),
+              _tabItemBuilder(themeData, 0, "Emitter"),
+              _tabItemBuilder(themeData, 1, "Particle"),
             ],
           ),
         );
@@ -93,13 +93,17 @@ class _InspactorViewState extends State<InspactorView> {
     );
   }
 
-  Widget _tabItemBuilder(int index, IconData icon) {
+  Widget _tabItemBuilder(ThemeData themeData, int index, String title) {
     return Expanded(
-      child: IconButton(
-        color:
-            _selectedTabIndex != index ? Theme.of(context).splashColor : null,
-        icon: Icon(icon),
-        onPressed: () => _selectTab(index),
+      child: InkWell(
+        child: Container(
+          alignment: Alignment.center,
+          height: widget.appConfigs["appBarHeight"],
+          color:
+              _selectedTabIndex != index ? Theme.of(context).splashColor : null,
+          child: Text(title, style: themeData.textTheme.bodyLarge),
+        ),
+        onTap: () => _selectTab(index),
       ),
     );
   }
@@ -242,6 +246,7 @@ class _InspactorViewState extends State<InspactorView> {
           if (result.$2 != null) {
             _selectedLayer!.configs.update(textureFileName: result.$1);
             _selectedLayer!.texture = result.$2!;
+            _selectedLayer!.textureBytes = result.$3!;
           }
         },
       );
