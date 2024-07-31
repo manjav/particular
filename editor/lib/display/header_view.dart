@@ -22,8 +22,11 @@ class HeaderView extends StatefulWidget {
 }
 
 class _HeaderViewState extends State<HeaderView> {
-  OverlayEntry? _overlayEntry;
-  final GlobalKey _globalkey = GlobalKey();
+  final Map<String, GlobalKey> _overlayKeys = {
+    "Export": GlobalKey(),
+    "Menu": GlobalKey()
+  };
+  final Map<String, OverlayEntry> _overlayEntries = {};
 
   /// Creates a footer view.
   @override
@@ -36,62 +39,47 @@ class _HeaderViewState extends State<HeaderView> {
         children: [
           Image.asset("assets/favicon.png"),
           const Expanded(child: SizedBox()),
-          TapRegion(
-            child: // your sub-tree that triggered the keyboard
-                ElevatedButton(
-              key: _globalkey,
-              style: Themes.buttonStyle(),
-              child: const Text("Export"),
-              onPressed: () {
-                _overlayEntry = _createOverlayEntry(context);
-                Overlay.of(context).insert(_overlayEntry!);
-              },
-            ),
-            onTapOutside: (event) async {
-              if (_overlayEntry != null) {
-                await Future.delayed(const Duration(milliseconds: 200));
-                _overlayEntry?.remove();
-                _overlayEntry = null;
-              }
-            },
-          )
+          _menuButton(title: "Export", items: {
+            "Export configs": _exportConfigs,
+            "Export with textures (zipped)": _exportConfigsWithTextures
+          }),
         ],
       ),
     );
   }
 
-  /// Creates an overlay entry for the export button.
-  OverlayEntry _createOverlayEntry(BuildContext context) {
-    RenderBox renderBox =
-        _globalkey.currentContext?.findRenderObject() as RenderBox;
-    Offset offset = renderBox.localToGlobal(Offset.zero);
-    Size size = renderBox.size;
-
-    return OverlayEntry(
-      builder: (context) => Positioned(
-        left: offset.dx,
-        top: offset.dy + size.height + 5.0,
-        width: size.width * 2,
-        child: Material(
-          elevation: 4.0,
-          child: ListView(
-            padding: EdgeInsets.zero,
-            shrinkWrap: true,
-            children: <Widget>[
-              ListTile(
-                title: const Text("Export configs"),
-                onTap: _exportConfigs,
-              ),
-              ListTile(
-                title: const Text("Export with textures (zipped)"),
-                onTap: _exportConfigsWithTextures,
-              )
-            ],
-          ),
-        ),
+  Widget _menuButton({
+    required String title,
+    required Map<String, Function()> items,
+    ButtonStyle? style,
+    Widget? child,
+    double width = 220.0,
+  }) {
+    return TapRegion(
+      child: ElevatedButton(
+        key: _overlayKeys[title],
+        style: style ?? Themes.buttonStyle(),
+        child: child ?? Text(title),
+        onPressed: () {
+          _overlayEntries[title] = createOverlayEntry(
+            context,
+            key: _overlayKeys[title]!,
+            items: items,
+            width: width,
+          );
+          Overlay.of(context).insert(_overlayEntries[title]!);
+        },
       ),
+      onTapOutside: (event) async {
+        if (_overlayEntries.containsKey(title)) {
+          await Future.delayed(const Duration(milliseconds: 200));
+          _overlayEntries[title]?.remove();
+          _overlayEntries.remove(title);
+        }
+      },
     );
   }
+
 
   /// Save configs without textures
   void _exportConfigs() {
