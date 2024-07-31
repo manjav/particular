@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html' as html;
 
+import 'package:archive/archive.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -44,7 +46,7 @@ Future<List<PlatformFile>> browseFiles() async {
 /// - A `Future<(String, ui.Image?)>`: A tuple containing the name of the
 ///   selected file and the decoded image. If the user cancels the selection or
 ///   no image is selected, the tuple contains the empty string and `null`.
-Future<(String, ui.Image?)> browseImage() async {
+Future<(String, ui.Image?, Uint8List?)> browseImage() async {
   // Use the FilePicker library to allow the user to select an image file.
   final files = await browseFiles();
 
@@ -52,11 +54,11 @@ Future<(String, ui.Image?)> browseImage() async {
     PlatformFile file = files.first;
     if (file.bytes != null) {
       var image = await loadUIImage(file.bytes!);
-      return (file.name, image);
+      return (file.name, image, file.bytes);
     }
   }
 
-  return ("", null);
+  return ("", null, null);
 }
 
 /// Browse and load configs from a file with specified extensions.
@@ -108,18 +110,73 @@ Future<dynamic> browseConfigs(List<String> extensions) async {
 /// Returns:
 /// - A `Future<void>`: A future that completes when the configs have been
 ///   saved to a file.
-Future<void> saveConfigs({required dynamic configs, String? filename}) async {
+Future<void> saveConfigs({
+  required dynamic configs,
+  String? filename,
+}) async {
   final json = jsonEncode(configs);
   debugPrint(json);
-  final bytes = utf8.encode(json);
+  _saveFile(
+      bytes: utf8.encode(json),
+      title: "Save Particle Configs",
+      filename: "${filename ?? "configs"}.json");
+}
 
+Future<void> saveConfigsWithTextures({
+  required dynamic configs,
+  required Map<String, Uint8List> textures,
+  String? filename,
+}) async {
+  final encoder = ZipEncoder();
+  final archive = Archive();
+
+  // Add the configs.json to the archive
+  final json = jsonEncode(configs);
+  final jbytes = utf8.encode(json);
+  final archiveFile = ArchiveFile('configs.json', jbytes.length, jbytes);
+  archive.addFile(archiveFile);
+
+  // Add tuxtures into the archive
+  for (var entry in textures.entries) {
+    archive.addFile(ArchiveFile(entry.key, entry.value.length, entry.value));
+  }
+
+  final outputStream = OutputStream(byteOrder: LITTLE_ENDIAN);
+  final bytes = encoder.encode(archive,
+      level: Deflate.BEST_COMPRESSION, output: outputStream);
+  _saveFile(
+      bytes: Uint8List.fromList(bytes!),
+      title: "Save Particle Configs",
+      filename: "${filename ?? "configs"}.zip");
+}
+
+/// Saves a file to the user's device.
+///
+/// If the app is running on a non-web platform, it uses the [FilePicker.saveFile]
+/// method to open a file picker dialog for the user to select a filename.
+///
+/// The file is encoded to JSON and saved to the selected file with the `.json`
+/// extension.
+///
+/// Parameters:
+/// - [title]: The title of the save file dialog.
+/// - [bytes]: The bytes of the file to be saved.
+/// - [filename]: The name of the file to be saved.
+///
+/// Returns:
+/// - A `Future<void>`: A future that completes when the file has been saved.
+Future<void> _saveFile({
+  required String title,
+  required Uint8List bytes,
+  required String filename,
+}) async {
   if (kIsWeb) {
     final blob = html.Blob([bytes]);
     final url = html.Url.createObjectUrlFromBlob(blob);
     final anchor = html.document.createElement('a') as html.AnchorElement
       ..href = url
       ..style.display = 'none'
-      ..download = 'configs.json';
+      ..download = filename;
     html.document.body!.children.add(anchor);
 
     // Download
@@ -128,11 +185,10 @@ Future<void> saveConfigs({required dynamic configs, String? filename}) async {
     // Cleanup
     html.document.body!.children.remove(anchor);
     html.Url.revokeObjectUrl(url);
-  } else {
     await FilePicker.platform.saveFile(
-      dialogTitle: "Save Particle Configs",
-      fileName: "${filename ?? "configs"}.json",
       bytes: bytes,
+      dialogTitle: title,
+      fileName: filename,
     );
   }
 }

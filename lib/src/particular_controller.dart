@@ -35,6 +35,9 @@ class ParticularController {
   /// Whether the particle system is empty.
   bool get isEmpty => layers.isEmpty;
 
+  /// The default texture bytes for the particle system.
+  Uint8List? _defaultTextureBytes;
+
   /// The default texture for the particle system.
   ui.Image? _defaultTexture;
 
@@ -42,7 +45,8 @@ class ParticularController {
   Future<ui.Image> _getDefaultTexture() async {
     if (_defaultTexture == null) {
       ByteData bytes = await rootBundle.load("assets/texture.png");
-      _defaultTexture = await loadUIImage(bytes.buffer.asUint8List());
+      _defaultTextureBytes = bytes.buffer.asUint8List();
+      _defaultTexture = await loadUIImage(_defaultTextureBytes!);
     }
     return _defaultTexture!;
   }
@@ -151,6 +155,7 @@ class ParticularController {
 
     final layer = ParticularLayer(
         texture: texture ?? await _getDefaultTexture(), configs: configs);
+    layer.textureBytes = _defaultTextureBytes;
     configs.getNotifier("duration").addListener(_onDurationChange);
     configs.getNotifier("startTime").addListener(_onDurationChange);
     layer.index = layers.length;
