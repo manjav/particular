@@ -1,12 +1,12 @@
 import 'dart:typed_data';
 
 import 'package:editor/data/particular_editor_controller.dart';
-import 'package:editor/display/context_menu.dart';
 import 'package:editor/services/io.dart';
 import 'package:editor/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:particular/particular.dart';
 
+/// The header line for the application that contains the buttons for layers.
 class HeaderView extends StatefulWidget {
   /// The configurations for the application.
   final Map appConfigs;
@@ -30,12 +30,6 @@ class HeaderView extends StatefulWidget {
 
 /// Creates a header view.
 class _HeaderViewState extends State<HeaderView> {
-  final Map<String, GlobalKey> _overlayKeys = {
-    "Export": GlobalKey(),
-    "Menu": GlobalKey()
-  };
-  final Map<String, OverlayEntry> _overlayEntries = {};
-
   /// Creates a footer view.
   @override
   Widget build(BuildContext context) {
@@ -47,9 +41,10 @@ class _HeaderViewState extends State<HeaderView> {
         children: [
           Image.asset("assets/favicon.png"),
           _menuButton(
-            title: "Menu",
-            width: 250,
-            child: const Icon(Icons.menu),
+            child: Icon(
+              Icons.menu,
+              color: Themes.foregroundColor,
+            ),
             style: IconButton.styleFrom(backgroundColor: Colors.white10),
             items: {
               "Import configs": _importConfigs,
@@ -59,44 +54,56 @@ class _HeaderViewState extends State<HeaderView> {
             },
           ),
           const Expanded(child: SizedBox()),
-          _menuButton(title: "Export", items: {
-            "Export configs": _exportConfigs,
-            "Export with textures (zipped)": _exportConfigsWithTextures
-          }),
+          _menuButton(
+            child: const Text("Export"),
+            items: {
+              "Export configs": _exportConfigs,
+              "Export with textures (zipped)": _exportConfigsWithTextures
+            },
+          ),
         ],
       ),
     );
   }
 
+  /// Creates a menu button widget.
+  ///
+  /// The [child] parameter represents the child widget of the button.
+  /// The [style] parameter represents the style of the button.
+  /// The [items] parameter represents the map of items that will be displayed
+  /// in the menu when the button is pressed.
+  ///
+  /// Returns a [MenuAnchor] widget that contains the button and the menu.
   Widget _menuButton({
-    required String title,
-    required Map<String, Function()> items,
+    required Widget child,
     ButtonStyle? style,
-    Widget? child,
-    double width = 220.0,
+    required Map<String, Function()> items,
   }) {
-    return TapRegion(
-      child: ElevatedButton(
-        key: _overlayKeys[title],
-        style: style ?? Themes.buttonStyle(),
-        child: child ?? Text(title),
-        onPressed: () {
-          _overlayEntries[title] = createOverlayEntry(
-            context,
-            key: _overlayKeys[title]!,
-            items: items,
-            width: width,
-          );
-          Overlay.of(context).insert(_overlayEntries[title]!);
-        },
-      ),
-      onTapOutside: (event) async {
-        if (_overlayEntries.containsKey(title)) {
-          await Future.delayed(const Duration(milliseconds: 200));
-          _overlayEntries[title]?.remove();
-          _overlayEntries.remove(title);
-        }
+    final entries = items.entries.toList();
+    // Create a menu anchor widget that contains the button and the menu.
+    return MenuAnchor(
+      builder: (BuildContext context, MenuController controller,
+          Widget? innerChild) {
+        return ElevatedButton(
+          style: style ?? Themes.buttonStyle(),
+          child: child,
+          onPressed: () {
+            if (controller.isOpen) {
+              controller.close();
+            } else {
+              controller.open();
+            }
+          },
+        );
       },
+      // Create a list of menu item buttons that represent the items in the menu.
+      menuChildren: List<MenuItemButton>.generate(
+        entries.length,
+        (int index) => MenuItemButton(
+          onPressed: entries[index].value,
+          child: Text(entries[index].key),
+        ),
+      ),
     );
   }
 
