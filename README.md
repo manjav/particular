@@ -73,8 +73,15 @@ final _particleController = ParticularController();
 ...
 @override
 void initState() {
+  _loadParticleAssets();
+  super.initState();
+}
+
+// Load configs and texture of particle
+Future<void> _loadParticleAssets() async {
+
   // Load particle configs file
-  String json = await rootBundle.loadString("assets/particle.json");
+  String json = await rootBundle.loadString("assets/configs.json");
   final configsData = jsonDecode(json);
 
   // Load particle texture file
@@ -86,10 +93,11 @@ void initState() {
     texture: frameInfo.image, // Remove in default-texture case
     configsData: configsData, // Remove in programmatic configuration case
   );
-  super.initState();
 }
 ```
-<b>II. Add the `Particular` widget in your widget three:</b>
+<br/>
+
+<b>III. Add the `Particular` widget in your widget three:</b>
 ``` dart
 @override
 Widget build(BuildContext context) {
@@ -103,8 +111,9 @@ Widget build(BuildContext context) {
   );
 }
 ```
+<br/>
 
-<b>III. Live Update Particle Layer:</b>
+<b>IIII. Live Update Particle Layer:</b>
 ``` dart
 _particleController.layers.first.update(
     maxParticles: 100,
