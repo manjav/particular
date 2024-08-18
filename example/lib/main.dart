@@ -32,9 +32,7 @@ class _MyAppState extends State<MyApp> {
     final configsData = jsonDecode(json);
 
     // add particle layer
-    _particleController.addLayer(
-      configsData: configsData, // Remove in programmatic configuration case
-    );
+    _particleController.addLayer(configsData: configsData);
   }
 
   @override

@@ -1,14 +1,13 @@
 import 'dart:convert';
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:html' as html;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html;
-
 import 'package:archive/archive.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/material.dart';
 import 'package:particular/particular.dart';
 
 /// Browse files from the user's device.
@@ -122,28 +121,55 @@ Future<void> saveConfigs({
       filename: "${filename ?? "configs"}.json");
 }
 
+/// Saves the provided [configs] and [textures] to a zipped file.
+///
+/// If the app is running on a non-web platform, it uses the [FilePicker.saveFile]
+/// method to open a file picker dialog for the user to select a filename.
+///
+/// The [configs] and [textures] are encoded into a zip file and saved to the
+/// selected file with the `.zip` extension.
+///
+/// Parameters:
+///   - [configs]: The configs to save.
+///   - [textures]: The textures to save.
+///   - [filename]: The name of the file to save the configs to. If not
+///     provided, the filename will be "configs".
+///
+/// Returns:
+///   A `Future<void>`: A future that completes when the configs and textures
+///   have been saved to a file.
 Future<void> saveConfigsWithTextures({
   required dynamic configs,
   required Map<String, Uint8List> textures,
   String? filename,
 }) async {
+  // Create ZipEncoder and AichiveFile instances.
   final encoder = ZipEncoder();
   final archive = Archive();
 
-  // Add the configs.json to the archive
+  // Add the configs.json to the archive.
+  // Convert the configs to JSON and encode it into bytes.
   final json = jsonEncode(configs);
   final jbytes = utf8.encode(json);
+
+  // Create a new ArchiveFile instance with the name 'configs.json' and the
+  // encoded JSON bytes as the file contents.
   final archiveFile = ArchiveFile('configs.json', jbytes.length, jbytes);
   archive.addFile(archiveFile);
 
-  // Add tuxtures into the archive
+  // Add the textures into the archive.
   for (var entry in textures.entries) {
     archive.addFile(ArchiveFile(entry.key, entry.value.length, entry.value));
   }
 
+  // Create an OutputStream with little endian byte order.
   final outputStream = OutputStream(byteOrder: LITTLE_ENDIAN);
+
+  // Encode the archive into bytes with the highest compression level.
   final bytes = encoder.encode(archive,
       level: Deflate.BEST_COMPRESSION, output: outputStream);
+
+  // Save the encoded bytes to a file
   _saveFile(
       bytes: Uint8List.fromList(bytes!),
       title: "Save Particle Configs",
