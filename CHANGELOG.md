@@ -43,3 +43,10 @@
 
 ### 0.2.5 (06/12/2024)
 * add automate publish
+
+### 0.3.0 (08/18/2024)
+* feature: editor - export configs with textures
+* feature: editor - background image ability
+* enhance: editor - retouch ui layout
+* fixbugs: editor - empty layer on cancel browse file
+* cleanups: sync docs and example code
