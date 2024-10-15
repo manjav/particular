@@ -9,11 +9,13 @@ class FooterIconButton extends StatelessWidget {
     required this.icon,
     this.onPressed,
     this.tooltip,
+    this.color,
   });
 
   final IconData icon;
   final VoidCallback? onPressed;
   final String? tooltip;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,11 @@ class FooterIconButton extends StatelessWidget {
       message: tooltip ?? "",
       child: IconButton(
         padding: const EdgeInsets.all(2),
-        icon: Icon(icon, size: 12),
+        icon: Icon(
+          icon,
+          size: 16,
+          color: color,
+        ),
         onPressed: onPressed,
       ),
     );
