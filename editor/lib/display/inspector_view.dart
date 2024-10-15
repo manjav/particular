@@ -9,20 +9,20 @@ import 'package:particular/particular.dart';
 import '../services/io.dart';
 
 /// The inspector view for the application
-class InspactorView extends StatefulWidget {
+class InspectorView extends StatefulWidget {
   final Map appConfigs;
   final ParticularController controller;
-  const InspactorView({
+  const InspectorView({
     super.key,
     required this.appConfigs,
     required this.controller,
   });
 
   @override
-  State<InspactorView> createState() => _InspactorViewState();
+  State<InspectorView> createState() => _InspectorViewState();
 }
 
-class _InspactorViewState extends State<InspactorView> {
+class _InspectorViewState extends State<InspectorView> {
   final _selectedColor = ValueNotifier<String?>(null);
   int _selectedTabIndex = 0;
   ParticularLayer? _selectedLayer;

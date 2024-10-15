@@ -89,7 +89,7 @@ class _EditorAppState extends State<EditorApp> {
                 ],
               ),
             ),
-            InspactorView(
+            InspectorView(
               appConfigs: _appConfigs,
               controller: _particleController,
             ),
