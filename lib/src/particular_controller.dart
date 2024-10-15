@@ -92,10 +92,11 @@ class ParticularController {
       if (elapsedTime >= configs.startTime &&
           (configs.endTime < 0 || elapsedTime < configs.endTime)) {
         _particlesPerTick += (deltaTime * configs.maxParticles / 1000);
-        for (var i = 0; i < _particlesPerTick; i++) {
+        var floor = _particlesPerTick.floor();
+        for (var i = 0; i < floor; i++) {
           layer.spawn(age: (i * deltaTime / _particlesPerTick).round());
         }
-        _particlesPerTick -= _particlesPerTick.floor();
+        _particlesPerTick -= floor;
       }
     }
 
