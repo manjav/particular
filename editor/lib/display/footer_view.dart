@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:particular/particular.dart';
 
+import 'widgets/footer_icon_button.dart';
+
 /// The footer line for the application that contains the buttons for layers.
 class FooterView extends StatelessWidget {
   /// The configurations for the application.
@@ -10,8 +12,11 @@ class FooterView extends StatelessWidget {
   final ParticularController controller;
 
   /// Creates a footer view.
-  const FooterView(
-      {super.key, required this.appConfigs, required this.controller});
+  const FooterView({
+    super.key,
+    required this.appConfigs,
+    required this.controller,
+  });
 
   /// Creates a footer view.
   @override
@@ -24,24 +29,21 @@ class FooterView extends StatelessWidget {
           height: appConfigs["footerHeight"],
           child: Row(
             children: [
-              _footerItem(Icons.refresh, () => controller.resetTick()),
+              FooterIconButton(
+                icon: Icons.refresh,
+                onPressed: () => controller.resetTick(),
+                tooltip: 'Reset time',
+              ),
               // SizedBox(width: appConfigs["timeline"]["sideWidth"] - 40),
-              _footerItem(Icons.add, () => controller.addLayer()),
+              FooterIconButton(
+                icon: Icons.add,
+                onPressed: () => controller.addLayer(),
+                tooltip: 'Add layer',
+              ),
             ],
           ),
         );
       },
-    );
-  }
-
-  /// This function creates an [IconButton] widget for the footer of the
-  /// screen. The icon button represents an action and when pressed, it
-  /// executes the provided function [onPressed].
-  Widget _footerItem(IconData icon, Function() onPressed) {
-    return IconButton(
-      padding: const EdgeInsets.all(2),
-      icon: Icon(icon, size: 12),
-      onPressed: () => onPressed(),
     );
   }
 }
