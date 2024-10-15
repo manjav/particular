@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:intry/intry.dart';
 import 'package:particular/particular.dart';
 
+import 'widgets/footer_icon_button.dart';
+
 /// The timeline view for application.
 class TimelineView extends StatefulWidget {
   final Map<String, dynamic> appConfigs;
   final ParticularController controller;
+
   const TimelineView({
     super.key,
     required this.appConfigs,
@@ -70,10 +73,13 @@ class _TimelineViewState extends State<TimelineView> {
               child: Row(
                 children: [
                   const SizedBox(width: 8),
-                  ReorderableDragStartListener(
-                    key: key,
-                    index: index,
-                    child: const Icon(Icons.drag_handle, size: 12),
+                  Tooltip(
+                    message: 'Drag to reorder',
+                    child: ReorderableDragStartListener(
+                      key: key,
+                      index: index,
+                      child: const Icon(Icons.drag_handle, size: 12),
+                    ),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
@@ -88,15 +94,18 @@ class _TimelineViewState extends State<TimelineView> {
                       },
                     ),
                   ),
-                  _buttonBuilder(
-                    Icons.save,
-                    () => saveConfigs(
-                        configs: layer.configs.toMap(),
-                        filename: layer.configs.configName),
+                  FooterIconButton(
+                    icon: Icons.save,
+                    onPressed: () => saveConfigs(
+                      configs: layer.configs.toMap(),
+                      filename: layer.configs.configName,
+                    ),
+                    tooltip: 'Export layer',
                   ),
-                  _buttonBuilder(
-                    Icons.delete,
-                    () => widget.controller.removeLayerAt(index),
+                  FooterIconButton(
+                    icon: Icons.delete,
+                    onPressed: () => widget.controller.removeLayerAt(index),
+                    tooltip: 'Delete layer',
                   ),
                   /* _footerItem(
                 controllers.selected!.isVisible
@@ -160,7 +169,4 @@ class _TimelineViewState extends State<TimelineView> {
       ),
     );
   }
-
-  Widget _buttonBuilder(IconData icon, Function() onPressed) =>
-      IconButton(icon: Icon(icon, size: 12), onPressed: () => onPressed());
 }
