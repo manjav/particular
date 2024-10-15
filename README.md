@@ -17,10 +17,10 @@ Whether you're a designer or developer, Particular empowers you to bring your cr
 
 <a href="https://github.com/manjav/particular/raw/main/example/assets">
 <p float="left" align="center">
-   <img width="180" src="https://github.com/manjav/particular/raw/main/repo_files/example_meteor.gif" alt="Meteor">
-   <img width="180" src="https://github.com/manjav/particular/raw/main/repo_files/example_galaxy.gif" alt="Galaxy">
-   <img width="180" src="https://github.com/manjav/particular/raw/main/repo_files/example_snow.gif" alt="Snow">
-   <img width="180" src="https://github.com/manjav/particular/raw/main/repo_files/example_firework.gif" alt="Meteor">
+   <img width="180" src="https://github.com/manjav/particular/raw/main/repo_files/example_meteor.webp" alt="Meteor">
+   <img width="180" src="https://github.com/manjav/particular/raw/main/repo_files/example_galaxy.webp" alt="Galaxy">
+   <img width="180" src="https://github.com/manjav/particular/raw/main/repo_files/example_snow.webp" alt="Snow">
+   <img width="180" src="https://github.com/manjav/particular/raw/main/repo_files/example_firework.webp" alt="Meteor">
   </table>
 </a>
 
