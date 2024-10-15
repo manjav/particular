@@ -21,48 +21,23 @@ class Particular extends StatefulWidget {
 
 /// The state for the [Particular] widget.
 class _ParticularState extends State<Particular> {
-  /// Initializes the state of the widget.
-  ///
-  /// This method is called when the widget is first created and when it is rebuilt.
-  /// It is responsible for setting up the initial state of the widget.
-  @override
-  void initState() {
-    super.initState();
-    widget.controller
-        .getNotifier(NotifierType.time)
-        .addListener(_onControllerTick);
-  }
-
-  /// Updates the state of the widget based on the controller's tick.
-  ///
-  /// This method is called whenever the controller's tick changes,
-  /// and it checks if it is time to spawn new particles. If so, it spawns
-  /// the appropriate number of particles based on the configuration.
-  void _onControllerTick() {
-    setState(() {});
-  }
-
   /// This method can potentially be called in every frame and should not have
   /// any side effects beyond building a widget.
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      child: CustomPaint(
-        painter: ParticlePainter(
-          controller: widget.controller,
-          deltaTime: widget.controller.deltaTime,
-        ),
-      ),
+    return ListenableBuilder(
+      listenable: widget.controller.getNotifier(NotifierType.time),
+      builder: (context, _) {
+        return SizedBox(
+          child: CustomPaint(
+            painter: ParticlePainter(
+              controller: widget.controller,
+              deltaTime: widget.controller.deltaTime,
+            ),
+          ),
+        );
+      },
     );
-  }
-
-  /// Was called on the mixin, that Ticker was still active. The Ticker must be disposed.
-  @override
-  void dispose() {
-    widget.controller
-        .getNotifier(NotifierType.time)
-        .removeListener(_onControllerTick);
-    super.dispose();
   }
 }
 
