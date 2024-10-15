@@ -11,6 +11,9 @@ class ParticularConfigs {
   /// The maximum duration of a particle system.
   static int maxDuration = 30000;
 
+  /// The duration that we wait before we loop the particle system.
+  static int endLoopPadding = 1000;
+
   /// Gets the start color of particles.
   Color getStartColor() => _getVariantColor(startColor, startColorVariance);
 

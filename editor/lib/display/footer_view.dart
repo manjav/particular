@@ -1,3 +1,4 @@
+import 'package:editor/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:particular/particular.dart';
 
@@ -39,6 +40,13 @@ class FooterView extends StatelessWidget {
                 icon: Icons.add,
                 onPressed: () => controller.addLayer(),
                 tooltip: 'Add layer',
+              ),
+              FooterIconButton(
+                icon: Icons.all_inclusive,
+                onPressed: () => controller.setIsLooping(!controller.isLooping),
+                tooltip:
+                    controller.isLooping ? 'Disable looping' : 'Enable looping',
+                color: controller.isLooping ? Themes.activeColor : null,
               ),
             ],
           ),
