@@ -44,7 +44,7 @@
 ### 0.2.5 (06/12/2024)
 * add automate publish
 
-### 0.3.1 (10/15/2024)
+### 0.3.2 (10/15/2024)
 * feature: new particle editor
 * enhance: add automate publish
 * fixbugs: wrong particles count of limit-time layers

@@ -1,7 +1,7 @@
 name: particular
 description: "The Particular is a high performance particle effects flutter widget."
-version: 0.3.1
-homepage: https://manjav.github.io/particular/editor/web
+version: 0.3.2
+homepage: https://manjav.github.io/particular
 repository: https://github.com/manjav/particular
 issue_tracker: https://github.com/manjav/particular/issues
 documentation: https://github.com/manjav/particular
