@@ -108,9 +108,11 @@ class ParticularController {
     // Spawn particles
     for (var layer in layers) {
       var configs = layer.configs;
+      var duration =
+          configs.endTime > 0 ? configs.endTime - configs.startTime : 1000;
       if (elapsedTime >= configs.startTime &&
           (configs.endTime < 0 || elapsedTime < configs.endTime)) {
-        _particlesPerTick += (deltaTime * configs.maxParticles / 1000);
+        _particlesPerTick += (deltaTime * configs.maxParticles / duration);
         var floor = _particlesPerTick.floor();
         for (var i = 0; i < floor; i++) {
           layer.spawn(age: (i * deltaTime / _particlesPerTick).round());

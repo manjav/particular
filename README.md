@@ -17,10 +17,10 @@ Whether you're a designer or developer, Particular empowers you to bring your cr
 
 <a href="https://github.com/manjav/particular/raw/main/example/assets">
 <p float="left" align="center">
-   <img width="180" src="https://github.com/manjav/particular/raw/main/repo_files/example_meteor.gif" alt="Meteor">
-   <img width="180" src="https://github.com/manjav/particular/raw/main/repo_files/example_galaxy.gif" alt="Galaxy">
-   <img width="180" src="https://github.com/manjav/particular/raw/main/repo_files/example_snow.gif" alt="Snow">
-   <img width="180" src="https://github.com/manjav/particular/raw/main/repo_files/example_firework.gif" alt="Meteor">
+   <img width="180" src="https://github.com/manjav/particular/raw/main/repo_files/example_meteor.webp" alt="Meteor">
+   <img width="180" src="https://github.com/manjav/particular/raw/main/repo_files/example_galaxy.webp" alt="Galaxy">
+   <img width="180" src="https://github.com/manjav/particular/raw/main/repo_files/example_snow.webp" alt="Snow">
+   <img width="180" src="https://github.com/manjav/particular/raw/main/repo_files/example_firework.webp" alt="Meteor">
   </table>
 </a>
 
@@ -37,9 +37,9 @@ For detailed installation instructions, refer to the [installation guide](https:
 You have two options for configuring your particles:
 1. <b>Using Editors:</b>
 
-Generate your particles system configurations by [Particular Editor](https://manjav.github.io/particular/editor/web).
+Generate your particles system configurations by [Particular Editor](https://manjav.github.io/particular).
 
-<a href="https://manjav.github.io/particular/editor/web">
+<a href="https://manjav.github.io/particular">
  <p align="center">
   <td ><img src="https://github.com/manjav/particular/raw/main/repo_files/editor_left.gif"/></td>
   <td ><img src="https://github.com/manjav/particular/raw/main/repo_files/editor_right.png"/></td>
@@ -56,7 +56,7 @@ Manually configure your particle controller in code. Refer to the following step
 Follow these steps to integrate the particles system into your Flutter app:<br>
 
 <b>I. Insert Particle Files into Your Project:</b><br/>
-The [Particular Editor](https://manjav.github.io/particular/editor/web) exports one or multiple particle layers. For each particle layer, it generates a configuration file (configs.json) and a related image file (texture.png). In the configuration file, there is a node named textureFileName, which refers to the image file. Place the image and configs.json file in your project's assets folder, and add the necessary assets entry in your pubspec.yaml file.
+The [Particular Editor](https://manjav.github.io/particular) exports one or multiple particle layers. For each particle layer, it generates a configuration file (configs.json) and a related image file (texture.png). In the configuration file, there is a node named textureFileName, which refers to the image file. Place the image and configs.json file in your project's assets folder, and add the necessary assets entry in your pubspec.yaml file.
 ``` yml
 assets:
   - assets/configs.json
