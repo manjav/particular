@@ -106,6 +106,9 @@ class Particle {
   /// Final color of the particle.
   Color finishColor = Colors.white;
 
+  /// Whether the particle is alive or not.
+  bool isAlive = false;
+
   /// Initializes particle properties.
   void initialize({
     EmitterType emitterType = EmitterType.gravity,
@@ -160,6 +163,7 @@ class Particle {
     radiusDelta = (minRadius - maxRadius);
     velocityX = speed * math.cos(this.angle);
     velocityY = speed * math.sin(this.angle);
+    isAlive = true;
   }
 
   /// Updates the particle's state based on the given [deltaTime].
@@ -168,7 +172,7 @@ class Particle {
   /// performing any updates.
   void update(int deltaTime) {
     // If the particle has reached its lifespan, return without updating.
-    if (isDead()) return;
+    if (!isAlive) return;
     age += deltaTime;
     final ratio = age / lifespan;
     final rate = deltaTime / 1000;
@@ -222,9 +226,7 @@ class Particle {
   }
 
   /// Return true if finished its life and reserved in pooling system
-  bool isDead() {
-    return age > lifespan;
-  }
+  bool isDyingTime() => age > lifespan;
 }
 
 /// Dedicated transform class for pooling system
