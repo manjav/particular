@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class Themes {
   static Color backgroundColor = const Color(0xFF2C2C2C);
   static Color foregroundColor = const Color(0xFF9E9E9E);
+  static Color activeColor = Colors.lightBlueAccent;
   static ButtonStyle buttonStyle({Color? color}) {
     return ElevatedButton.styleFrom(
       shadowColor: Colors.transparent,

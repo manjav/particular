@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
@@ -75,6 +76,24 @@ class ParticularController {
   /// The ticker for the particle system.
   Ticker? _ticker;
 
+  bool _isLooping = true;
+
+  bool get isLooping => _isLooping;
+
+  bool get _hasInfiniteLayer =>
+      layers.any((layer) => layer.configs.endTime < 0);
+
+  // Finds the farthest end time of the layers
+  int get farthestEndTime {
+    int lastEndAt = 0;
+    for (var layer in layers) {
+      if (layer.configs.endTime > lastEndAt) {
+        lastEndAt = layer.configs.endTime;
+      }
+    }
+    return lastEndAt;
+  }
+
   /// Updates the particle system's delta time and elapsed time based on the given [elapsed] duration.
   ///
   /// This function is called periodically to update the particle system's state. It calculates the
@@ -102,7 +121,29 @@ class ParticularController {
       }
     }
 
+    // Let's loop
+    _tryToLoop();
+
     notify(NotifierType.time);
+  }
+
+  /// Here we try to loop the particle system
+  void _tryToLoop() {
+    if (!_isLooping) {
+      return;
+    }
+
+    int loopAt = timelineDuration;
+
+    if (!_hasInfiniteLayer && elapsedTime > farthestEndTime) {
+      loopAt = min(
+        farthestEndTime + ParticularConfigs.endLoopPadding,
+        timelineDuration,
+      );
+    }
+    if (elapsedTime > loopAt) {
+      resetTick();
+    }
   }
 
   /// Notifies listeners that the duration of the particle system has changed.
@@ -209,6 +250,11 @@ class ParticularController {
   /// Toggles the visibility of the particle system.
   void toggleVisibleLayer(int index) {
     // _layers[index].isVisible = !_layers[index].isVisible;
+    notify(NotifierType.layer);
+  }
+
+  void setIsLooping(bool isLooping) {
+    _isLooping = isLooping;
     notify(NotifierType.layer);
   }
 }
