@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:editor/data/particular_editor_controller.dart';
 import 'package:editor/display/footer_view.dart';
 import 'package:editor/display/header_view.dart';
 import 'package:editor/display/inspector_view.dart';
@@ -23,7 +24,7 @@ class EditorApp extends StatefulWidget {
 class _EditorAppState extends State<EditorApp> {
   Uint8List? _backgroundImage;
   Map<String, dynamic> _appConfigs = {};
-  final ParticularController _particleController = ParticularController();
+  final ParticularEditorController _particleController = ParticularEditorController();
 
   @override
   void initState() {
@@ -40,7 +41,7 @@ class _EditorAppState extends State<EditorApp> {
     setState(() {});
 
     // Add sample emitter
-    await _particleController.addLayer();
+    await _particleController.addConfigLayer();
     await Future.delayed(const Duration(milliseconds: 100));
     if (mounted) {
       final size = MediaQuery.of(context).size;

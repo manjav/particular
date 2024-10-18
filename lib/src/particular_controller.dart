@@ -39,21 +39,6 @@ class ParticularController {
   /// Whether the particle system is empty.
   bool get isEmpty => _layers.isEmpty;
 
-  /// The default texture bytes for the particle system.
-  Uint8List? _defaultTextureBytes;
-
-  /// The default texture for the particle system.
-  ui.Image? _defaultTexture;
-
-  /// The default texture for the particle system.
-  Future<ui.Image> _getDefaultTexture() async {
-    if (_defaultTexture == null) {
-      ByteData bytes = await rootBundle.load("assets/texture.png");
-      _defaultTextureBytes = bytes.buffer.asUint8List();
-      _defaultTexture = await loadUIImage(_defaultTextureBytes!);
-    }
-    return _defaultTexture!;
-  }
 
   /// The delta time of the particle system in milliseconds.
   int deltaTime = 0;
@@ -203,17 +188,7 @@ class ParticularController {
       debugPrint(e.toString());
     }
     final configs = ParticularConfigs()..initialize(configs: configsData);
-
-    final layer = ParticularLayer(
-        texture: texture ?? await _getDefaultTexture(), configs: configs);
-    layer.textureBytes = _defaultTextureBytes;
-    configs.getNotifier("duration").addListener(_onDurationChange);
-    configs.getNotifier("startTime").addListener(_onDurationChange);
-    layer.index = layers.length;
-    selectedLayerIndex = layer.index;
-
-    if (configsData == null || !configsData.containsKey("configName")) {
-      configs.updateFromMap({"configName": "Layer ${layers.length + 1}"});
+    final layer = ParticularLayer(texture: texture!, configs: configs);
     addParticularLayer(layer);
   }
 

@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:editor/data/particular_editor_config.dart';
+import 'package:editor/data/particular_editor_layer.dart';
 import 'package:editor/services/io.dart';
 import 'package:editor/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -133,7 +134,9 @@ class _HeaderViewState extends State<HeaderView> {
       var textureName = widget.controller.layers[i].configs.textureFileName;
 
       if (!texures.containsKey(textureName)) {
-        texures[textureName] = widget.controller.layers[i].textureBytes!;
+        texures[textureName] =
+            (widget.controller.layers[i] as ParticularEditorLayer)
+                .textureBytes!;
       }
     }
     saveConfigsWithTextures(configs: layersConfigs, textures: texures);
