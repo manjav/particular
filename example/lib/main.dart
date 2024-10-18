@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,18 +22,40 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    _loadParticleAssets();
+    _createParticles();
     super.initState();
   }
 
   // Load configs and texture of particle
-  Future<void> _loadParticleAssets() async {
-    // Load particle configs file
-    String json = await rootBundle.loadString("assets/firework.json");
-    final configsData = jsonDecode(json);
+  Future<void> _createParticles() async {
 
-    // add particle layer
-    _particleController.addConfigLayer(configsData: configsData);
+    // Load particle configs file
+    final fireworkJson = await rootBundle.loadString("assets/firework.json");
+    final fireworkConfigs = jsonDecode(fireworkJson);
+    _particleController.addConfigLayer(configsData: fireworkConfigs);
+
+    // Or add (Flame) particle layer programmatically
+    final bytes = await rootBundle.load("assets/texture.png");
+    ui.Image? flameTexture = await loadUIImage(bytes.buffer.asUint8List());
+
+    final flameConfigs = ParticularConfigs();
+    flameConfigs.update(
+      startSize: 100,
+      startSizeVariance: 20,
+      finishSize: 40,
+      emitterX: 200,
+      emitterY: 500,
+      gravityY: -800,
+      speed: 200,
+      speedVariance: 5,
+      sourcePositionVarianceX: 60,
+      startColor: ARGB(1, 1, 0.2, 0),
+      renderBlendMode: ui.BlendMode.dstIn,
+      textureBlendMode: ui.BlendMode.plus,
+    );
+
+    final layer = ParticularLayer(texture: flameTexture, configs: flameConfigs);
+    _particleController.addParticularLayer(layer);
   }
 
   @override
