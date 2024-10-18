@@ -14,6 +14,12 @@ class ParticularController {
   /// The map of notifiers
   final Map<NotifierType, ChangeNotifier> _notifiers = {};
 
+  /// The list of layers in the particle system.
+  final List<ParticularLayer> _layers = [];
+
+  /// Get layers
+  List<ParticularLayer> get layers => _layers;
+
   /// Get notifier
   ChangeNotifier getNotifier(NotifierType key) =>
       _notifiers[key] ??= ChangeNotifier();
@@ -23,18 +29,15 @@ class ParticularController {
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       getNotifier(key).notifyListeners();
 
-  /// The list of layers in the particle system.
-  final List<ParticularLayer> layers = [];
-
   /// The index of the selected layer.
   int selectedLayerIndex = 0;
 
   /// The ticker for the particle system.
   ParticularLayer? get selectedLayer =>
-      layers.isEmpty ? null : layers[selectedLayerIndex];
+      _layers.isEmpty ? null : _layers[selectedLayerIndex];
 
   /// Whether the particle system is empty.
-  bool get isEmpty => layers.isEmpty;
+  bool get isEmpty => _layers.isEmpty;
 
   /// The default texture bytes for the particle system.
   Uint8List? _defaultTextureBytes;
@@ -60,8 +63,8 @@ class ParticularController {
 
   /// The duration of the particle system in milliseconds.
   int get timelineDuration {
-    if (layers.isEmpty) return ParticularConfigs.defaultDuration;
-    var max = layers
+    if (_layers.isEmpty) return ParticularConfigs.defaultDuration;
+    var max = _layers
         .reduce((l, r) => l.configs.endTime > r.configs.endTime ? l : r)
         .configs
         .endTime;
@@ -81,12 +84,12 @@ class ParticularController {
   bool get isLooping => _isLooping;
 
   bool get _hasInfiniteLayer =>
-      layers.any((layer) => layer.configs.endTime < 0);
+      _layers.any((layer) => layer.configs.endTime < 0);
 
   // Finds the farthest end time of the layers
   int get farthestEndTime {
     int lastEndAt = 0;
-    for (var layer in layers) {
+    for (var layer in _layers) {
       if (layer.configs.endTime > lastEndAt) {
         lastEndAt = layer.configs.endTime;
       }
@@ -209,7 +212,7 @@ class ParticularController {
       configs.updateFromMap({"configName": "Layer ${layers.length + 1}"});
     }
 
-    layers.add(layer);
+    _layers.add(layer);
     notify(NotifierType.layer);
   }
 
@@ -221,17 +224,17 @@ class ParticularController {
 
   /// Removes the particle system at the given index.
   void removeLayerAt(int index) {
-    layers[index]
+    _layers[index]
         .configs
         .getNotifier("duration")
         .removeListener(_onDurationChange);
-    layers[index]
+    _layers[index]
         .configs
         .getNotifier("startTime")
         .removeListener(_onDurationChange);
-    layers.removeAt(index);
-    if (selectedLayerIndex >= layers.length) {
-      selectedLayerIndex = layers.length - 1;
+    _layers.removeAt(index);
+    if (selectedLayerIndex >= _layers.length) {
+      selectedLayerIndex = _layers.length - 1;
     }
     notify(NotifierType.layer);
   }
@@ -241,8 +244,8 @@ class ParticularController {
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
-    final item = layers.removeAt(oldIndex);
-    layers.insert(newIndex, item);
+    final item = _layers.removeAt(oldIndex);
+    _layers.insert(newIndex, item);
     selectedLayerIndex = newIndex;
     notify(NotifierType.layer);
   }
