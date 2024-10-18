@@ -64,7 +64,7 @@ class ParticularController {
   /// The ticker for the particle system.
   Ticker? _ticker;
 
-  bool _isLooping = true;
+  bool _isLooping = false;
 
   bool get isLooping => _isLooping;
 
