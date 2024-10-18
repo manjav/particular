@@ -1,4 +1,5 @@
 import 'package:editor/data/particular_editor_config.dart';
+import 'package:editor/data/particular_editor_controller.dart';
 import 'package:editor/services/io.dart';
 import 'package:flutter/material.dart';
 import 'package:intry/intry.dart';
@@ -9,7 +10,7 @@ import 'widgets/footer_icon_button.dart';
 /// The timeline view for application.
 class TimelineView extends StatefulWidget {
   final Map<String, dynamic> appConfigs;
-  final ParticularController controller;
+  final ParticularEditorController controller;
 
   const TimelineView({
     super.key,

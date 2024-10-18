@@ -1,5 +1,6 @@
 import 'package:editor/data/inspector.dart';
 import 'package:editor/data/particular_editor_config.dart';
+import 'package:editor/data/particular_editor_controller.dart';
 import 'package:editor/data/particular_editor_layer.dart';
 import 'package:editor/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ import '../services/io.dart';
 /// The inspector view for the application
 class InspectorView extends StatefulWidget {
   final Map appConfigs;
-  final ParticularController controller;
+  final ParticularEditorController controller;
   const InspectorView({
     super.key,
     required this.appConfigs,
