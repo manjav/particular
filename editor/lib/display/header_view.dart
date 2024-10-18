@@ -111,7 +111,7 @@ class _HeaderViewState extends State<HeaderView> {
   Future<void> _importConfigs() async {
     final configs = await browseConfigs(["json"]);
     if (configs != null) {
-      widget.controller.addLayer(configsData: configs);
+      widget.controller.addConfigLayer(configsData: configs);
     }
   }
 

@@ -109,7 +109,7 @@ class ParticularController {
     elapsedTime = elapsed.inMilliseconds;
 
     // Spawn particles
-    for (var layer in layers) {
+    for (var layer in _layers) {
       var configs = layer.configs;
       var duration =
           configs.endTime > 0 ? configs.endTime - configs.startTime : 1000;
@@ -159,33 +159,37 @@ class ParticularController {
     _ticker?.start();
   }
 
+  /// Adds a new particle system to the application.
+  @Deprecated('Use [addConfigLayer]')
+  Future<void> addLayer({
+    dynamic configsData,
+  }) async {
+    await addConfigLayer(configsData: configsData);
+  }
+
   /// Adds one or more particle systems to the application.
   ///
   /// The [configs] parameter can be either a single configuration map or a
   /// list of configuration maps. If [configs] is a list, each configuration
   /// map in the list will be added as a separate particle system.
-  Future<void> addLayer({
+  Future<void> addConfigLayer({
     dynamic configsData,
   }) async {
     // If the configs parameter is a list, iterate over each configuration
     // map and add it as a separate particle system.
     if (configsData is List) {
       for (var i = 0; i < configsData.length; i++) {
-        await _add(configsData: configsData[i]);
+        await addConfigs(configsData: configsData[i]);
       }
     } else {
-      await _add(configsData: configsData);
+      await addConfigs(configsData: configsData);
     }
   }
 
   /// Adds a new particle system to the application.
-  Future<void> _add({Map<String, dynamic>? configsData}) async {
+  @protected
+  Future<void> addConfigs({Map<String, dynamic>? configsData}) async {
     ByteData bytes;
-
-    if (_ticker == null) {
-      _ticker = Ticker(_onTick);
-      _ticker!.start();
-    }
 
     /// Load particle texture
     ui.Image? texture;
@@ -210,6 +214,23 @@ class ParticularController {
 
     if (configsData == null || !configsData.containsKey("configName")) {
       configs.updateFromMap({"configName": "Layer ${layers.length + 1}"});
+    addParticularLayer(layer);
+  }
+
+  /// Adds a new particle system to the application.
+  ///
+  /// The [configs] parameter can be either a single configuration map or a
+  /// list of configuration maps. If [configs] is a list, each configuration
+  /// map in the list will be added as a separate particle system.
+  void addParticularLayer(ParticularLayer layer) {
+    layer.configs.getNotifier("duration").addListener(_onDurationChange);
+    layer.configs.getNotifier("startTime").addListener(_onDurationChange);
+    layer.index = _layers.length;
+    selectedLayerIndex = layer.index;
+
+    if (_ticker == null) {
+      _ticker = Ticker(_onTick);
+      _ticker!.start();
     }
 
     _layers.add(layer);
