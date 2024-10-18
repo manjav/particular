@@ -1,7 +1,7 @@
 import 'package:particular/particular.dart';
 
 /// Extension methods for `ParticularConfigs` class
-extension ParticularEditorController on ParticularConfigs {
+extension ParticularEditorConfig on ParticularConfigs {
   /// Gets the value of the given parameter.
   dynamic getParam(String key) {
     return switch (key) {

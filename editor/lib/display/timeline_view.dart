@@ -1,4 +1,4 @@
-import 'package:editor/data/particular_editor_controller.dart';
+import 'package:editor/data/particular_editor_config.dart';
 import 'package:editor/services/io.dart';
 import 'package:flutter/material.dart';
 import 'package:intry/intry.dart';

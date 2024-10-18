@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:editor/data/particular_editor_controller.dart';
+import 'package:editor/data/particular_editor_config.dart';
 import 'package:editor/services/io.dart';
 import 'package:editor/theme/theme.dart';
 import 'package:flutter/material.dart';

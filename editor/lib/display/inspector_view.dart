@@ -1,5 +1,5 @@
 import 'package:editor/data/inspector.dart';
-import 'package:editor/data/particular_editor_controller.dart';
+import 'package:editor/data/particular_editor_config.dart';
 import 'package:editor/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
