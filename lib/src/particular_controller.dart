@@ -38,7 +38,7 @@ class ParticularController {
 
   /// Whether the particle system is empty.
   bool get isEmpty => _layers.isEmpty;
-
+  
 
   /// The delta time of the particle system in milliseconds.
   int deltaTime = 0;

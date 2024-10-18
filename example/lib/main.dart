@@ -28,7 +28,7 @@ class _MyAppState extends State<MyApp> {
   // Load configs and texture of particle
   Future<void> _loadParticleAssets() async {
     // Load particle configs file
-    String json = await rootBundle.loadString("assets/particle.json");
+    String json = await rootBundle.loadString("assets/firework.json");
     final configsData = jsonDecode(json);
 
     // add particle layer

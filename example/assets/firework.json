@@ -25,7 +25,7 @@
 	"particleLifespan": 1.6,
 	"particleLifespanVariance": 0.2,
 	"duration": 0.1,
-	"maxParticles": 11200,
+	"maxParticles": 2000,
 	"speed": 82,
 	"speedVariance": 271,
 	"angle": -90,
