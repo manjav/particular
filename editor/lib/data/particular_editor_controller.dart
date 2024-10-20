@@ -1,122 +1,53 @@
+import 'dart:ui' as ui;
+
+import 'package:editor/data/particular_editor_layer.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:particular/particular.dart';
 
 /// Extension methods for `ParticularConfigs` class
-extension ParticularEditorController on ParticularConfigs {
-  /// Gets the value of the given parameter.
-  dynamic getParam(String key) {
-    return switch (key) {
-      "configName" => configName,
-      "textureFileName" => textureFileName,
-      "emitterType" => emitterType,
-      "renderBlendMode" => renderBlendMode,
-      "textureBlendMode" => textureBlendMode,
-      "blendFunctionSource" => blendFunctionSource,
-      "blendFunctionDestination" => blendFunctionDestination,
-      "startTime" => startTime,
-      "endTime" => endTime,
-      "lifespan" => lifespan,
-      "lifespanVariance" => lifespanVariance,
-      "maxParticles" => maxParticles,
-      "startColor" => startColor,
-      "startColorVariance" => startColorVariance,
-      "finishColor" => finishColor,
-      "finishColorVariance" => finishColorVariance,
-      "sourcePositionVarianceX" => sourcePositionVarianceX,
-      "sourcePositionVarianceY" => sourcePositionVarianceY,
-      "startSize" => startSize,
-      "startSizeVariance" => startSizeVariance,
-      "angle" => angle,
-      "finishSize" => finishSize,
-      "finishSizeVariance" => finishSizeVariance,
-      "speed" => speed,
-      "speedVariance" => speedVariance,
-      "angleVariance" => angleVariance,
-      "emitterX" => emitterX,
-      "emitterY" => emitterY,
-      "gravityX" => gravityX,
-      "gravityY" => gravityY,
-      "minRadius" => minRadius,
-      "minRadiusVariance" => minRadiusVariance,
-      "maxRadius" => maxRadius,
-      "maxRadiusVariance" => maxRadiusVariance,
-      "rotatePerSecond" => rotatePerSecond,
-      "rotatePerSecondVariance" => rotatePerSecondVariance,
-      "startRotation" => startRotation,
-      "startRotationVariance" => startRotationVariance,
-      "finishRotation" => finishRotation,
-      "finishRotationVariance" => finishRotationVariance,
-      "radialAcceleration" => radialAcceleration,
-      "radialAccelerationVariance" => radialAccelerationVariance,
-      "tangentialAcceleration" => tangentialAcceleration,
-      "tangentialAccelerationVariance" => tangentialAccelerationVariance,
-      _ => null,
-    };
-  }
+class ParticularEditorController extends ParticularController {
+  /// The default texture bytes for the particle system.
+  Uint8List? defaultTextureBytes;
 
-  /// Convert to Map for export
-  Map toMap() {
-    final startColorMap = startColor.toMap("startColor");
-    final startColorVarianceMap =
-        startColorVariance.toMap("startColorVariance");
-    final finishColorMap = finishColor.toMap("finishColor");
-    final finishColorVarianceMap =
-        finishColorVariance.toMap("finishColorVariance");
-    return {
-      "configName": configName,
-      "textureFileName": textureFileName,
-      "emitterType": emitterType.index,
-      "renderBlendMode": renderBlendMode.index,
-      "textureBlendMode": textureBlendMode.index,
-      "particleLifespan": (lifespan * 0.001),
-      "particleLifespanVariance": lifespanVariance * 0.001,
-      "startTime": startTime * 0.001,
-      "duration": endTime * (endTime > -1 ? 0.001 : 1),
-      "maxParticles": maxParticles,
-      "sourcePositionVariancex": sourcePositionVarianceX,
-      "sourcePositionVariancey": sourcePositionVarianceY,
-      "startParticleSize": startSize,
-      "startParticleSizeVariance": startSizeVariance,
-      "finishParticleSize": finishSize,
-      "finishParticleSizeVariance": finishSizeVariance,
-      "speed": speed,
-      "speedVariance": speedVariance,
-      "emitterX": emitterX,
-      "emitterY": emitterY,
-      "gravityx": gravityX,
-      "gravityy": gravityY,
-      "minRadius": minRadius,
-      "minRadiusVariance": minRadiusVariance,
-      "maxRadius": maxRadius,
-      "maxRadiusVariance": maxRadiusVariance,
-      "angle": angle,
-      "angleVariance": angleVariance,
-      "rotatePerSecond": rotatePerSecond,
-      "rotatePerSecondVariance": rotatePerSecondVariance,
-      "rotationStart": startRotation,
-      "rotationStartVariance": startRotationVariance,
-      "rotationEnd": finishRotation,
-      "rotationEndVariance": finishRotationVariance,
-      "radialAcceleration": radialAcceleration,
-      "radialAccelVariance": radialAccelerationVariance,
-      "tangentialAcceleration": tangentialAcceleration,
-      "tangentialAccelVariance": tangentialAccelerationVariance,
+  /// The default texture for the particle system.
+  ui.Image? defaultTexture;
+
+  /// The default texture for the particle system.
+  Future<ui.Image> getDefaultTexture() async {
+    if (defaultTexture == null) {
+      ByteData bytes = await rootBundle.load("assets/texture.png");
+      defaultTextureBytes = bytes.buffer.asUint8List();
+      defaultTexture = await loadUIImage(defaultTextureBytes!);
     }
-      ..addAll(startColorMap)
-      ..addAll(startColorVarianceMap)
-      ..addAll(finishColorMap)
-      ..addAll(finishColorVarianceMap);
+    return defaultTexture!;
   }
-}
 
-/// Extension methods for `ARGB` class
-extension ARGBExtension on ARGB {
-  /// Convert to Map for export
-  Map toMap(String name) {
-    return {
-      "${name}Alpha": a,
-      "${name}Red": r,
-      "${name}Green": g,
-      "${name}Blue": b
-    };
+  /// Adds a new particle system to the application.
+  @override
+  Future<void> addConfigs({Map<String, dynamic>? configsData}) async {
+    ByteData bytes;
+
+    /// Load particle texture
+    ui.Image? texture;
+    try {
+      if (configsData != null && configsData.containsKey("textureFileName")) {
+        bytes =
+            await rootBundle.load("assets/${configsData["textureFileName"]}");
+        texture = await loadUIImage(bytes.buffer.asUint8List());
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    final configs = ParticularConfigs()..initialize(configs: configsData);
+
+    final layer = ParticularEditorLayer(
+        texture: texture ?? await getDefaultTexture(), configs: configs);
+    layer.textureBytes = defaultTextureBytes;
+
+    if (configsData == null || !configsData.containsKey("configName")) {
+      configs.updateFromMap({"configName": "Layer ${layers.length + 1}"});
+    }
+    addParticularLayer(layer);
   }
 }
