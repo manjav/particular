@@ -94,6 +94,42 @@ Future<dynamic> browseConfigs(List<String> extensions) async {
   return jsonDecode(json);
 }
 
+/// Browse and load configs and textures from a zip file.
+///
+/// The function uses the [FilePicker] library to allow the user to select a zip
+/// file. If the user cancels the selection or no file is selected, the function
+/// returns an empty map. Otherwise, it extracts the contents of the selected zip
+/// file to disk, and returns a map of the extracted files.
+///
+/// Returns:
+/// - A `Map<String, dynamic>`: A map of extracted files from the zip
+Future<Map<String, dynamic>> browseConfigsWithTexture() async {
+  // Use the FilePicker library to allow the user to select a config file.
+  FilePickerResult? result = await FilePicker.platform.pickFiles(
+    withData: true, // Request file contents.
+    type: FileType.custom, // Allow any type of file.
+    allowedExtensions: ["zip"], // Only allow files with specified extensions.
+  );
+
+  // If no file was selected, return null.
+  if (result == null) return {};
+
+  // Decode the Zip file
+  final archive = ZipDecoder().decodeBytes(result.files.first.bytes!);
+
+  // Extract the contents of the Zip archive to disk.
+  final files = <String, dynamic>{};
+  for (final file in archive) {
+    if (file.name.endsWith(".json")) {
+      files[file.name] = jsonDecode(String.fromCharCodes(file.content));
+    } else {
+      var image = await loadUIImage(file.content);
+      files[file.name] = (image, file.content);
+    }
+  }
+  return files;
+}
+
 /// Save the provided configs to a file.
 ///
 /// If the app is running on a non-web platform, the function uses the

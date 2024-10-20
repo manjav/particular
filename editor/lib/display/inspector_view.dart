@@ -1,5 +1,7 @@
 import 'package:editor/data/inspector.dart';
+import 'package:editor/data/particular_editor_config.dart';
 import 'package:editor/data/particular_editor_controller.dart';
+import 'package:editor/data/particular_editor_layer.dart';
 import 'package:editor/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -11,7 +13,7 @@ import '../services/io.dart';
 /// The inspector view for the application
 class InspectorView extends StatefulWidget {
   final Map appConfigs;
-  final ParticularController controller;
+  final ParticularEditorController controller;
   const InspectorView({
     super.key,
     required this.appConfigs,
@@ -25,7 +27,7 @@ class InspectorView extends StatefulWidget {
 class _InspectorViewState extends State<InspectorView> {
   final _selectedColor = ValueNotifier<String?>(null);
   int _selectedTabIndex = 0;
-  ParticularLayer? _selectedLayer;
+  ParticularEditorLayer? _selectedLayer;
 
   @override
   void initState() {
@@ -58,7 +60,8 @@ class _InspectorViewState extends State<InspectorView> {
       child: ListenableBuilder(
         listenable: widget.controller.getNotifier(NotifierType.layer),
         builder: (context, child) {
-          _selectedLayer = widget.controller.selectedLayer;
+          _selectedLayer =
+              widget.controller.selectedLayer as ParticularEditorLayer?;
           if (widget.controller.selectedLayer == null) {
             return const SizedBox();
           }

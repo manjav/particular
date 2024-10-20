@@ -1,3 +1,4 @@
+import 'package:editor/data/particular_editor_controller.dart';
 import 'package:editor/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:particular/particular.dart';
@@ -10,7 +11,7 @@ class FooterView extends StatelessWidget {
   final Map appConfigs;
 
   /// The controller for the particle system.
-  final ParticularController controller;
+  final ParticularEditorController controller;
 
   /// Creates a footer view.
   const FooterView({
@@ -38,7 +39,7 @@ class FooterView extends StatelessWidget {
               // SizedBox(width: appConfigs["timeline"]["sideWidth"] - 40),
               FooterIconButton(
                 icon: Icons.add,
-                onPressed: () => controller.addLayer(),
+                onPressed: () => controller.addConfigLayer(),
                 tooltip: 'Add layer',
               ),
               FooterIconButton(
