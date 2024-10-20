@@ -42,8 +42,10 @@ class ParticularEditorController extends ParticularController {
     final configs = ParticularConfigs()..initialize(configs: configsData);
 
     final layer = ParticularEditorLayer(
-        texture: texture ?? await getDefaultTexture(), configs: configs);
-    layer.textureBytes = defaultTextureBytes;
+      texture: texture ?? await getDefaultTexture(),
+      textureBytes: defaultTextureBytes,
+      configs: configs,
+    );
 
     if (configsData == null || !configsData.containsKey("configName")) {
       configs.updateFromMap({"configName": "Layer ${layers.length + 1}"});
