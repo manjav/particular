@@ -38,7 +38,7 @@ class FooterView extends StatelessWidget {
               // SizedBox(width: appConfigs["timeline"]["sideWidth"] - 40),
               FooterIconButton(
                 icon: Icons.add,
-                onPressed: () => controller.addLayer(),
+                onPressed: () => controller.addConfigLayer(),
                 tooltip: 'Add layer',
               ),
               FooterIconButton(

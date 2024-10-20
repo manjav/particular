@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:particular/particular.dart';
@@ -27,9 +26,6 @@ class ParticularLayer {
 
   /// The texture used for particles.
   ui.Image texture;
-
-  /// The bytes of the texture used for particles.
-  Uint8List? textureBytes;
 
   /// A callback function called when particle rendering is finished.
   final Function()? onFinished;
