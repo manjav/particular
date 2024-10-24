@@ -560,6 +560,13 @@ class ParticularConfigs {
     if (value == null) return null;
     return value.clamp(min, max);
   }
+
+  void dispose() {
+    for (var notifier in _notifiers.values) {
+      notifier.dispose();
+    }
+    _notifiers.clear();
+  }
 }
 
 /// The wrapper class for colors

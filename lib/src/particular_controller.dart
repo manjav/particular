@@ -11,23 +11,11 @@ enum NotifierType { time, layer }
 
 /// The controller for the particle system.
 class ParticularController {
-  /// The map of notifiers
-  final Map<NotifierType, ChangeNotifier> _notifiers = {};
-
   /// The list of layers in the particle system.
   final List<ParticularLayer> _layers = [];
 
   /// Get layers
   List<ParticularLayer> get layers => _layers;
-
-  /// Get notifier
-  ChangeNotifier getNotifier(NotifierType key) =>
-      _notifiers[key] ??= ChangeNotifier();
-
-  /// Notifies listeners that the duration of the particle system has changed.
-  void notify(NotifierType key) =>
-      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-      getNotifier(key).notifyListeners();
 
   /// The index of the selected layer.
   int selectedLayerIndex = 0;
@@ -38,7 +26,18 @@ class ParticularController {
 
   /// Whether the particle system is empty.
   bool get isEmpty => _layers.isEmpty;
-  
+
+  /// The map of notifiers
+  final Map<NotifierType, ChangeNotifier> _notifiers = {};
+
+  /// Get notifier
+  ChangeNotifier getNotifier(NotifierType key) =>
+      _notifiers[key] ??= ChangeNotifier();
+
+  /// Notifies listeners that the duration of the particle system has changed.
+  void notify(NotifierType key) =>
+      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+      getNotifier(key).notifyListeners();
 
   /// The delta time of the particle system in milliseconds.
   int deltaTime = 0;
@@ -252,8 +251,26 @@ class ParticularController {
     notify(NotifierType.layer);
   }
 
+  /// Toggles the looping state of the particle system.
   void setIsLooping(bool isLooping) {
     _isLooping = isLooping;
     notify(NotifierType.layer);
+  }
+
+  /// Disposes the controllers, notifiers and stops the ticker.
+  /// If you are  using frequently of layers or particulars,
+  /// Its a good practice to dispose unused of them
+  void dispose() {
+    _ticker?.stop();
+
+    for (var layer in _layers) {
+      layer.configs.dispose();
+      layer.texture.dispose();
+    }
+
+    for (var notifier in _notifiers.values) {
+      notifier.dispose();
+    }
+    _notifiers.clear();
   }
 }

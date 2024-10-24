@@ -1,11 +1,11 @@
 import 'dart:typed_data';
 
 import 'package:editor/data/particular_editor_config.dart';
+import 'package:editor/data/particular_editor_controller.dart';
 import 'package:editor/data/particular_editor_layer.dart';
 import 'package:editor/services/io.dart';
 import 'package:editor/theme/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:particular/particular.dart';
 
 /// The header line for the application that contains the buttons for layers.
 class HeaderView extends StatefulWidget {
@@ -13,7 +13,7 @@ class HeaderView extends StatefulWidget {
   final Map appConfigs;
 
   /// The controller for the particle system.
-  final ParticularController controller;
+  final ParticularEditorController controller;
 
   /// The callback function for when the background image is changed.
   final Function(Uint8List) onBackroundImageChanged;
