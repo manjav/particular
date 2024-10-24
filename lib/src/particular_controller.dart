@@ -14,6 +14,12 @@ class ParticularController {
   /// The map of notifiers
   final Map<NotifierType, ChangeNotifier> _notifiers = {};
 
+  /// The list of layers in the particle system.
+  final List<ParticularLayer> _layers = [];
+
+  /// Get layers
+  List<ParticularLayer> get layers => _layers;
+
   /// Get notifier
   ChangeNotifier getNotifier(NotifierType key) =>
       _notifiers[key] ??= ChangeNotifier();
@@ -23,34 +29,16 @@ class ParticularController {
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       getNotifier(key).notifyListeners();
 
-  /// The list of layers in the particle system.
-  final List<ParticularLayer> layers = [];
-
   /// The index of the selected layer.
   int selectedLayerIndex = 0;
 
   /// The ticker for the particle system.
   ParticularLayer? get selectedLayer =>
-      layers.isEmpty ? null : layers[selectedLayerIndex];
+      _layers.isEmpty ? null : _layers[selectedLayerIndex];
 
   /// Whether the particle system is empty.
-  bool get isEmpty => layers.isEmpty;
-
-  /// The default texture bytes for the particle system.
-  Uint8List? _defaultTextureBytes;
-
-  /// The default texture for the particle system.
-  ui.Image? _defaultTexture;
-
-  /// The default texture for the particle system.
-  Future<ui.Image> _getDefaultTexture() async {
-    if (_defaultTexture == null) {
-      ByteData bytes = await rootBundle.load("assets/texture.png");
-      _defaultTextureBytes = bytes.buffer.asUint8List();
-      _defaultTexture = await loadUIImage(_defaultTextureBytes!);
-    }
-    return _defaultTexture!;
-  }
+  bool get isEmpty => _layers.isEmpty;
+  
 
   /// The delta time of the particle system in milliseconds.
   int deltaTime = 0;
@@ -60,8 +48,8 @@ class ParticularController {
 
   /// The duration of the particle system in milliseconds.
   int get timelineDuration {
-    if (layers.isEmpty) return ParticularConfigs.defaultDuration;
-    var max = layers
+    if (_layers.isEmpty) return ParticularConfigs.defaultDuration;
+    var max = _layers
         .reduce((l, r) => l.configs.endTime > r.configs.endTime ? l : r)
         .configs
         .endTime;
@@ -76,17 +64,17 @@ class ParticularController {
   /// The ticker for the particle system.
   Ticker? _ticker;
 
-  bool _isLooping = true;
+  bool _isLooping = false;
 
   bool get isLooping => _isLooping;
 
   bool get _hasInfiniteLayer =>
-      layers.any((layer) => layer.configs.endTime < 0);
+      _layers.any((layer) => layer.configs.endTime < 0);
 
   // Finds the farthest end time of the layers
   int get farthestEndTime {
     int lastEndAt = 0;
-    for (var layer in layers) {
+    for (var layer in _layers) {
       if (layer.configs.endTime > lastEndAt) {
         lastEndAt = layer.configs.endTime;
       }
@@ -106,7 +94,7 @@ class ParticularController {
     elapsedTime = elapsed.inMilliseconds;
 
     // Spawn particles
-    for (var layer in layers) {
+    for (var layer in _layers) {
       var configs = layer.configs;
       var duration =
           configs.endTime > 0 ? configs.endTime - configs.startTime : 1000;
@@ -156,33 +144,37 @@ class ParticularController {
     _ticker?.start();
   }
 
+  /// Adds a new particle system to the application.
+  @Deprecated('Use [addConfigLayer]')
+  Future<void> addLayer({
+    dynamic configsData,
+  }) async {
+    await addConfigLayer(configsData: configsData);
+  }
+
   /// Adds one or more particle systems to the application.
   ///
   /// The [configs] parameter can be either a single configuration map or a
   /// list of configuration maps. If [configs] is a list, each configuration
   /// map in the list will be added as a separate particle system.
-  Future<void> addLayer({
+  Future<void> addConfigLayer({
     dynamic configsData,
   }) async {
     // If the configs parameter is a list, iterate over each configuration
     // map and add it as a separate particle system.
     if (configsData is List) {
       for (var i = 0; i < configsData.length; i++) {
-        await _add(configsData: configsData[i]);
+        await addConfigs(configsData: configsData[i]);
       }
     } else {
-      await _add(configsData: configsData);
+      await addConfigs(configsData: configsData);
     }
   }
 
   /// Adds a new particle system to the application.
-  Future<void> _add({Map<String, dynamic>? configsData}) async {
+  @protected
+  Future<void> addConfigs({Map<String, dynamic>? configsData}) async {
     ByteData bytes;
-
-    if (_ticker == null) {
-      _ticker = Ticker(_onTick);
-      _ticker!.start();
-    }
 
     /// Load particle texture
     ui.Image? texture;
@@ -196,20 +188,27 @@ class ParticularController {
       debugPrint(e.toString());
     }
     final configs = ParticularConfigs()..initialize(configs: configsData);
+    final layer = ParticularLayer(texture: texture!, configs: configs);
+    addParticularLayer(layer);
+  }
 
-    final layer = ParticularLayer(
-        texture: texture ?? await _getDefaultTexture(), configs: configs);
-    layer.textureBytes = _defaultTextureBytes;
-    configs.getNotifier("duration").addListener(_onDurationChange);
-    configs.getNotifier("startTime").addListener(_onDurationChange);
-    layer.index = layers.length;
+  /// Adds a new particle system to the application.
+  ///
+  /// The [configs] parameter can be either a single configuration map or a
+  /// list of configuration maps. If [configs] is a list, each configuration
+  /// map in the list will be added as a separate particle system.
+  void addParticularLayer(ParticularLayer layer) {
+    layer.configs.getNotifier("duration").addListener(_onDurationChange);
+    layer.configs.getNotifier("startTime").addListener(_onDurationChange);
+    layer.index = _layers.length;
     selectedLayerIndex = layer.index;
 
-    if (configsData == null || !configsData.containsKey("configName")) {
-      configs.updateFromMap({"configName": "Layer ${layers.length + 1}"});
+    if (_ticker == null) {
+      _ticker = Ticker(_onTick);
+      _ticker!.start();
     }
 
-    layers.add(layer);
+    _layers.add(layer);
     notify(NotifierType.layer);
   }
 
@@ -221,17 +220,17 @@ class ParticularController {
 
   /// Removes the particle system at the given index.
   void removeLayerAt(int index) {
-    layers[index]
+    _layers[index]
         .configs
         .getNotifier("duration")
         .removeListener(_onDurationChange);
-    layers[index]
+    _layers[index]
         .configs
         .getNotifier("startTime")
         .removeListener(_onDurationChange);
-    layers.removeAt(index);
-    if (selectedLayerIndex >= layers.length) {
-      selectedLayerIndex = layers.length - 1;
+    _layers.removeAt(index);
+    if (selectedLayerIndex >= _layers.length) {
+      selectedLayerIndex = _layers.length - 1;
     }
     notify(NotifierType.layer);
   }
@@ -241,8 +240,8 @@ class ParticularController {
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
-    final item = layers.removeAt(oldIndex);
-    layers.insert(newIndex, item);
+    final item = _layers.removeAt(oldIndex);
+    _layers.insert(newIndex, item);
     selectedLayerIndex = newIndex;
     notify(NotifierType.layer);
   }
