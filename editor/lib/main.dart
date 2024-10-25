@@ -24,7 +24,8 @@ class EditorApp extends StatefulWidget {
 class _EditorAppState extends State<EditorApp> {
   Uint8List? _backgroundImage;
   Map<String, dynamic> _appConfigs = {};
-  final ParticularEditorController _particleController = ParticularEditorController();
+  final ParticularEditorController _particleController =
+      ParticularEditorController();
 
   @override
   void initState() {
@@ -104,14 +105,14 @@ class _EditorAppState extends State<EditorApp> {
     return Expanded(
       child: GestureDetector(
         onPanUpdate: (details) {
-          _particleController.selectedLayer?.configs.updateFromMap({
+          _particleController.selectedLayer?.configs.updateWith({
             "emitterX": details.localPosition.dx,
             "emitterY": details.localPosition.dy
           });
         },
         onTapDown: (details) {
           _particleController.resetTick();
-          _particleController.selectedLayer?.configs.updateFromMap({
+          _particleController.selectedLayer?.configs.updateWith({
             "emitterX": details.localPosition.dx,
             "emitterY": details.localPosition.dy
           });

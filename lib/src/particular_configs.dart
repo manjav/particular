@@ -479,7 +479,7 @@ class ParticularConfigs {
   }
 
   /// Updates the controller from a map
-  void updateFromMap(Map<String, dynamic> args) {
+  void updateWith(Map<String, dynamic> args) {
     update(
       configName: args["configName"],
       textureFileName: args["textureFileName"],

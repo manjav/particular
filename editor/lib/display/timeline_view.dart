@@ -89,8 +89,8 @@ class _TimelineViewState extends State<TimelineView> {
                       builder: (context, child) {
                         return IntryTextField(
                           value: layer.configs.configName,
-                          onChanged: (value) => layer.configs
-                              .updateFromMap({"configName": value}),
+                          onChanged: (value) =>
+                              layer.configs.updateWith({"configName": value}),
                         );
                       },
                     ),

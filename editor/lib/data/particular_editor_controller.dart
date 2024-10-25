@@ -48,7 +48,7 @@ class ParticularEditorController extends ParticularController {
     );
 
     if (configsData == null || !configsData.containsKey("configName")) {
-      configs.updateFromMap({"configName": "Layer ${layers.length + 1}"});
+      configs.updateWith({"configName": "Layer ${layers.length + 1}"});
     }
     addParticularLayer(layer);
   }
