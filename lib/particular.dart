@@ -9,7 +9,7 @@
 /// copies of the Software, and to permit persons to whom the Software is
 /// furnished to do so, subject to the following conditions:
 
-library particular;
+library;
 
 export 'src/blending.dart';
 export 'src/image_loader.dart';

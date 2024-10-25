@@ -9,5 +9,9 @@ class ParticularEditorLayer extends ParticularLayer {
   Uint8List? textureBytes;
 
   /// Initializes a new instance of the `ParticularEditorLayer` class.
-  ParticularEditorLayer({required super.texture, required super.configs});
+  ParticularEditorLayer({
+    required super.texture,
+    required this.textureBytes,
+    required super.configs,
+  });
 }

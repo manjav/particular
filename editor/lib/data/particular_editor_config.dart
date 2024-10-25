@@ -55,12 +55,6 @@ extension ParticularEditorConfig on ParticularConfigs {
 
   /// Convert to Map for export
   Map toMap() {
-    final startColorMap = startColor.toMap("startColor");
-    final startColorVarianceMap =
-        startColorVariance.toMap("startColorVariance");
-    final finishColorMap = finishColor.toMap("finishColor");
-    final finishColorVarianceMap =
-        finishColorVariance.toMap("finishColorVariance");
     return {
       "configName": configName,
       "textureFileName": textureFileName,
@@ -100,11 +94,11 @@ extension ParticularEditorConfig on ParticularConfigs {
       "radialAccelVariance": radialAccelerationVariance,
       "tangentialAcceleration": tangentialAcceleration,
       "tangentialAccelVariance": tangentialAccelerationVariance,
-    }
-      ..addAll(startColorMap)
-      ..addAll(startColorVarianceMap)
-      ..addAll(finishColorMap)
-      ..addAll(finishColorVarianceMap);
+      ...startColor.toMap("startColor"),
+      ...startColor.toMap("startColorVariance"),
+      ...startColor.toMap("finishColor"),
+      ...startColor.toMap("finishColorVariance"),
+    };
   }
 }
 

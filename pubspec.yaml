@@ -1,6 +1,6 @@
 name: particular
 description: "The Particular is a high performance particle effects flutter widget."
-version: 0.3.2
+version: 0.3.3
 homepage: https://manjav.github.io/particular
 repository: https://github.com/manjav/particular
 issue_tracker: https://github.com/manjav/particular/issues
@@ -18,7 +18,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
 
 screenshots:
   - description: 'Particular Logo'

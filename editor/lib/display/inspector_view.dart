@@ -227,7 +227,7 @@ class _InspectorViewState extends State<InspectorView> {
         items: items,
         value: _selectedLayer!.configs.getParam(entry.value),
         onChanged: (dynamic selected) {
-          _selectedLayer!.configs.updateFromMap({entry.value: selected});
+          _selectedLayer!.configs.updateWith({entry.value: selected});
           if (entry.value == "emitterType") {
             setState(() {});
           }
@@ -262,7 +262,7 @@ class _InspectorViewState extends State<InspectorView> {
   void _updateParticleParam(String key, num value) {
     var param = _selectedLayer!.configs.getParam(key);
     _selectedLayer!.configs
-        .updateFromMap({key: param is int ? value.toInt() : value});
+        .updateWith({key: param is int ? value.toInt() : value});
   }
 
   Widget _colorPickerBuilder() {
@@ -282,7 +282,7 @@ class _InspectorViewState extends State<InspectorView> {
               showSliderText: false,
               pickerColor: _selectedLayer!.configs.getParam(value).getColor(),
               onColorChanged: (color) {
-                _selectedLayer!.configs.updateFromMap({
+                _selectedLayer!.configs.updateWith({
                   value: ARGB(color.alpha / 255, color.red / 255,
                       color.green / 255, color.blue / 255)
                 });

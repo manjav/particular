@@ -6,6 +6,7 @@ import 'package:editor/data/particular_editor_layer.dart';
 import 'package:editor/services/io.dart';
 import 'package:editor/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:particular/particular.dart';
 
 /// The header line for the application that contains the buttons for layers.
 class HeaderView extends StatefulWidget {
@@ -49,6 +50,7 @@ class _HeaderViewState extends State<HeaderView> {
             style: IconButton.styleFrom(backgroundColor: Colors.white10),
             items: {
               "Import configs": _importConfigs,
+              "Import with textures (zipped)": _importConfigsWithTextures,
               "Export configs": _exportConfigs,
               "Export with textures (zipped)": _exportConfigsWithTextures,
               "Add background image": _browseBackgroundImage,
@@ -113,6 +115,25 @@ class _HeaderViewState extends State<HeaderView> {
     final configs = await browseConfigs(["json"]);
     if (configs != null) {
       widget.controller.addConfigLayer(configsData: configs);
+    }
+  }
+
+  /// Browse and import configs
+  Future<void> _importConfigsWithTextures() async {
+    final files = await browseConfigsWithTexture();
+    for (var entry in files.entries) {
+      if (!entry.key.endsWith(".json")) {
+        continue;
+      }
+      List configLayers = entry.value;
+      for (var configLayer in configLayers) {
+        final layer = ParticularEditorLayer(
+          texture: files[configLayer["textureFileName"]].$1,
+          textureBytes: files[configLayer["textureFileName"]].$2,
+          configs: ParticularConfigs.initialize(configs: configLayer),
+        );
+        widget.controller.addParticularLayer(layer);
+      }
     }
   }
 
