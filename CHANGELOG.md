@@ -49,3 +49,8 @@
 * enhance: add automate publish
 * fixbugs: wrong particles count of limit-time layers
 * fixbugs: wrong afew particles count
+
+### 0.3.3 (10/25/2024)
+* feature: import configs with texture files
+* feature: add custom layer with custom texture
+* enhance: dispose layer ability
