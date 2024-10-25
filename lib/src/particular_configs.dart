@@ -236,7 +236,7 @@ class ParticularConfigs {
       _notifiers[key] ??= ChangeNotifier();
 
   /// First time initialize controller
-  void initialize({Map<dynamic, dynamic>? configs}) async {
+  ParticularConfigs.initialize({Map<dynamic, dynamic>? configs}) {
     if (configs == null) return;
     update(
       configName: configs["configName"],

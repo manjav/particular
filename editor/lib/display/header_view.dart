@@ -130,7 +130,7 @@ class _HeaderViewState extends State<HeaderView> {
         final layer = ParticularEditorLayer(
           texture: files[configLayer["textureFileName"]].$1,
           textureBytes: files[configLayer["textureFileName"]].$2,
-          configs: ParticularConfigs()..initialize(configs: configLayer),
+          configs: ParticularConfigs.initialize(configs: configLayer),
         );
         widget.controller.addParticularLayer(layer);
       }

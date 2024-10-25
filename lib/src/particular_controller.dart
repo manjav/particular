@@ -186,7 +186,7 @@ class ParticularController {
     } catch (e) {
       debugPrint(e.toString());
     }
-    final configs = ParticularConfigs()..initialize(configs: configsData);
+    final configs = ParticularConfigs.initialize(configs: configsData);
     final layer = ParticularLayer(texture: texture!, configs: configs);
     addParticularLayer(layer);
   }

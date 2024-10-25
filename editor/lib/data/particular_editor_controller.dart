@@ -39,7 +39,7 @@ class ParticularEditorController extends ParticularController {
     } catch (e) {
       debugPrint(e.toString());
     }
-    final configs = ParticularConfigs()..initialize(configs: configsData);
+    final configs = ParticularConfigs.initialize(configs: configsData);
 
     final layer = ParticularEditorLayer(
       texture: texture ?? await getDefaultTexture(),

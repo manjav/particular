@@ -38,7 +38,7 @@ class _MyAppState extends State<MyApp> {
     final bytes = await rootBundle.load("assets/texture.png");
     ui.Image? flameTexture = await loadUIImage(bytes.buffer.asUint8List());
 
-    final flameConfigs = ParticularConfigs();
+    final flameConfigs = ParticularConfigs.initialize();
     flameConfigs.update(
       startSize: 100,
       startSizeVariance: 20,
