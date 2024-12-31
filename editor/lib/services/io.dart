@@ -1,14 +1,16 @@
 import 'dart:convert';
 // ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:archive/archive.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:particular/particular.dart';
+
+import 'downloader/file_saver_none.dart'
+    if (dart.library.io) 'downloader/file_saver_io.dart'
+    if (dart.library.js_interop) 'downloader/file_saver_web.dart';
 
 /// Browse files from the user's device.
 ///
@@ -151,10 +153,11 @@ Future<void> saveConfigs({
 }) async {
   final json = jsonEncode(configs);
   debugPrint(json);
-  _saveFile(
-      bytes: utf8.encode(json),
-      title: "Save Particle Configs",
-      filename: "${filename ?? "configs"}.json");
+  await FileSaver.saveFile(
+    bytes: utf8.encode(json),
+    title: "Save Particle Configs",
+    filename: "${filename ?? "configs"}.json",
+  );
 }
 
 /// Saves the provided [configs] and [textures] to a zipped file.
@@ -206,51 +209,9 @@ Future<void> saveConfigsWithTextures({
       level: Deflate.BEST_COMPRESSION, output: outputStream);
 
   // Save the encoded bytes to a file
-  _saveFile(
-      bytes: Uint8List.fromList(bytes!),
-      title: "Save Particle Configs",
-      filename: "${filename ?? "configs"}.zip");
-}
-
-/// Saves a file to the user's device.
-///
-/// If the app is running on a non-web platform, it uses the [FilePicker.saveFile]
-/// method to open a file picker dialog for the user to select a filename.
-///
-/// The file is encoded to JSON and saved to the selected file with the `.json`
-/// extension.
-///
-/// Parameters:
-/// - [title]: The title of the save file dialog.
-/// - [bytes]: The bytes of the file to be saved.
-/// - [filename]: The name of the file to be saved.
-///
-/// Returns:
-/// - A `Future<void>`: A future that completes when the file has been saved.
-Future<void> _saveFile({
-  required String title,
-  required Uint8List bytes,
-  required String filename,
-}) async {
-  if (kIsWeb) {
-    final blob = html.Blob([bytes]);
-    final url = html.Url.createObjectUrlFromBlob(blob);
-    final anchor = html.document.createElement('a') as html.AnchorElement
-      ..href = url
-      ..style.display = 'none'
-      ..download = filename;
-    html.document.body!.children.add(anchor);
-
-    // Download
-    anchor.click();
-
-    // Cleanup
-    html.document.body!.children.remove(anchor);
-    html.Url.revokeObjectUrl(url);
-    await FilePicker.platform.saveFile(
-      bytes: bytes,
-      dialogTitle: title,
-      fileName: filename,
-    );
-  }
+  await FileSaver.saveFile(
+    bytes: Uint8List.fromList(bytes!),
+    title: "Save Particle Configs",
+    filename: "${filename ?? "configs"}.zip",
+  );
 }
