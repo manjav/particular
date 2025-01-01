@@ -57,11 +57,12 @@ class ParticularLayer {
     } else {
       particle = particles[deadParticleIndices.removeLast()];
     }
+    final position = configs.getEmitterPosition(1);
     particle.initialize(
       age: age,
       emitterType: configs.emitterType,
-      emitterX: configs.getEmitterX(1),
-      emitterY: configs.getEmitterY(1),
+      emitterX: position.x,
+      emitterY: position.y,
       startSize: configs.getStartSize(1),
       finishSize: configs.getFinishSize(1),
       startColor: configs.getStartColor(),

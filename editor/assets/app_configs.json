@@ -28,10 +28,16 @@
                         }
                     },
                     {
-                        "title": "Emitter Size",
+                        "title": "Emitter Shape Size",
                         "inputs": {
-                            "X": "sourcePositionVarianceX",
-                            "Y": "sourcePositionVarianceY"
+                            "Width": "sourcePositionVarianceX",
+                            "Height": "sourcePositionVarianceY"
+                        }
+                    },
+                    {
+                        "title": "Emitter Shape Rotation",
+                        "inputs": {
+                            "Angle°": "sourcePositionRotation"
                         }
                     },
                     {

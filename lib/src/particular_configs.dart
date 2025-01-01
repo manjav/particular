@@ -23,13 +23,39 @@ class ParticularConfigs {
   /// Gets the lifespan of particles.
   int getLifespan() => _computeVariance(lifespan, lifespanVariance).round();
 
-  /// Gets the x-coordinate of the emitter position.
-  double getEmitterX(double scaleFactor) =>
-      _getVariantDouble(emitterX, sourcePositionVarianceX * scaleFactor);
+  /// Gets the emitter rect (based on the source position variance).
+  Rect _getEmitterRect(double scaleFactor) {
+    final width = sourcePositionVarianceX * scaleFactor;
+    final height = sourcePositionVarianceY * scaleFactor;
 
-  /// Gets the y-coordinate of the emitter position.
-  double getEmitterY(double scaleFactor) =>
-      _getVariantDouble(emitterY, sourcePositionVarianceY * scaleFactor);
+    return Rect.fromLTWH(
+      emitterX - width / 2,
+      emitterY - height / 2,
+      width,
+      height,
+    );
+  }
+
+  ({double x, double y}) getEmitterPosition(double scaleFactor) {
+    final rotation = sourcePositionRotation * math.pi / 180;
+    final rect = _getEmitterRect(scaleFactor);
+    final centerX = rect.left + rect.width / 2;
+    final centerY = rect.top + rect.height / 2;
+
+    // Generate random point in a non-rotated rectangle
+    final localX = math.Random().nextDouble() * rect.width - rect.width / 2;
+    final localY = math.Random().nextDouble() * rect.height - rect.height / 2;
+
+    // Rotate the point
+    final rotatedX = localX * math.cos(rotation) - localY * math.sin(rotation);
+    final rotatedY = localX * math.sin(rotation) + localY * math.cos(rotation);
+
+    // Translate back to the world coordinate space
+    final randomX = centerX + rotatedX;
+    final randomY = centerY + rotatedY;
+
+    return (x: randomX, y: randomY);
+  }
 
   /// Gets the start size of particles.
   double getStartSize(double scaleFactor) =>
@@ -153,6 +179,9 @@ class ParticularConfigs {
   /// The variance of the source position along the y-axis.
   num sourcePositionVarianceY = 0;
 
+  /// The rotation of the source position
+  num sourcePositionRotation = 0;
+
   /// The start size of particles.
   num startSize = 30;
 
@@ -259,6 +288,7 @@ class ParticularConfigs {
       maxParticles: configs["maxParticles"],
       sourcePositionVarianceX: configs["sourcePositionVariancex"],
       sourcePositionVarianceY: configs["sourcePositionVariancey"],
+      sourcePositionRotation: configs["sourcePositionRotation"],
       startSize: configs["startParticleSize"],
       startSizeVariance: configs["startParticleSizeVariance"],
       finishSize: configs["finishParticleSize"],
@@ -308,6 +338,7 @@ class ParticularConfigs {
     ARGB? finishColorVariance,
     num? sourcePositionVarianceX,
     num? sourcePositionVarianceY,
+    num? sourcePositionRotation,
     num? startSize,
     num? startSizeVariance,
     num? angle,
@@ -393,6 +424,10 @@ class ParticularConfigs {
     }
     if (sourcePositionVarianceY != null) {
       this.sourcePositionVarianceY = sourcePositionVarianceY;
+    }
+
+    if (sourcePositionRotation != null) {
+      this.sourcePositionRotation = sourcePositionRotation;
     }
 
     if (startSize != null) {
@@ -499,6 +534,7 @@ class ParticularConfigs {
       finishColorVariance: args["finishColorVariance"],
       sourcePositionVarianceX: args["sourcePositionVarianceX"],
       sourcePositionVarianceY: args["sourcePositionVarianceY"],
+      sourcePositionRotation: args["sourcePositionRotation"],
       startSize: args["startSize"],
       startSizeVariance: args["startSizeVariance"],
       angle: _loopClamp(args["angle"], -180, 180),
