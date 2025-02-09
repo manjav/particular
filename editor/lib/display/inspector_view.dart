@@ -282,10 +282,8 @@ class _InspectorViewState extends State<InspectorView> {
               showSliderText: false,
               pickerColor: _selectedLayer!.configs.getParam(value).getColor(),
               onColorChanged: (color) {
-                _selectedLayer!.configs.updateWith({
-                  value: ARGB(color.alpha / 255, color.red / 255,
-                      color.green / 255, color.blue / 255)
-                });
+                _selectedLayer!.configs.updateWith(
+                    {value: ARGB(color.a, color.r, color.g, color.b)});
               },
             ),
           ),

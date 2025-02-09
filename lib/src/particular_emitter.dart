@@ -79,8 +79,8 @@ class ParticlePainter extends CustomPainter {
         if (particle.isAlive && particle.isDyingTime()) {
           layer.deadParticleIndices.add(i);
           particle.isAlive = false;
-          particle.color.update(
-              0, particle.color.red, particle.color.green, particle.color.blue);
+          particle.color
+              .update(0, particle.color.r, particle.color.g, particle.color.b);
         } else {
           allParticlesDead = false;
         }

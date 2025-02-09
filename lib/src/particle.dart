@@ -157,8 +157,7 @@ class Particle {
     y = emitterY;
     size = startSize;
     rotation = this.startRotation;
-    color.update(
-        startColor.alpha, startColor.red, startColor.green, startColor.blue);
+    color.update(startColor.a, startColor.r, startColor.g, startColor.b);
     radius = maxRadius;
     radiusDelta = (minRadius - maxRadius);
     velocityX = speed * math.cos(this.angle);
@@ -300,13 +299,16 @@ class ParticleColor extends Color {
   ///
   /// The color value of this [ParticleColor] object is updated with the
   /// provided color channels.
-  void update(int a, int r, int g, int b) {
+  void update(double a, double r, double g, double b) {
     // Combine the color channels into a single integer value.
-    value = (((a & 0xff) <<
+    value = ((((a * 255).round() & 0xff) <<
                 24) | // Shift alpha channel and bitwise AND with 0xff
-            ((r & 0xff) << 16) | // Shift red channel and bitwise AND with 0xff
-            ((g & 0xff) << 8) | // Shift green channel and bitwise AND with 0xff
-            ((b & 0xff) << 0)) & // Shift blue channel and bitwise AND with 0xff
+            (((r * 255).round() & 0xff) <<
+                16) | // Shift red channel and bitwise AND with 0xff
+            (((g * 255).round() & 0xff) <<
+                8) | // Shift green channel and bitwise AND with 0xff
+            (((b * 255).round() & 0xff) <<
+                0)) & // Shift blue channel and bitwise AND with 0xff
         0xFFFFFFFF; // Mask the result to 32 bits
   }
 
@@ -314,7 +316,7 @@ class ParticleColor extends Color {
   /// instance between the provided [from] and [to] colors using the
   /// given interpolation [delta].
   ///
-  /// The color channels are interpolated separately using the [_lerpInt]
+  /// The color channels are interpolated separately using the [_lerp]
   /// function. The resulting interpolated color channels are then used to
   /// update the color of this [ParticleColor] instance using the [update]
   /// method.
@@ -325,10 +327,10 @@ class ParticleColor extends Color {
   ///   - delta: The interpolation factor.
   void lerp(Color from, Color to, double delta) {
     update(
-      _clampInt(_lerpInt(from.alpha, to.alpha, delta).toInt(), 0, 255),
-      _clampInt(_lerpInt(from.red, to.red, delta).toInt(), 0, 255),
-      _clampInt(_lerpInt(from.green, to.green, delta).toInt(), 0, 255),
-      _clampInt(_lerpInt(from.blue, to.blue, delta).toInt(), 0, 255),
+      _lerp(from.a, to.a, delta),
+      _lerp(from.r, to.r, delta),
+      _lerp(from.g, to.g, delta),
+      _lerp(from.b, to.b, delta),
     );
   }
 
@@ -345,34 +347,8 @@ class ParticleColor extends Color {
   ///
   /// Returns:
   ///   The interpolated value as a [double].
-  double _lerpInt(int from, int to, double delta) => from + (to - from) * delta;
-
-  /// Clamps the given [value] between the specified [min] and [max]
-  /// boundaries.
-  ///
-  /// If [value] is less than [min], this function returns [min]. If [value] is
-  /// greater than [max], this function returns [max]. Otherwise, it returns
-  /// [value] itself.
-  ///
-  /// This method is a specialized version of [num.clamp] that is optimized for
-  /// use with non-nullable [int] values.
-  ///
-  /// Parameters:
-  ///   - [value]: The value to be clamped.
-  ///   - [min]: The lower boundary of the range.
-  ///   - [max]: The upper boundary of the range.
-  ///
-  /// Returns:
-  ///   - The clamped value.
-  int _clampInt(int value, int min, int max) {
-    if (value < min) {
-      return min;
-    }
-    if (value > max) {
-      return max;
-    }
-    return value;
-  }
+  double _lerp(double from, double to, double delta) =>
+      (from + (to - from) * delta).clamp(0, 1);
 
   /// The alpha channel of this color in an 8 bit value.
   ///
