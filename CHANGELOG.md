@@ -1,3 +1,8 @@
+### 0.3.4 (02/10/2025)
+* feature: add emitter rotation property
+* enhance: wasm support
+* fixbugs: fix some minor bugs
+
 ### 0.3.3 (10/25/2024)
 * feature: import configs with texture files
 * feature: add custom layer with custom texture
